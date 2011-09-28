@@ -10,6 +10,11 @@ set -o noclobber
 set -o ignoreeof
 #set -o nounset
 
+export HISTSIZE=1000
+export HISTFILESIZE=1000
+
+export GNATSDB=guptav
+
 # Enable options:
 shopt -s cdspell
 shopt -s cdable_vars
@@ -61,7 +66,7 @@ function fastprompt()
     case $TERM in
 	*term | rxvt )
 	#PS1="${HILIT}[\h]$NC \W > \[\033]0;\${TERM} [\u@\h] \w\007\]" 
-	PS1="${HILIT}[\A - ]$NC -------- ${red}\w${NC}  \n[\h \#] > "
+	PS1="${HILIT}[\A - ]$NC -------- ${red}\${PWD}${NC}  \n[\h \#] > "
 	;;
     linux )
 	PS1="${HILIT}[\h]$NC \W > " ;;
@@ -74,6 +79,7 @@ function fastprompt()
 alias rm='rm -i'
 alias cp='cp -i'
 alias mv='mv -i'
+alias ls='ls --color'
 alias rmbk='/bin/rm -f .*~ *~ *aux *bak *log 2>/dev/null'
 alias ..='cd ..'
 alias which="type -path"
@@ -94,7 +100,7 @@ alias lt='ls -ltr'              # sort by date
 alias lm='ls -al |more'         # pipe through 'more'
 alias tree='tree -Csu'		# nice alternative to 'ls'
 alias x=startx
-alias m="mplayer -vo x11 -zoom"
+alias m="mplayer -ao alsa -vo x11 -zoom"
 
 #Misc alias
 alias lll="ssh vgupta3@scmsuse9"
@@ -133,26 +139,23 @@ if [ "$TERM" = "xterm" ]; then
 fi
 # ONLY Valid for ksh shell
 function mark {
-	set -x
     	Usage="Usage: mark word"
 	case $# in
 	 1) export "$1=cd `pwd`" ;;
     	 *) echo "Incorrect Arguments count "
 	    echo $Usage ;;
     	esac
-	set +x
 }
 # ONLY Valid for ksh shell
 function goto {
-	set -x
 	Usage="Usage: goto word"
 	case $# in
 	 1)  if env | grep "^$1=cd " > /dev/null ;
 	     then
-	     	 echo "Here I am "
-		 eval $"$1" 
-		 #echo "New current directory is `pwd`"
+		 eval \$"$1" 
+		 echo "New current directory is `pwd`"
 	     else
+		 echo "ERROR : $1 is not marked."
 		 echo $Usage
 	     fi
 	     ;;
@@ -160,7 +163,6 @@ function goto {
 	    echo $Usage
 	    ;;
 	esac
-	set +x
 }
 function _history
 {
@@ -253,10 +255,9 @@ function pp()
 { my_ps f | awk '!/awk/ && $0~var' var=${1:-".*"} ; }
 function my_ip() # get IP adresses
 {
-    MY_IP=$(/sbin/ifconfig eth0| awk '/inet/ { print $2 } ' | \
-sed -e s/addr://)
-    MY_ISP=$(/sbin/ifconfig eth0 | awk '/P-t-P/ { print $3 } ' | \
-sed -e s/P-t-P://)
+    MY_IP=`ifconfig  | grep "inet addr" | awk -F":" '{print $2;}' | cut -d" " -f 1`	
+    #MY_IP=$(/sbin/ifconfig eth0| awk '/inet/ { print $2 } ' |  sed -e s/addr://)
+    #MY_ISP=$(/sbin/ifconfig eth0 | awk '/P-t-P/ { print $3 } ' | sed -e s/P-t-P://)
 }
 function ii()   # get current host related info
 {
@@ -585,18 +586,70 @@ function decryptfile ()
 }
 
 ################### End gpg functions ##################
+################### Begin Gnats functions ##################
+function _bugs_list ()
+{
+	local i_state=${1}
+	query-pr --format summary --state=${i_state}
+}
+function _bugs_detail()
+{
+	local i_pr=${1}
+	query-pr ${i_pr}
+}
+function bugs ()
+{
+    local option=$1
+    case "$option" in
+	list)	_bugs_list "$2";;
+	detail)	_bugs_detail "$2";;
+	*)	_bugs_list "open";;
+    esac
+}
+################### End   Gnats functions ##################
+################### Document Converting functions ##################
+function pdfmerge ()
+{
+
+    output=${1}
+    shift
+    [ -f "${output}" ] && echo "Error: Output file already exists : $output" && return 1;
+    echo "Merging $@ to $output ... "
+    gs -dNOPAUSE -sDEVICE=pdfwrite -sOUTPUTFILE=${output} -dBATCH $@
+
+}
+################### Document Converting functions ##################
+
+function myupdate()
+{
+	filename='.filelist.txt'
+	function_filename=function.list
+	structure_filename=structure.list
+	if [ -z "$1" ]; then
+	    find . -name '*.[ch]' >| $filename
+	    #find . -name '*.sh'   >> $filename
+	    find . -name '*.java' >> $filename
+	else
+	    echo 'Nothing..'
+	    #find . -name "$1" >| $filename
+	fi
+	echo "- Generating tag list - "
+	ctags -L $filename
+	echo "- Generating cscope.out -"
+	cscope -b -i $filename
+	echo "- Generating Function Names for Language C -"
+	ctags --language-force=c --c-types=f --sort=no -L $filename -o - | cut -f 1 >| $function_filename
+	wc -l $function_filename
+	echo "- Generating Structure List for Language C -"
+	ctags --language-force=c --c-types=s --sort=no -L $filename -o - | cut -f 1 >| $structure_filename
+	wc -l $structure_filename
+}
 
 function my_sol ()
 {	
 	#For vim to have colors.
 	export TERM=xtermc
 }
-
-
-alias n1='echo "ssh root@10.209.105.111";ssh root@10.209.105.111'
-alias n2='echo "ssh root@10.209.105.112";ssh root@10.209.105.112'
-alias n3='echo "ssh root@10.209.105.113";ssh root@10.209.105.113'
-alias n4='echo "ssh root@10.209.105.114";ssh root@10.209.105.114'
 
 #START Executing
 fastprompt
