@@ -113,8 +113,7 @@ export HISTIGNORE="&:bg:fg:ll:h"
 #HISTIGNORE="l:ll:llt:cdb:b:r:exit:env:date:.:..:...:....:.....:pwd:cfg:rb:eb:!!:ls:fg:bg:cd ..:h:mc"
 
 #FOR CVS 
-#export PATH=$PATH:$OPTAN_HOME/bin
-export PATH=$PATH:$HOME/bin:$HOME/bin
+export PATH=$PATH:$HOME/bin
 export PATH=$PATH:$HOME/lib/perl
 #export CVS_RSH=ssh
 #export CVSROOT=nsl-08:/users/rs/karkare/public_html/CVS614
@@ -271,6 +270,22 @@ function ii()   # get current host related info
   echo -e "\n${RED}Local IP Address :$NC" ; echo ${MY_IP:-"Not connected"}
   echo -e "\n${RED}ISP Address :$NC" ; echo ${MY_ISP:-"Not connected"}
   echo
+}
+
+function move2 ()
+{
+	archive=$1
+	if [ -z "$archive" ]; then
+		echo "Usages: move2 <Directory Name>"
+		return 0;
+	fi
+	[  ! -d "$archive" ] && echo "Error : $archive is not a directory." && return 1
+	dirname=`date +%b%d`
+	echo "Creating Directory : $archive/$dirname "
+	mkdir $archive/$dirname
+	echo "Moving files to    : $archive/$dirname "
+	mv * $archive/$dirname
+	echo "Done."
 }
 
 #Misc Function

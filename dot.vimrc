@@ -33,11 +33,14 @@ map <C-\> :tab split<CR>:exec("tag ".expand("<cword>"))<CR>
 "nmap <buffer> <CR> 0ye<C-W>w:tag <C-R>"<CR>z<CR><C-W><C-W># " press enter on tag name
 "nmap <buffer> <CR> 0ye:! showgraph.sh <C-R>"  1 >/dev/null & <CR><CR>
 :set showcmd
+:set showmatch
+:set smartcase
+:set hidden             " Hide buffers when they are abandoned
+":set mouse=a		" Enable mouse usage (all modes) " NOT GOOD
 :set report=0
 :set wildmode=list:longest
 :set winheight=9999
 :set so=5
-":set mouse=a
 :set laststatus=2
 :set statusline=%<%F\ %h%m%r%w%=%-14.(%l,%c%)\ %P
 :imap <silent> ,, <ESC>"_yiw:s/\(\%#\w\+\)/<\1> <\/\1>/<cr><c-o><c-l>f>a<cr><cr><UP><tab>
@@ -46,6 +49,9 @@ map <C-\> :tab split<CR>:exec("tag ".expand("<cword>"))<CR>
 :nmap l; :cn<CR>
 :nmap lk :cp<CR>
 :nmap <F2> :'<,'>s/^/\/\/ /g<CR>
+
+" For reindexing the tags for omni completion.
+:map <C-F12> :!ctags -R --c++-kinds=+p --fields=+iaS --extra=+q .<CR>
 
 :function FoldComments()
 :set foldmarker=/*,*/
@@ -186,6 +192,29 @@ map <C-\> :tab split<CR>:exec("tag ".expand("<cword>"))<CR>
 : echo  " <leader>cs Comments out the selected lines ``sexually''                     "
 : echo  " <leader>cu Uncomments the selected line(s).                                 "
 : echo  " :set list [List Mode] :set nolist "
+" omni completion help
+: echo  ":h omnicppcomplete " 
+:echo   ":set list listchars=tab:»·,trail:·,extends:…  Show tabs, trailing whitespace" 
+
 :endfunction 
 
+:let g:tex_flavor='latex'
+:set iskeyword+=:
 
+:set nowrap
+
+:function ActiveSyn()
+:if has("syntax") && (&t_Co > 2 || has("gui_running"))
+:      syntax on
+:      function! ActivateInvisibleCharIndicator()
+:      	syntax match TrailingSpace "[ \t]\+$" display containedin=ALL
+:      	highlight TrailingSpace ctermbg=Red
+:      endf
+:      autocmd BufNewFile,BufRead * call ActivateInvisibleCharIndicator()
+:endif
+:endfunction 
+:" Show tabs, trailing whitespace, and continued lines visually
+":set list listchars=tab:»·,trail:·,extends:…
+:
+:" highlight overly long lines same as TODOs.
+:autocmd BufNewFile,BufRead *.c,*.h exec 'match Todo /\%>' . &textwidth . 'v.\+/'
