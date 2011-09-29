@@ -637,27 +637,47 @@ function pdfmerge ()
 
 function myupdate()
 {
-	filename='.filelist.txt'
-	function_filename=function.list
-	structure_filename=structure.list
-	if [ -z "$1" ]; then
-	    find . -name '*.[ch]' >| $filename
-	    #find . -name '*.sh'   >> $filename
-	    find . -name '*.java' >> $filename
-	else
-	    echo 'Nothing..'
-	    #find . -name "$1" >| $filename
-	fi
-	echo "- Generating tag list - "
-	ctags -L $filename
-	echo "- Generating cscope.out -"
-	cscope -b -i $filename
-	echo "- Generating Function Names for Language C -"
-	ctags --language-force=c --c-types=f --sort=no -L $filename -o - | cut -f 1 >| $function_filename
-	wc -l $function_filename
-	echo "- Generating Structure List for Language C -"
-	ctags --language-force=c --c-types=s --sort=no -L $filename -o - | cut -f 1 >| $structure_filename
-	wc -l $structure_filename
+    filename='.filelist.txt'
+    function_filename='.function.list'
+    structure_filename='.structure.list'
+    command=${1-regen}
+
+    case "$command" in
+	clean) 
+		rm -f ${filename} ${function_filename} ${structure_filename} cscope.out 
+		rm tags 
+		return 
+		;;
+	gen)
+		find . -name '*.[ch]' >| $filename
+		find . -name '*.java' >> $filename
+		;;
+	regen)
+		echo "Regenrating ctags from filelist."
+		;;
+	status)
+		echo "Functions : "
+		wc -l $function_filename
+		echo "Structures : "
+		wc -l $structure_filename
+		return
+		;;
+	*)
+		echo "Unknown command: $command"
+		echo "Usages: myupdate [gen|regen|clena]"
+		return
+		;;
+    esac
+
+    echo "- Generating tag list - "
+    ctags -L $filename
+    echo "- Generating cscope.out -"
+    cscope -b -i $filename
+    echo "- Generating Function Names for Language C -"
+    ctags --language-force=c --c-types=f --sort=no -L $filename -o - | cut -f 1 >| $function_filename
+    echo "- Generating Structure List for Language C -"
+    ctags --language-force=c --c-types=s --sort=no -L $filename -o - | cut -f 1 >| $structure_filename
+    myupdate status
 }
 
 function my_sol ()
