@@ -1,0 +1,22 @@
+[ui]
+editor = vim
+username = Vaibhav Gupta <vaibhav.gupta@gmail.com>
+
+[extensions]
+graphlog=
+color=
+hgext.extdiff =
+fetch=
+hgext.mq=
+rebase=
+transplant=
+bookmarks=
+
+# To install "sudo apt-get install kdiff3"
+
+[extdiff]
+cmd.kdiff3 =
+
+[merge-tools]
+kdiff3.args = $base $local $other -o $output
+
