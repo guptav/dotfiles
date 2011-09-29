@@ -184,8 +184,8 @@ function vimgrep
 {
 	vimgrep_temp_file=/tmp/vimgrep_$$.tmp
 	find . \( -name "*.c"  -o -name "*.h" -o -name "*.i" -o -name "*.icc" \) -print -follow | grep -v "CVS/" | sed "s/ /\\\/g" | xargs egrep -H -n -e $* > $vimgrep_temp_file
-	gvim -q $vimgrep_temp_file -c copen
-	rm  $vimgrep_temp_file
+	vim -q $vimgrep_temp_file -c copen
+	rm -f $vimgrep_temp_file
 } 
 function xtitle ()
 {
