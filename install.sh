@@ -38,10 +38,22 @@ function main ()
     declare -F ${command}_file >/dev/null 
     [ $? -ne 0 ] && echo "Command not found : $command" && help_file 
 
-    for i in dot.*
+    # For each dot file
+    for i in `find . -type f -name 'dot*' -printf "%f\n"`
     do
 	eval ${command}_file $i
+    done 
+
+    # For each dot directory. 
+    for d in `find . -type d -name 'dot*' -printf "%f\n"`
+    do 
+    	for i in `find ${d} -type f`
+	do
+		eval ${command}_file $i
+	done
     done
+
+
 }
 
 
