@@ -650,6 +650,7 @@ function myupdate()
 		;;
 	gen)
 		find . -name '*.[ch]' >| $filename
+		find . -name '*.cpp' >> $filename
 		find . -name '*.java' >> $filename
 		;;
 	regen)
