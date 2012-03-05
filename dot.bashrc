@@ -663,12 +663,19 @@ function myupdate()
 		wc -l $structure_filename
 		return
 		;;
-	*)
+	help|*)	
 		echo "Unknown command: $command"
 		echo "Usages: myupdate [gen|regen|clena]"
 		return
 		;;
     esac
+
+    if [ ! -f $filename ]; then
+	echo "ERROR: File does not exists: $filename"
+	myupdate help
+	return
+    fi
+	
 
     echo "- Generating tag list - "
     ctags -L $filename

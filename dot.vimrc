@@ -24,6 +24,8 @@ map <C-\> :tab split<CR>:exec("tag ".expand("<cword>"))<CR>
 ":nmap <F5> zf%
 :nmap <F4> <ESC>:loadview<CR>
 :nmap <F3> <ESC>:mkview<CR>
+" To toggle Function list
+:nmap <F5> :TlistToggle<CR>
 ":map <F9> :!make <CR>
 :command -nargs=* Make make <args> | cwindow 5
 ":map <F9> :w<CR>:Make %< <CR> <CR>
