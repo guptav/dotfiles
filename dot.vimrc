@@ -220,3 +220,18 @@ map <C-\> :tab split<CR>:exec("tag ".expand("<cword>"))<CR>
 :
 :" highlight overly long lines same as TODOs.
 :autocmd BufNewFile,BufRead *.c,*.h exec 'match Todo /\%>' . &textwidth . 'v.\+/'
+
+
+":if has("cscope")
+":    set csprg=/usr/bin/cscope
+":    set csto=0
+":    set cst
+":    set nocsverb
+":    " add any database in current directory
+":    if filereadable("cscope.out")
+":	cs add cscope.out
+":    " else add database pointed to by environment
+":    elseif $CSCOPE_DB != ""
+":	cs add $CSCOPE_DB
+":    endif
+":endif
