@@ -16,6 +16,7 @@ export HISTFILESIZE=1000
 export GNATSDB=guptav
 
 # Enable options:
+shopt -s autocd
 shopt -s cdspell
 shopt -s cdable_vars
 shopt -s checkhash
@@ -25,6 +26,7 @@ shopt -s no_empty_cmd_completion  # bash>=2.04 only
 shopt -s cmdhist
 shopt -s histappend histreedit histverify
 shopt -s extglob      # Necessary for programmable completion
+shopt -s hostcomplete # TO check how it works
 
 green='\E[32;40m'
 white='\E[37;40m'
@@ -87,6 +89,7 @@ alias path='echo -e ${PATH//:/\\n}'
 alias du='du -kh'
 alias df='df -kTh'
 alias grep='grep --color'
+alias cs='cscope -d .'
 
 # The 'ls' family (this assumes you use the GNU ls)
 alias la='ls -Al'               # show hidden files
