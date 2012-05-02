@@ -28,6 +28,10 @@ shopt -s histappend histreedit histverify
 shopt -s extglob      # Necessary for programmable completion
 shopt -s hostcomplete # TO check how it works
 
+if [ -f /etc/bash_completion ]; then
+    . /etc/bash_completion
+fi
+
 green='\E[32;40m'
 white='\E[37;40m'
 yellow='\E[33;40m'
@@ -696,6 +700,12 @@ function my_sol ()
 	#For vim to have colors.
 	export TERM=xtermc
 }
+
+function c_r() 
+{
+    cvs log $1 |   awk '/^Working/ {w = $3}/^head:/{print $2, w}'|  sort -r  -n  -k 2 -t .
+}
+
 
 #START Executing
 fastprompt

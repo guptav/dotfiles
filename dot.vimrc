@@ -71,6 +71,12 @@ map <C-\> :tab split<CR>:exec("tag ".expand("<cword>"))<CR>
 : silent! zx
 :endfunction
 
+:function ShowGraph()
+:    let l:word = expand(expand("<cword>"))
+:    let execmd = 'showgraph.sh ' . l:word
+:    execute '!'.execmd.' &'
+:endfunction
+
 :function FindCalling()
 :    let l:word = expand(expand("<cword>"))
 :    let gf_s = &grepformat
@@ -135,6 +141,7 @@ map <C-\> :tab split<CR>:exec("tag ".expand("<cword>"))<CR>
 :map .f :call ShowFuncName() <CR>
 :map ..c :call FindCalling() <CR> <C-W> <C-W>
 :map ..v :call FindCalled() <CR>  <C-W> <C-W>
+:map <F7> :call ShowGraph() <CR>  <C-W> <C-W>
 
 :function! Myfun()
 :    let gf_s = &grepformat
