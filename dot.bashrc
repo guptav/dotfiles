@@ -656,6 +656,7 @@ function myupdate()
 		return 
 		;;
 	gen)
+		echo "Finding files ..."
 		find . -name '*.[ch]' >| $filename
 		find . -name '*.cpp' >> $filename
 		find . -name '*.java' >> $filename
@@ -685,9 +686,9 @@ function myupdate()
 	
 
     echo "- Generating tag list - "
-    ctags -L $filename
+    ctags --extra=+f -L $filename
     echo "- Generating cscope.out -"
-    cscope -b -i $filename
+    cscope -q -b -i $filename
     echo "- Generating Function Names for Language C -"
     ctags --language-force=c --c-types=f --sort=no -L $filename -o - | cut -f 1 >| $function_filename
     echo "- Generating Structure List for Language C -"
