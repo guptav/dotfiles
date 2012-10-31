@@ -47,6 +47,7 @@ function main ()
     # For each dot directory. 
     for d in `find . -type d -name 'dot*' -printf "%f\n"`
     do 
+	mkdir ~/${d/dot/} 2> /dev/null > /dev/null
     	for i in `find ${d} -maxdepth 1 -type f `
 	do
 		eval ${command}_file $i
