@@ -14,6 +14,8 @@
 :ab #l /*-------------------------------------------- */
 :ab #j Jack Benny Show
 :set shiftwidth=4
+:set tabstop=4
+:set expandtab
 :set hlsearch
 :set number
 :set incsearch
