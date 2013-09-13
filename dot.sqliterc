@@ -2,3 +2,4 @@
 .mode column
 .nullvalue NULL 
 .databases
+.timeout 1000

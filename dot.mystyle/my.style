@@ -25,14 +25,6 @@
     "language": "es_ES"
     }
     ],
-    ["right", {
-        "parent": "bodytext",
-        "alignment": "right"
-    }],
-    ["centered", {
-        "parent": "bodytext",
-        "alignment": "center"
-    }],
     ["headertable" , {
     "parent" : "table",
     "colWidths": ["20%","60%","20%"],
