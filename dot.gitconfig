@@ -1,0 +1,9 @@
+[user]
+	email = vaibhav.gupta@gmail.com
+	name = Vaibhav Gupta
+[core]
+	editor = vim
+[alias]
+	gl = log --graph --pretty=oneline --abbrev-commit --decorate
+	gll = log --abbrev-commit --graph --decorate --pretty=format:\"%C(auto)%h%Creset %C(auto)%d %s %Cred%an%Creset, %Cblue%ar%Creset\"
+
