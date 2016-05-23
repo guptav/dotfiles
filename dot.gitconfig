@@ -3,6 +3,12 @@
 	name = Vaibhav Gupta
 [core]
 	editor = vim
+[color]
+    diff = auto
+    status = auto
+    branch = auto
+    pager = true
+    ui = true
 [alias]
 	gl = log --graph --pretty=oneline --abbrev-commit --decorate
 	gll = log --abbrev-commit --graph --decorate --pretty=format:\"%C(auto)%h%Creset %C(auto)%d %s %Cred%an%Creset, %Cblue%ar%Creset\"
