@@ -30,3 +30,7 @@ VIM Plugins:
     - fugitive
     - syntastic
 
+Link to check
+=============
+
+    - [GOOD ONE] https://github.com/nicknisi/dotfiles
