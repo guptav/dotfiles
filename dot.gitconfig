@@ -11,5 +11,5 @@
     ui = true
 [alias]
 	gl = log --graph --pretty=oneline --abbrev-commit --decorate
-	gll = log --abbrev-commit --graph --decorate --pretty=format:\"%C(auto)%h%Creset %C(auto)%d %s %Cred%an%Creset, %Cblue%ar%Creset\"
+	gll = log --abbrev-commit --graph --decorate --pretty=format:\"%C(green)%h%Creset %C(red)%d %s %Cred%an%Creset, %Cblue%ar%Creset\"
 
