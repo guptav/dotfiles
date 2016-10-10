@@ -652,7 +652,7 @@ function myupdate()
     case "$command" in
 	clean) 
 		rm -f ${filename} ${function_filename} ${structure_filename} cscope.out 
-		rm tags 
+		rm -f tags  cscope.in.out cscope.po.out 
 		return 
 		;;
 	gen)
