@@ -17,7 +17,7 @@
 :set tabstop=4
 :set expandtab
 :set hlsearch
-:set number
+:set rnu
 :set incsearch
 :set textwidth=80
 " Open tag in new tab
@@ -205,6 +205,7 @@ map <C-\> :tab split<CR>:exec("tag ".expand("<cword>"))<CR>
 : echo  " :set list [List Mode] :set nolist "
 " omni completion help
 : echo  ":h omnicppcomplete " 
+: echo  ":h surround" 
 :echo   ":set list listchars=tab:»·,trail:·,extends:…  Show tabs, trailing whitespace" 
 
 :endfunction 
