@@ -1,8 +1,8 @@
 [user]
-	email = vaibhav.gupta@gmail.com
-	name = Vaibhav Gupta
+    email = vaibhav.gupta@gmail.com
+    name = Vaibhav Gupta
 [core]
-	editor = vim
+    editor = vim
 [color]
     diff = auto
     status = auto
@@ -10,6 +10,11 @@
     pager = true
     ui = true
 [alias]
-	gl = log --graph --pretty=oneline --abbrev-commit --decorate
-	gll = log --abbrev-commit --graph --decorate --pretty=format:\"%C(green)%h%Creset %C(red)%d %s %Cred%an%Creset, %Cblue%ar%Creset\"
+    st = status
+    ss = status -s
+    ww = branch -vv
+    last = log -1 HEAD
+    ll = log --stat
+    gl = log --graph --pretty=oneline --abbrev-commit --decorate
+    gll = log --abbrev-commit --graph --decorate --pretty=format:\"%C(green)%h%Creset %C(red)%d %s %Cred%an%Creset, %Cblue%ar%Creset\"
 
