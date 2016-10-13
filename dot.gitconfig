@@ -11,7 +11,7 @@
     ui = true
 [alias]
     st = status
-    ss = status -s
+    ss = status -s -b
     ww = branch -vv
     last = log -1 HEAD
     ll = log --stat
