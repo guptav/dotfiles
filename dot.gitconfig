@@ -18,3 +18,16 @@
     gl = log --graph --pretty=oneline --abbrev-commit --decorate
     gll = log --abbrev-commit --graph --decorate --pretty=format:\"%C(green)%h%Creset %C(red)%d %s %Cred%an%Creset, %Cblue%ar%Creset\"
 
+[merge]
+    tool = vimdiff2
+
+#
+# GIT HELP
+#
+
+# Release
+# git archive master --prefix='project/' | gzip > `git describe master`.tar.gz
+
+# Git short log
+# git shortlog --no-merges master --not v1.0.1
+
