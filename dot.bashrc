@@ -32,6 +32,8 @@ if [ -f /etc/bash_completion ]; then
     . /etc/bash_completion
 fi
 
+source ~/.git-prompt.sh
+
 green='\E[32;40m'
 white='\E[37;40m'
 yellow='\E[33;40m'
@@ -70,9 +72,9 @@ fi
 function fastprompt()
 {
     case $TERM in
-	*term | rxvt )
+	*term | rxvt | screen)
 	#PS1="${HILIT}[\h]$NC \W > \[\033]0;\${TERM} [\u@\h] \w\007\]" 
-	PS1="${HILIT}[\A - ]$NC -------- ${red}\${PWD}${NC}  \n[\h \#] > "
+	PS1="${HILIT}[\A - ]$NC -----${BLUE}\$(__git_ps1 '(%s)')${NC}--- ${red}\${PWD}${NC}  \n[\h \#] > "
 	;;
     linux )
 	PS1="${HILIT}[\h]$NC \W > " ;;

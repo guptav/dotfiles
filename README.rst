@@ -64,3 +64,11 @@ Quick Help
     v_a`     N  a`        Select "a backward quoted string"
     v_i`     N  i`        Select "inner backward quoted string"
 
+Set globla git ignore file::
+
+    git config --global core.excludesfile '~/.gitignore'
+
+Articles
+========
+
+#. [VIM] http://stackoverflow.com/questions/1218390/what-is-your-most-productive-shortcut-with-vim

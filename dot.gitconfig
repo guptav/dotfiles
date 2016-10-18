@@ -1,9 +1,9 @@
 [user]
-	email = vaibhav.gupta@gmail.com
-	name = Vaibhav Gupta
+    email = vaibhav.gupta@gmail.com
+    name = Vaibhav Gupta
 [core]
-	editor = vim
-	excludesfile = ~/.gitignore
+    editor = vim
+    excludesfile = ~/.gitignore
 [color]
     diff = auto
     status = auto
@@ -11,6 +11,24 @@
     pager = true
     ui = true
 [alias]
-	gl = log --graph --pretty=oneline --abbrev-commit --decorate
-	gll = log --abbrev-commit --graph --decorate --pretty=format:\"%C(green)%h%Creset %C(red)%d %s %Cred%an%Creset, %Cblue%ar%Creset\"
+    st = status
+    ss = status -s -b
+    ww = branch -vv
+    last = log -1 HEAD
+    ll = log --stat
+    gl = log --graph --pretty=oneline --abbrev-commit --decorate
+    gll = log --abbrev-commit --graph --decorate --pretty=format:\"%C(green)%h%Creset %C(red)%d %s %Cred%an%Creset, %Cblue%ar%Creset\"
+
+[merge]
+    tool = vimdiff2
+
+#
+# GIT HELP
+#
+
+# Release
+# git archive master --prefix='project/' | gzip > `git describe master`.tar.gz
+
+# Git short log
+# git shortlog --no-merges master --not v1.0.1
 
