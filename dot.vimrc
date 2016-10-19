@@ -1,4 +1,5 @@
 :syntax on
+:execute pathogen#infect()
 :filetype plugin on
 :set nocp
 :autocmd FileType * set formatoptions=tcql
