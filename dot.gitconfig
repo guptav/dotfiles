@@ -3,6 +3,7 @@
     name = Vaibhav Gupta
 [core]
     editor = vim
+    excludesfile = ~/.gitignore
 [color]
     diff = auto
     status = auto
