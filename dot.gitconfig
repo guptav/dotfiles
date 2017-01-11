@@ -11,7 +11,7 @@
     pager = true
     ui = true
 [alias]
-    st = status
+    st = status -uno
     ss = status -s -b
     ww = branch -vv
     last = log -1 HEAD
