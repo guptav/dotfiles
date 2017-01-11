@@ -3,6 +3,7 @@ editor = vim
 username = Vaibhav Gupta <vaibhav.gupta@gmail.com>
 
 [extensions]
+hggit=
 graphlog=
 color=
 hgext.extdiff =
