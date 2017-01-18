@@ -709,6 +709,10 @@ function c_r()
     cvs log $1 |   awk '/^Working/ {w = $3}/^head:/{print $2, w}'|  sort -r  -n  -k 2 -t .
 }
 
+function date_sync()
+{
+     sudo date -s "$(wget -qSO- --max-redirect=0 google.com 2>&1 | grep Date: | cut -d' ' -f5-8)Z"
+}
 
 #START Executing
 fastprompt
