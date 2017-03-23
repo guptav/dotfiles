@@ -17,7 +17,7 @@
     last = log -1 HEAD
     ll = log --stat
     gl = log --graph --pretty=oneline --abbrev-commit --decorate
-    gll = log --abbrev-commit --graph --decorate --pretty=format:\"%C(green)%h%Creset %C(red)%d %s %Cred%an%Creset, %Cblue%ar%Creset\"
+    gll = log --abbrev-commit --graph --decorate --pretty=format:\"%C(green)%h%Creset %C(white)%d %s %Cred%an%Creset, %Cblue%ar%Creset\"
 
 [merge]
     tool = vimdiff2
