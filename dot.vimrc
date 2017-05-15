@@ -16,6 +16,7 @@ call vundle#begin()
 Plugin 'VundleVim/Vundle.vim'
 Plugin 'Valloric/YouCompleteMe'
 Plugin 'vim-erlang/vim-erlang-runtime'
+Plugin 'jceb/vim-orgmode'
 
 
 " All of your Plugins must be added before the following line
@@ -50,6 +51,7 @@ filetype plugin indent on    " required
 :set rnu
 :set incsearch
 :set textwidth=80
+:set history=1000
 " Open tag in new tab
 map <C-\> :tab split<CR>:exec("tag ".expand("<cword>"))<CR>
 :nmap <F6> /}<CR>zf%<ESC>:nohlsearch<CR>
