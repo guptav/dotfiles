@@ -10,8 +10,8 @@ set -o noclobber
 set -o ignoreeof
 #set -o nounset
 
-export HISTSIZE=1000
-export HISTFILESIZE=1000
+export HISTSIZE=10000
+export HISTFILESIZE=10000
 
 export GNATSDB=guptav
 
