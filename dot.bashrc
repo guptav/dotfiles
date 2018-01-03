@@ -661,6 +661,7 @@ function myupdate()
 		echo "Finding files ..."
 		find . -name '*.[ch]' >| $filename
 		find . -name '*.cpp' >> $filename
+		find . -name '*.hpp' >> $filename
 		find . -name '*.java' >> $filename
 		;;
 	regen)
