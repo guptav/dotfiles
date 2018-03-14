@@ -48,7 +48,6 @@ filetype plugin indent on    " required
 :set tabstop=4
 :set expandtab
 :set hlsearch
-:set rnu
 :set incsearch
 :set textwidth=80
 :set history=1000
@@ -261,7 +260,14 @@ map <C-\> :tab split<CR>:exec("tag ".expand("<cword>"))<CR>
 ":set list listchars=tab:»·,trail:·,extends:…
 :
 :" highlight overly long lines same as TODOs.
+:highlight ColourYellow ctermbg=yellow ctermfg=red
+
 :autocmd BufNewFile,BufRead *.c,*.h exec 'match Todo /\%>' . &textwidth . 'v.\+/'
+:autocmd BufNewFile,BufRead *.c,*.h exec 'match Todo /\%>' . &textwidth . 'v.\+/'
+:autocmd FileType cpp,c,cxx,h,hpp,python match ColourYellow /\%80v.\+\|,[^ ]\|\s\+$\|\n\{3,}/
+:autocmd BufRead,BufNewFile *.sh,*.xml,*.1,*.py call matchadd('ColourYellow', '\%80v.\+')
+
+
 
 
 ":if has("cscope")
