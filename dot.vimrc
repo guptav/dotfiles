@@ -72,8 +72,8 @@ set statusline=%<%F\ %h%m%r%w%=%-14.(%l,%c%)\ %P
 set cmdheight=2
 
 set backspace=indent,eol,start
-set completeopt-=preview
-set autoindent
+"set completeopt-=preview
+"set autoindent
 
 " TODO
 " :autocmd FileType * set formatoptions=tcql
@@ -332,7 +332,6 @@ autocmd BufNewFile,BufRead *.c,*.h exec 'match Todo /\%>' . &textwidth . 'v.\+/'
 autocmd BufRead,BufNewFile *.sh,*.py,*.xml,*pl,*.1 call matchadd('ColourRed', '\s\+$')
 autocmd BufRead,BufNewFile *.sh,*.xml,*.1,*.py call matchadd('ColourYellow', '\%80v.\+')
 
-
 let g:tex_flavor='latex'
 set iskeyword+=:
 
@@ -343,12 +342,9 @@ map ..c :call FindCalling() <CR> <C-W> <C-W>
 map ..v :call FindCalled() <CR>  <C-W> <C-W>
 map <F7> :call ShowGraph() <CR>  <C-W> <C-W>
 
-
-
-
 if has("cscope") && filereadable("/usr/bin/cscope")
         set csprg=/usr/bin/cscope
-        set csto=0
+        set csto=1
         set cst
         set nocsverb
         " add any database in current directory
@@ -359,6 +355,10 @@ if has("cscope") && filereadable("/usr/bin/cscope")
                 cs add $CSCOPE_DB
         endif
         set csverb
+
+	map <C-_> :cstag <C-R>=expand("<cword>")<CR><CR>
+	map g<C-]> :cs find 3 <C-R>=expand("<cword>")<CR><CR>
+	map g<C-\> :cs find 0 <C-R>=expand("<cword>")<CR><CR>
 
         nmap <C-\>s :cs find s <C-R>=expand("<cword>")<CR><CR>
         nmap <C-\>g :cs find g <C-R>=expand("<cword>")<CR><CR>
