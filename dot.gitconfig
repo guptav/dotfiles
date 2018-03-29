@@ -18,6 +18,7 @@
     ll = log --stat
     gl = log --graph --pretty=oneline --abbrev-commit --decorate
     gll = log --abbrev-commit --graph --decorate --pretty=format:\"%C(green)%h%Creset %C(white)%d %s %Cred%an%Creset, %Cblue%ar%Creset\"
+    ls = show  --name-only --oneline --name-only
 
 [merge]
     tool = vimdiff2
