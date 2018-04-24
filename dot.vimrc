@@ -27,7 +27,7 @@ Plugin 'jceb/vim-orgmode'
 call vundle#end()            " required
 
 " TODO
-":execute pathogen#infect()
+:execute pathogen#infect()
 
 "
 " You Complete me
@@ -95,7 +95,7 @@ map <C-F12> :!ctags -R --c++-kinds=+p --fields=+iaS --extra=+q .<CR>
 
 "nmap <buffer> <CR> 0ye<C-W>w:tag <C-R>"<CR>z<CR><C-W><C-W># " press enter on tag name
 "nmap <buffer> <CR> 0ye:! showgraph.sh <C-R>"  1 >/dev/null & <CR><CR>
-":set mouse=a		" Enable mouse usage (all modes) " NOT GOOD
+":set mouse=a           " Enable mouse usage (all modes) " NOT GOOD
 imap <silent> ,, <ESC>"_yiw:s/\(\%#\w\+\)/<\1> <\/\1>/<cr><c-o><c-l>f>a<cr><cr><UP><tab>
 
 nmap ll :cl<CR>
@@ -354,9 +354,9 @@ if has("cscope") && filereadable("/usr/bin/cscope")
         endif
         set csverb
 
-	map <C-_> :cstag <C-R>=expand("<cword>")<CR><CR>
-	map g<C-]> :cs find 3 <C-R>=expand("<cword>")<CR><CR>
-	map g<C-\> :cs find 0 <C-R>=expand("<cword>")<CR><CR>
+        map <C-_> :cstag <C-R>=expand("<cword>")<CR><CR>
+        map g<C-]> :cs find 3 <C-R>=expand("<cword>")<CR><CR>
+        map g<C-\> :cs find 0 <C-R>=expand("<cword>")<CR><CR>
 
         nmap <C-\>s :cs find s <C-R>=expand("<cword>")<CR><CR>
         nmap <C-\>g :cs find g <C-R>=expand("<cword>")<CR><CR>
@@ -375,7 +375,7 @@ if has("cscope") && filereadable("/usr/bin/cscope")
         nmap <C-@>f :scs find f <C-R>=expand("<cfile>")<CR><CR>
         nmap <C-@>i :scs find i ^<C-R>=expand("<cfile>")<CR>$<CR>
         nmap <C-@>d :scs find d <C-R>=expand("<cword>")<CR><CR>
-	set csqf=s-,g-,d-,c-,t-,e-,f-,i-
+        set csqf=s-,g-,d-,c-,t-,e-,f-,i-
 endif
 
 
@@ -406,56 +406,55 @@ let g:currentmode={
 
 " Automatically change the statusline color depending on mode
 function! ChangeStatuslineColor()
-  if (mode() =~# '\v(n|no)')
-    exe 'hi! StatusLine ctermfg=008'
-  elseif (mode() =~# '\v(v|V)' || g:currentmode[mode()] ==# 'V·Block' || get(g:currentmode, mode(), '') ==# 't')
-    exe 'hi! StatusLine ctermfg=005'
-  elseif (mode() ==# 'i')
-    exe 'hi! StatusLine ctermfg=004'
-  else
-    exe 'hi! StatusLine ctermfg=006'
-  endif
-
-  return ''
+        if (mode() =~# '\v(n|no)')
+                exe 'hi! StatusLine ctermfg=008'
+        elseif (mode() =~# '\v(v|V)' || g:currentmode[mode()] ==# 'V·Block' || get(g:currentmode, mode(), '') ==# 't')
+                exe 'hi! StatusLine ctermfg=005'
+        elseif (mode() ==# 'i')
+                exe 'hi! StatusLine ctermfg=004'
+        else
+                exe 'hi! StatusLine ctermfg=006'
+        endif
+        return ''
 endfunction
 
 " Find out current buffer's size and output it.
 function! FileSize()
-  let bytes = getfsize(expand('%:p'))
-  if (bytes >= 1024)
-    let kbytes = bytes / 1024
-  endif
-  if (exists('kbytes') && kbytes >= 1000)
-    let mbytes = kbytes / 1000
-  endif
+        let bytes = getfsize(expand('%:p'))
+        if (bytes >= 1024)
+                let kbytes = bytes / 1024
+        endif
+        if (exists('kbytes') && kbytes >= 1000)
+                let mbytes = kbytes / 1000
+        endif
 
-  if bytes <= 0
-    return '0'
-  endif
+        if bytes <= 0
+                return '0'
+        endif
 
-  if (exists('mbytes'))
-    return mbytes . 'MB '
-  elseif (exists('kbytes'))
-    return kbytes . 'KB '
-  else
-    return bytes . 'B '
-  endif
+        if (exists('mbytes'))
+                return mbytes . 'MB '
+        elseif (exists('kbytes'))
+                return kbytes . 'KB '
+        else
+                return bytes . 'B '
+        endif
 endfunction
 
 function! ReadOnly()
-  if &readonly || !&modifiable
-    return ''
-  else
-    return ''
+        if &readonly || !&modifiable
+                return ''
+        else
+                return ''
 endfunction
 
 function! GitInfo()
-  let git = fugitive#head()
-  if git != ''
-    return ' '.fugitive#head()
-  else
-    return ''
-endfunction
+        let git = fugitive#head()
+        if git != ''
+                return ' '.fugitive#head()
+        else
+                return ''
+  endfunction
 
 " %{exists('g:loaded_fugitive')?fugitive#statusline():''}
 set laststatus=2
@@ -466,12 +465,12 @@ set statusline+=%1*\ [%n]                                " buffernr
 set statusline+=%2*\ %<%F\ %{ReadOnly()}\ %m\ %w\        " File+path
 set statusline+=%3*\ %{GitInfo()}                        " Git Branch name
 set statusline+=%#warningmsg#
-"set statusline+=%{SyntasticStatuslineFlag()}             " Syntastic errors
+set statusline+=%{SyntasticStatuslineFlag()}             " Syntastic errors
 set statusline+=%*
 set statusline+=%4*\ %=                                  " Space
 set statusline+=%1*\ %y\                                 " FileType
-set statusline+=%2*\ %{(&fenc!=''?&fenc:&enc)}\[%{&ff}]\ " Encoding & Fileformat
-set statusline+=%3*\ %-3(%{FileSize()}%)                 " File size
+"set statusline+=%2*\ %{(&fenc!=''?&fenc:&enc)}\[%{&ff}]\ " Encoding & Fileformat
+"set statusline+=%3*\ %-3(%{FileSize()}%)                 " File size
 set statusline+=%0*\ %3p%%\ \ %l:\ %3c\                 " Rownumber/total (%)
 
 hi User0 ctermfg=White    ctermbg=LightRed
@@ -480,3 +479,11 @@ hi User2 ctermfg=White    ctermbg=LightBlue
 hi User3 ctermfg=White    ctermbg=LightMagenta
 hi User4 ctermbg=Red      ctermbg=White
 hi User5 ctermfg=White    ctermbg=LightGreen
+
+" https://github.com/vim-syntastic/syntastic
+function SetupSyntastic()
+        let g:syntastic_always_populate_loc_list = 1
+        let g:syntastic_auto_loc_list = 1
+        let g:syntastic_check_on_open = 1
+        let g:syntastic_check_on_wq = 0
+endfunction
