@@ -60,6 +60,7 @@ set splitright
 set ruler
 set showcmd
 set showmatch
+set cursorline
 set smartcase
 set hidden             " Hide buffers when they are abandoned
 set report=0
@@ -68,6 +69,7 @@ set wildmenu
 set winheight=9999
 set so=5
 set cmdheight=2
+set nu
 
 set backspace=indent,eol,start
 "set completeopt-=preview
