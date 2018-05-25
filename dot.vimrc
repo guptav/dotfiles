@@ -60,7 +60,7 @@ set splitright
 set ruler
 set showcmd
 set showmatch
-set cursorline
+"set cursorline
 set smartcase
 set hidden             " Hide buffers when they are abandoned
 set report=0
