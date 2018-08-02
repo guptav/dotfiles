@@ -6,7 +6,7 @@ Installation
 ============
 
 
-Creat links for dot files::
+Create links for dot files::
 
         ./install.sh link
 
@@ -64,7 +64,18 @@ Quick Help
     v_a`     N  a`        Select "a backward quoted string"
     v_i`     N  i`        Select "inner backward quoted string"
 
-Set globla git ignore file::
+vimdiff::
+
+	]c               - advance to the next block with differences
+	[c               - reverse search for the previous block with differences
+	do (diff obtain) - bring changes from the other file to the current file
+	dp (diff put)    - send changes from the current file to the other file
+	zo               - unfold/unhide text
+	zc               - refold/rehide text
+	zr               - unfold both files completely
+	zm               - fold both files completely
+
+Set global git ignore file::
 
     git config --global core.excludesfile '~/.gitignore'
 
