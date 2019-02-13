@@ -8,7 +8,7 @@
 # load a random theme each time oh-my-zsh is loaded, in which case,
 # to know which specific one was loaded, run: echo $RANDOM_THEME
 # See https://github.com/robbyrussell/oh-my-zsh/wiki/Themes
-ZSH_THEME="robbyrussell"
+ZSH_THEME="avit"
 
 # Set list of themes to pick from when loading at random
 # Setting this variable when ZSH_THEME=random will cause zsh to load
@@ -67,6 +67,9 @@ plugins=(git)
 source $ZSH/oh-my-zsh.sh
 
 # User configuration
+PROMPT='
+$(_user_host) ${PWD} $(git_prompt_info) $(_ruby_version)
+%{$fg[$CARETCOLOR]%}▶%{$resetcolor%} '
 
 # export MANPATH="/usr/local/man:$MANPATH"
 
