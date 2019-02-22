@@ -725,6 +725,12 @@ function install_zsh()
 	sh -c "$(wget --no-check-certificate https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh -O -)"
 }
 
+function myinit()
+{
+	sudo apt install git vim ctags cscope tmux texlive-latex-base pylint3
+	sudo apt install clang g++ gcc xterm
+}
+
 unset SSH_ASKPASS
 
 #START Executing
