@@ -46,3 +46,6 @@
 # Git short log
 # git shortlog --no-merges master --not v1.0.1
 
+# Git checkout by date using rev-list
+# git checkout `git rev-list -n 1 --first-parent --before="2009-07-27 13:37" master`
+
