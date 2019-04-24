@@ -1,6 +1,6 @@
 "============================================================================
 "File:        sparse.vim
-"Description: Syntax checking plugin for syntastic.vim using sparse.pl
+"Description: Syntax checking plugin for syntastic using sparse.pl
 "Maintainer:  Daniel Walker <dwalker at fifo99 dot com>
 "License:     This program is free software. It comes without any warranty,
 "             to the extent permitted by applicable law. You can redistribute
@@ -9,21 +9,19 @@
 "             See http://sam.zoy.org/wtfpl/COPYING for more details.
 "============================================================================
 
-if exists("g:loaded_syntastic_c_sparse_checker")
+if exists('g:loaded_syntastic_c_sparse_checker')
     finish
 endif
 let g:loaded_syntastic_c_sparse_checker = 1
-
-if !exists('g:syntastic_sparse_config_file')
-    let g:syntastic_sparse_config_file = '.syntastic_sparse_config'
-endif
 
 let s:save_cpo = &cpo
 set cpo&vim
 
 function! SyntaxCheckers_c_sparse_GetLocList() dict
+    let buf = bufnr('')
+
     let makeprg = self.makeprgBuild({
-        \ 'args': syntastic#c#ReadConfig(g:syntastic_sparse_config_file),
+        \ 'args': syntastic#c#ReadConfig(syntastic#util#bufVar(buf, 'sparse_config_file')),
         \ 'args_after': '-ftabstop=' . &ts })
 
     let errorformat =
@@ -33,7 +31,7 @@ function! SyntaxCheckers_c_sparse_GetLocList() dict
     let loclist = SyntasticMake({
         \ 'makeprg': makeprg,
         \ 'errorformat': errorformat,
-        \ 'defaults': {'bufnr': bufnr("")},
+        \ 'defaults': {'bufnr': bufnr('')},
         \ 'returns': [0, 1] })
     return loclist
 endfunction
