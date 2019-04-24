@@ -1,6 +1,6 @@
 "============================================================================
 "File:        ruby.vim
-"Description: Syntax checking plugin for syntastic.vim
+"Description: Syntax checking plugin for syntastic
 "Maintainer:  Martin Grenfell <martin.grenfell at gmail dot com>
 "License:     This program is free software. It comes without any warranty,
 "             to the extent permitted by applicable law. You can redistribute
@@ -10,7 +10,7 @@
 "
 "============================================================================
 
-if exists("g:loaded_syntastic_eruby_ruby_checker")
+if exists('g:loaded_syntastic_eruby_ruby_checker')
     finish
 endif
 let g:loaded_syntastic_eruby_ruby_checker = 1
@@ -27,11 +27,16 @@ function! SyntaxCheckers_eruby_ruby_IsAvailable() dict
 endfunction
 
 function! SyntaxCheckers_eruby_ruby_GetLocList() dict
-    let fname = "'" . escape(expand('%', 1), "\\'") . "'"
+    if !exists('s:ruby_new')
+        let s:ruby_new = syntastic#util#versionIsAtLeast(self.getVersion(), [1, 9])
+    endif
+
+    let buf = bufnr('')
+    let fname = "'" . escape(bufname(buf), "\\'") . "'"
 
     " TODO: encodings became useful in ruby 1.9 :)
-    if syntastic#util#versionIsAtLeast(syntastic#util#getVersion(self.getExecEscaped(). ' --version'), [1, 9])
-        let enc = &fileencoding != '' ? &fileencoding : &encoding
+    if s:ruby_new
+        let enc = &fileencoding !=# '' ? &fileencoding : &encoding
         let encoding_spec = ', :encoding => "' . (enc ==? 'utf-8' ? 'UTF-8' : 'BINARY') . '"'
     else
         let encoding_spec = ''
@@ -45,7 +50,9 @@ function! SyntaxCheckers_eruby_ruby_GetLocList() dict
         \     ').gsub(''<%='',''<%''), nil, ''-'').src') .
         \ ' | ' . self.getExecEscaped() . ' -w -c'
 
-    let errorformat = '%-G%\m%.%#warning: %\%%(possibly %\)%\?useless use of a literal in void context,'
+    let errorformat =
+        \ '%-G%\m%.%#warning: %\%%(possibly %\)%\?useless use of a literal in void context,' .
+        \ '%-G%\m%.%#warning: possibly useless use of a variable in void context,'
 
     " filter out lines starting with ...
     " long lines are truncated and wrapped in ... %p then returns the wrong
@@ -65,7 +72,7 @@ function! SyntaxCheckers_eruby_ruby_GetLocList() dict
         \ 'makeprg': makeprg,
         \ 'errorformat': errorformat,
         \ 'env': env,
-        \ 'defaults': { 'bufnr': bufnr(""), 'vcol': 1 } })
+        \ 'defaults': { 'bufnr': buf, 'vcol': 1 } })
 endfunction
 
 call g:SyntasticRegistry.CreateAndRegisterChecker({

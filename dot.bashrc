@@ -728,7 +728,9 @@ function install_zsh()
 function myinit()
 {
 	sudo apt install git vim ctags cscope tmux texlive-latex-base pylint3
-	sudo apt install clang g++ gcc xterm
+	sudo apt install clang g++ gcc xterm make python3-pip
+	sudo apt install latexmk xpdf
+	sudo pip3 install Sphinx
 }
 
 unset SSH_ASKPASS
