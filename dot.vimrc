@@ -12,12 +12,19 @@ set clipboard=exclude:.*
 "
 " Vundle Settings : Load Modules
 "
+"
+" cd ~/.vim/bundle && \
+" git clone --depth=1 https://github.com/vim-syntastic/syntastic.git
+"
 
 " set the runtime path to include Vundle and initialize
 set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
 
 " let Vundle manage Vundle, required
+Plugin 'kien/ctrlp.vim.git'
+Plugin 'elixir-editors/vim-elixir.git'
+Plugin 'vim-syntastic/syntastic.git'
 Plugin 'rust-lang/rust.vim'
 Plugin 'junegunn/seoul256.vim'
 Plugin 'junegunn/goyo.vim'
