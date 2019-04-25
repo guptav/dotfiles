@@ -23,6 +23,8 @@ call vundle#begin()
 
 " let Vundle manage Vundle, required
 Plugin 'kien/ctrlp.vim.git'
+Plugin 'scrooloose/nerdtree.git'
+Plugin 'scrooloose/nerdcommenter'
 Plugin 'elixir-editors/vim-elixir.git'
 Plugin 'vim-syntastic/syntastic.git'
 Plugin 'rust-lang/rust.vim'
@@ -36,6 +38,8 @@ Plugin 'vim-erlang/vim-erlang-runtime'
 Plugin 'jceb/vim-orgmode'
 Plugin 'godlygeek/tabular'
 Plugin 'plasticboy/vim-markdown'
+Plugin 'tpope/vim-fugitive.git'
+Plugin 'racer-rust/vim-racer'
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
@@ -345,6 +349,8 @@ autocmd BufNewFile,BufRead *.c,*.h exec 'match Todo /\%>' . &textwidth . 'v.\+/'
 autocmd BufNewFile,BufRead *.c,*.h exec 'match Todo /\%>' . &textwidth . 'v.\+/'
 autocmd BufRead,BufNewFile *.sh,*.py,*.xml,*pl,*.1 call matchadd('ColourRed', '\s\+$')
 autocmd BufRead,BufNewFile *.sh,*.xml,*.1,*.py call matchadd('ColourYellow', '\%80v.\+')
+autocmd BufNewFile,BufRead,BufEnter *.cpp,*.hpp set omnifunc=omni#cpp#complete#Main
+
 
 let g:tex_flavor='latex'
 set iskeyword+=:
@@ -465,12 +471,12 @@ function! ReadOnly()
 endfunction
 
 function! GitInfo()
-        let git = fugitive#head()
-        if git != ''
-                return ' '.fugitive#head()
-        else
-                return ''
-  endfunction
+	let git = fugitive#head()
+	if git != ''
+		return ' '.fugitive#head()
+	else
+		return ''
+endfunction
 
 " %{exists('g:loaded_fugitive')?fugitive#statusline():''}
 set laststatus=2

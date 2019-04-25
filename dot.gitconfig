@@ -13,9 +13,12 @@
 [alias]
 	aliases = !git config --list | grep 'alias\\.' | sed 's/alias\\.\\([^=]*\\)=\\(.*\\)/\\1\\ \t => \\2/' | sort
 
+	co = checkout
+	br = branch
+	ss = status
 	ls = show  --name-only --oneline --name-only
 	st = status -uno
-	ss = status -s -b
+	stt = status -s -b
 	ww = branch -avv
 
 	last = log -1 HEAD
