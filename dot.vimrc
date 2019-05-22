@@ -134,7 +134,8 @@ function Setup_note_opts()
         set complete+=s
         set textwidth=80
         setlocal wrap
-        set noexpandtab
+        set tabstop=4 shiftwidth=4 softtabstop=4 expandtab
+        set noautoindent
         "match ColourYellow /^[^\t].*$/
 endfunction
 
@@ -325,8 +326,9 @@ highlight Directory ctermfg=DarkGreen
 highlight Comment ctermfg=DarkCyan
 highlight Search cterm=NONE ctermfg=black ctermbg=yellow
 
-autocmd BufRead,BufNewFile *.note,*.rst call Setup_note_opts()
+autocmd BufRead,BufNewFile *.note call Setup_note_opts()
 autocmd Filetype python call Setup_python_opts()
+autocmd Filetype rst call Setup_note_opts()
 autocmd Filetype cpp,c,cxx,h,hpp call Setup_c_opts()
 
 autocmd FileType cpp,c,cxx,h,hpp,python match ColourYellow /\%80v.\+\|,[^ ]\|\s\+$\|\n\{3,}/
