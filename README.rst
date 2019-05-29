@@ -79,6 +79,32 @@ Set global git ignore file::
 
     git config --global core.excludesfile '~/.gitignore'
 
+Code Browsing
+==============
+
+Switch to Browse mode::
+
+  export CODE_BROWSE=1
+
+cscope::
+
+    0 or s: Find this C symbol
+    1 or g: Find this definition
+    2 or d: Find functions called by this function
+    3 or c: Find functions calling this function
+    4 or t: Find this text string
+    6 or e: Find this egrep pattern
+    7 or f: Find this file
+    8 or i: Find files #including this file
+
+Jumps::
+
+    CTRL-O          Go to [count] Older cursor position in jump list
+    CTRL-I          Go to [count] newer cursor position in jump list
+    *CTRL-<Tab>*    Go to [count] newer cursor position in jump list
+    <F5>            Tag list toggle
+    <CTRL-P>        finding files
+
 Articles
 ========
 

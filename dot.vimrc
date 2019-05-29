@@ -527,5 +527,19 @@ function! s:goyo_leave()
   " ...
 endfunction
 
+function! CodeBrowse()
+  " export CODE_BROWSE=1
+  set showmode
+  set showcmd
+  set ro
+  call FoldFunction()
+  let Tlist_Auto_Open=1
+endfunction
+
+let CODE_BROWSE = expand("$CODE_BROWSE")
+if CODE_BROWSE
+	call CodeBrowse()
+endif
+
 autocmd! User GoyoEnter nested call <SID>goyo_enter()
 autocmd! User GoyoLeave nested call <SID>goyo_leave()
