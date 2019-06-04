@@ -104,6 +104,8 @@ Jumps::
     *CTRL-<Tab>*    Go to [count] newer cursor position in jump list
     <F5>            Tag list toggle
     <CTRL-P>        finding files
+    <Leader>m       Mark the word under the cursor
+    <Leader>n       Clear the mark under the cursor
 
 Articles
 ========
