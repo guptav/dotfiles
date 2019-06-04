@@ -29,6 +29,7 @@ Plugin 'vim-erlang/vim-erlang-runtime'
 Plugin 'jceb/vim-orgmode'
 Plugin 'godlygeek/tabular'
 Plugin 'plasticboy/vim-markdown'
+Plugin 'benmills/vimux'
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
@@ -535,6 +536,12 @@ function! CodeBrowse()
   call FoldFunction()
   let Tlist_Auto_Open=1
 endfunction
+
+" Prompt for a command to run
+map <Leader>vp :VimuxPromptCommand<CR>
+" Run last command executed by VimuxRunCommand
+map <Leader>vl :VimuxRunLastCommand<CR>
+map <Leader>vm :VimuxPromptCommand("make ")<CR><CR>
 
 let CODE_BROWSE = expand("$CODE_BROWSE")
 if CODE_BROWSE
