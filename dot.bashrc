@@ -731,6 +731,7 @@ function myinit()
 	sudo apt install clang g++ gcc xterm make python3-pip
 	sudo apt install latexmk xpdf
 	sudo pip3 install Sphinx
+	# apt install texlive-fonts-recommended texlive-latex-recommended texlive-latex-extra
 }
 
 unset SSH_ASKPASS

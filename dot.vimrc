@@ -8,6 +8,7 @@
 set nocompatible              " be iMproved, required
 filetype off                  " required
 set clipboard=exclude:.*
+set path+=**
 
 "
 " Vundle Settings : Load Modules
@@ -543,9 +544,13 @@ map <Leader>vp :VimuxPromptCommand<CR>
 map <Leader>vl :VimuxRunLastCommand<CR>
 map <Leader>vm :VimuxPromptCommand("make ")<CR><CR>
 
+function! VGautoWrite()
+        autocmd BufWritePost  * :call VimuxRunLastCommand()
+endfunction
+
 let CODE_BROWSE = expand("$CODE_BROWSE")
 if CODE_BROWSE
-	call CodeBrowse()
+        call CodeBrowse()
 endif
 
 autocmd! User GoyoEnter nested call <SID>goyo_enter()
