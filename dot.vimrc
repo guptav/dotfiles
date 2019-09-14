@@ -8,6 +8,7 @@
 set nocompatible              " be iMproved, required
 filetype off                  " required
 set clipboard=exclude:.*
+set path+=**
 
 "
 " Vundle Settings : Load Modules
@@ -40,6 +41,7 @@ Plugin 'godlygeek/tabular'
 Plugin 'plasticboy/vim-markdown'
 Plugin 'tpope/vim-fugitive.git'
 Plugin 'racer-rust/vim-racer'
+Plugin 'benmills/vimux'
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
@@ -145,7 +147,8 @@ function Setup_note_opts()
         set complete+=s
         set textwidth=80
         setlocal wrap
-        set noexpandtab
+        set tabstop=4 shiftwidth=4 softtabstop=4 expandtab
+        set noautoindent
         "match ColourYellow /^[^\t].*$/
 endfunction
 
@@ -336,8 +339,9 @@ highlight Directory ctermfg=DarkGreen
 highlight Comment ctermfg=DarkCyan
 highlight Search cterm=NONE ctermfg=black ctermbg=yellow
 
-autocmd BufRead,BufNewFile *.note,*.rst call Setup_note_opts()
+autocmd BufRead,BufNewFile *.note call Setup_note_opts()
 autocmd Filetype python call Setup_python_opts()
+autocmd Filetype rst call Setup_note_opts()
 autocmd Filetype cpp,c,cxx,h,hpp call Setup_c_opts()
 
 autocmd FileType cpp,c,cxx,h,hpp,python match ColourYellow /\%80v.\+\|,[^ ]\|\s\+$\|\n\{3,}/
@@ -537,6 +541,30 @@ function! s:goyo_leave()
   Limelight!
   " ...
 endfunction
+
+function! CodeBrowse()
+  " export CODE_BROWSE=1
+  set showmode
+  set showcmd
+  set ro
+  call FoldFunction()
+  let Tlist_Auto_Open=1
+endfunction
+
+" Prompt for a command to run
+map <Leader>vp :VimuxPromptCommand<CR>
+" Run last command executed by VimuxRunCommand
+map <Leader>vl :VimuxRunLastCommand<CR>
+map <Leader>vm :VimuxPromptCommand("make ")<CR><CR>
+
+function! VGautoWrite()
+        autocmd BufWritePost  * :call VimuxRunLastCommand()
+endfunction
+
+let CODE_BROWSE = expand("$CODE_BROWSE")
+if CODE_BROWSE
+        call CodeBrowse()
+endif
 
 autocmd! User GoyoEnter nested call <SID>goyo_enter()
 autocmd! User GoyoLeave nested call <SID>goyo_leave()
