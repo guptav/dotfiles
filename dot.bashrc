@@ -110,6 +110,8 @@ alias lm='ls -al |more'         # pipe through 'more'
 alias tree='tree -Csu'		# nice alternative to 'ls'
 alias x=startx
 alias m="mplayer -ao alsa -vo x11 -zoom"
+alias t="task"
+complete -o nospace -F _task  t
 
 #Misc alias
 alias lll="ssh vgupta3@scmsuse9"
@@ -730,6 +732,7 @@ function myinit()
 	sudo apt install git vim ctags cscope tmux texlive-latex-base pylint3
 	sudo apt install clang g++ gcc xterm make python3-pip
 	sudo apt install latexmk xpdf
+	sudo apt install timewarrior taskwarrior
 	sudo pip3 install Sphinx
 	# apt install texlive-fonts-recommended texlive-latex-recommended texlive-latex-extra
 }
