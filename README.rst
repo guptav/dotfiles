@@ -107,6 +107,12 @@ Jumps::
     <Leader>m       Mark the word under the cursor
     <Leader>n       Clear the mark under the cursor
 
+Quick Links
+===========
+
+Task warrior Examples: https://taskwarrior.org/docs/examples.html
+
+
 Articles
 ========
 

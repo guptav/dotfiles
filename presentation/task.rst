@@ -11,7 +11,9 @@ Display Task::
     task -book      # Task without tag book
     task completed  # List of completed tasks
     task projects   # List of projects
+    task tags       # List of projects
     task summary    # Summary of task
+    task timesheet  # Weekly report of task completed
     task 1          # Details of the task 1
     task something  # List of task that matchs with text: something
 
@@ -24,6 +26,9 @@ Display Task::
     task +BLOCKED               # Blocked tasks
     task +BLOCKING              # Blocking tasks
     task +BLOCKING -BLOCKED     # Focus on tasks
+
+    task reports    # List all the possible reports.
+    task help       # For help
 
 Adding a task::
 
