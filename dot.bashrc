@@ -62,8 +62,8 @@ WHITE='\e[1;37m'
 NC='\e[0m'              # No Color
 
 
-#SHELL PROMPT 
-if [[ "${DISPLAY#$HOSTNAME}" != ":0.0" &&  "${DISPLAY}" != ":0" ]]; then  
+#SHELL PROMPT
+if [[ "${DISPLAY#$HOSTNAME}" != ":0.0" &&  "${DISPLAY}" != ":0" ]]; then
     HILIT=${BROWN}   # remote machine: prompt will be partly red
 else
     HILIT=${cyan}  # local machine: prompt will be partly cyan
@@ -73,7 +73,7 @@ function fastprompt()
 {
     case $TERM in
 	*term* | rxvt | screen)
-	#PS1="${HILIT}[\h]$NC \W > \[\033]0;\${TERM} [\u@\h] \w\007\]" 
+	#PS1="${HILIT}[\h]$NC \W > \[\033]0;\${TERM} [\u@\h] \w\007\]"
 	PS1="${HILIT}[\A - ]$NC -----${BLUE}\$(__git_ps1 '(%s)')${NC}--- ${red}\${PWD}${NC}  \n[\h \#] > "
 	;;
     linux )
@@ -102,8 +102,8 @@ alias la='ls -Al'               # show hidden files
 #alias ls='ls -hF --color'	# add colors for filetype recognition
 alias lx='ls -lXB'              # sort by extension
 alias lk='ls -lSr'              # sort by size
-alias lc='ls -lcr'		# sort by change time  
-alias lu='ls -lur'		# sort by access time   
+alias lc='ls -lcr'		# sort by change time
+alias lu='ls -lur'		# sort by access time
 alias lr='ls -lR'               # recursive ls
 alias lt='ls -ltr'              # sort by date
 alias lm='ls -al |more'         # pipe through 'more'
@@ -123,7 +123,7 @@ alias rss="gij4 -jar /home/guptav/tools/rssowl_1_2_3_linux_bin/rssowl.jar"
 export HISTIGNORE="&:bg:fg:ll:h"
 #HISTIGNORE="l:ll:llt:cdb:b:r:exit:env:date:.:..:...:....:.....:pwd:cfg:rb:eb:!!:ls:fg:bg:cd ..:h:mc"
 
-#FOR CVS 
+#FOR CVS
 export PATH=$PATH:$HOME/bin
 export PATH=$PATH:$HOME/lib/perl
 #export CVS_RSH=ssh
@@ -162,7 +162,7 @@ function goto {
 	case $# in
 	 1)  if env | grep "^$1=cd " > /dev/null ;
 	     then
-		 eval \$"$1" 
+		 eval \$"$1"
 		 echo "New current directory is `pwd`"
 	     else
 		 echo "ERROR : $1 is not marked."
@@ -179,15 +179,15 @@ function _history
 history | awk '{print $2}' | awk 'BEGIN {FS="|"}{print $1}' | sort | uniq -c | sort -n | tail | sort -nr
 }
 
-function c  
+function c
 {
   cd $1 ; ls	
 }
-function aldo 
-{ 
+function aldo
+{
     echo "Check if process ID is running or not"
-    while ps -ao pid | grep -q "${1}$"; do sleep 1 ; done; 
-    echo $'\a'; 
+    while ps -ao pid | grep -q "${1}$"; do sleep 1 ; done;
+    echo $'\a';
     echo "DONE ";
     echo $1;
 }
@@ -197,14 +197,14 @@ function vimgrep
 	find . \( -name "*.c"  -o -name "*.h" -o -name "*.i" -o -name "*.icc" \) -print -follow | grep -v "CVS/" | sed "s/ /\\\/g" | xargs egrep -H -n -e $* > $vimgrep_temp_file
 	vim -q $vimgrep_temp_file -c copen
 	rm -f $vimgrep_temp_file
-} 
+}
 function xtitle ()
 {
     case "$TERM" in
         *term | rxvt)
             echo -e "${RED}$*${NC}"  ;;
             #echo -n -e "${RED}$*${NC}"  ;;
-        *)  
+        *)
 	    ;;
     esac
 }
@@ -216,9 +216,9 @@ function man ()
     done
 }
 function l ()
-{ 
-ls -l "$@"| egrep "^d" ; 
-ls -lXB "$@" 2>&-| egrep -v "^d|total "; 
+{
+ls -l "$@"| egrep "^d" ;
+ls -lXB "$@" 2>&-| egrep -v "^d|total ";
 }
 function fstr()
 {
@@ -244,22 +244,22 @@ Usage: fstr [-i] \"pattern\" [\"filename pattern\"] "
     xargs -0 grep -sn ${case} "$1" 2>&- | \
     sed "s/$1/${SMSO}\0${RMSO}/gI" | more
 }
-function fe() 
-{ 
-    SSS=$1; 
-    shift ; 
+function fe()
+{
+    SSS=$1;
+    shift ;
     if [ -z $SSS ]; then
     	echo "Usages: fe '*.cpp' ls -l"
     	return ;
-    elif [ -z "$*" ]; then 
+    elif [ -z "$*" ]; then
     	echo "Usages: fe *.cpp ls -l"
     	return ;
     fi
 
-    echo "Executing $* on every file"; 
-    find . -type f -iname '*'$SSS'*' -exec $* {} \;  ; 
+    echo "Executing $* on every file";
+    find . -type f -iname '*'$SSS'*' -exec $* {} \;  ;
 }
-function my_ps() 
+function my_ps()
 { ps $@ -u $USER -o pid,%cpu,%mem,bsdtime,command ; }
 function pp()
 { my_ps f | awk '!/awk/ && $0~var' var=${1:-".*"} ; }
@@ -316,7 +316,7 @@ function ask()
         *) return 1 ;;
     esac
 }
-function my_help 
+function my_help
 {
 echo "fastprompt    : Change to New Prompt   "
 echo "c <dirname>   : cd and ls to directory "
@@ -327,7 +327,7 @@ echo "fstr <pat>    : Search pattern and highlight"
 echo "ii            : Show info about your m/c"
 echo "pp            : Show processess "
 echo "repeat n <cmd>: Repeat command n times "
-echo 
+echo
 echo "Other Commands: ask aldo my_ps vimgrep my_ip "
 }
 function mean ()
@@ -357,14 +357,14 @@ function getlyrics ()
 	fi
 	echo "Title: $title Artist: $artist"
 	echo "Url  : $url"
-	if [ -z "$url" ] ; then 
-	    echo "procesado2=1&artist=$artist&songname=$title" | lynx -dump http://lyrc.com.ar/en/tema1en.php -post_data 
+	if [ -z "$url" ] ; then
+	    echo "procesado2=1&artist=$artist&songname=$title" | lynx -dump http://lyrc.com.ar/en/tema1en.php -post_data
 	else
-		lynx -dump $url 
+		lynx -dump $url
 	fi
-	#echo "procesado2=1&artist=$artist&songname=$title" | lynx -dump http://www.autolyrics.com/tema1en.php -post_data 
+	#echo "procesado2=1&artist=$artist&songname=$title" | lynx -dump http://www.autolyrics.com/tema1en.php -post_data
 }
-function define () # Define a word - USAGE: define dog 
+function define () # Define a word - USAGE: define dog
 {
     if [ -z "$1" ]; then	
         echo "Usages: define dog"
@@ -420,7 +420,7 @@ function old_stock ()
 function stock()
 {
     # The following is one long line, it'll wrap on your display
-    stock=`lynx -source "http://finance.yahoo.com/d/quotes.csv?s=${1}&f=sl1d1t1c1ohgvn&e=.csv"` 
+    stock=`lynx -source "http://finance.yahoo.com/d/quotes.csv?s=${1}&f=sl1d1t1c1ohgvn&e=.csv"`
     # End of long line
     ARRAY=(`echo $stock | sed s/\ /_/g | sed s/[,\"]/\ /g `)
     #ARRAY=(`echo $stock | sed s/[,\"]/\ /g `)
@@ -428,7 +428,7 @@ function stock()
 
     SIGN=${ARRAY[4]:0:1}
     if [ "$SIGN" = "+" ];
-    then 
+    then
 	COLOR=$green
     else
 	COLOR=$red
@@ -507,8 +507,8 @@ complete -f -o default -X '!*.pl'  perl perl5
 # This is a 'universal' completion function - it works when commands have
 # a so-called 'long options' mode , ie: 'ls --all' instead of 'ls -a'
 
-_get_longopts () 
-{ 
+_get_longopts ()
+{
     $1 --help | sed  -e '/--/!d' -e 's/.*--\([^[:space:].,]*\).*/--\1/'| \
 grep ^"$2" |sort -u ;
 }
@@ -654,10 +654,10 @@ function myupdate()
     command=${1-regen}
 
     case "$command" in
-	clean) 
-		rm -f ${filename} ${function_filename} ${structure_filename} cscope.out 
-		rm -f tags  cscope.in.out cscope.po.out 
-		return 
+	clean)
+		rm -f ${filename} ${function_filename} ${structure_filename} cscope.out
+		rm -f tags  cscope.in.out cscope.po.out
+		return
 		;;
 	gen)
 		echo "Finding files ..."
@@ -707,7 +707,7 @@ function my_sol ()
 	export TERM=xtermc
 }
 
-function c_r() 
+function c_r()
 {
     cvs log $1 |   awk '/^Working/ {w = $3}/^head:/{print $2, w}'|  sort -r  -n  -k 2 -t .
 }
@@ -735,6 +735,31 @@ function myinit()
 	sudo apt install timewarrior taskwarrior
 	sudo pip3 install Sphinx
 	# apt install texlive-fonts-recommended texlive-latex-recommended texlive-latex-extra
+}
+
+
+function progress_bar() {
+    local w=30 p=$1;  shift
+    RRED='\033[0;31m'
+    # create a string of spaces, then change them to dots
+    printf -v dots "%*s" "$(( $p*$w/100 ))" ""; dots=${dots// /\#};
+    # print those dots on a fixed-width space plus the percentage etc.
+    printf "\e[K|${GREEN}%-*s${NC}| %3d %% %s" "$w" "$dots" "$p" "$*";
+}
+
+function task_tag()
+{
+	printf "%20s %10s %10s %11s\n" "Tag" "Remaining" "Total" "Complete"
+	printf "%20s %10s %10s %11s\n" "---" "---------" "-----" "--------"
+	for tag in `task tags 2>/dev/null | awk 'NR>3{print $1}' | sort`; do
+		_completed=`task +COMPLETED +$tag count`
+		_total=`task +$tag count`
+		_remaining=$(($_total - $_completed))
+		_percentage=$((_completed * 100 / $_total))
+		printf  "%20s %10d %10d %3s" $tag $_remaining $_total ""
+		progress_bar $_percentage
+		printf "\n"
+	done
 }
 
 unset SSH_ASKPASS
