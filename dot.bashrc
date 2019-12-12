@@ -739,12 +739,16 @@ function myinit()
 
 
 function progress_bar() {
-    local w=30 p=$1;  shift
-    RRED='\033[0;31m'
-    # create a string of spaces, then change them to dots
-    printf -v dots "%*s" "$(( $p*$w/100 ))" ""; dots=${dots// /\#};
-    # print those dots on a fixed-width space plus the percentage etc.
-    printf "\e[K|${GREEN}%-*s${NC}| %3d %% %s" "$w" "$dots" "$p" "$*";
+	local w=30 p=$1;  shift
+	local FILLC='\e[30;48;5;82m'
+	local EMPTYC='\e[30;48;5;236m'
+	local dot=' '
+	# create a string of spaces, then change them to dots
+	local _fillw=$(( $p*$w/100 ))
+	local _emptyw=$(($w-$_fillw))
+	printf -v dots "%*s" "$_fillw" ""; dots=${dots// /${dot}};
+	# print those dots on a fixed-width space plus the percentage etc.
+	printf "\e[K${FILLC}%-*s${NC}${EMPTYC}%-*s${NC} %3d %% %s" "$_fillw" "$dots" "$_emptyw" "" "$p" "$*";
 }
 
 function task_tag()
