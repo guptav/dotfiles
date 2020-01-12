@@ -4,6 +4,10 @@ if [ -f /etc/bashrc ]; then
         . /etc/bashrc
 fi
 
+if [ -f ~/.linuxify ]; then
+        . ~/.linuxify
+fi
+
 # Some settings
 set -o notify
 set -o noclobber
