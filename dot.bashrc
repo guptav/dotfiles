@@ -8,6 +8,10 @@ if [ -f ~/.linuxify ]; then
         . ~/.linuxify
 fi
 
+if [ -f ~/.bash_profile ]; then
+        . ~/.bash_profile
+fi
+
 # Some settings
 set -o notify
 set -o noclobber
