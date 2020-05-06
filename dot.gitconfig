@@ -1,15 +1,18 @@
 [user]
 	email = vaibhav.gupta@gmail.com
 	name = Vaibhav Gupta
+
 [core]
 	editor = vim
 	excludesfile = ~/.gitignore
+
 [color]
 	diff = auto
 	status = auto
 	branch = auto
 	pager = true
 	ui = true
+
 [alias]
 	aliases = !git config --list | grep 'alias\\.' | sed 's/alias\\.\\([^=]*\\)=\\(.*\\)/\\1\\ \t => \\2/' | sort
 
@@ -31,8 +34,11 @@
 	ctags = !~/.git_template/hooks/ctags
 	export = archive -o latest.tar.gz -9 --prefix=latest/
 	churn = !git log --all -M -C --name-only --format='format:' "$@" | sort | grep -v '^$' | uniq -c | sort | awk 'BEGIN {print "count,file"} {print $1 "," $2}'
+	fpush = !git add -u && git commit --amend --no-edit && git push -f origin `git branch --show-current`
+
 [merge]
 	tool = vimdiff2
+
 [init]
 	templatedir = ~/.git_template
 
@@ -48,4 +54,7 @@
 
 # Git checkout by date using rev-list
 # git checkout `git rev-list -n 1 --first-parent --before="2009-07-27 13:37" master`
+
+# Git update author
+# git commit --amend --author="Vaibhav Gupta<vaibhav.gupta@gmail.com>" --no-edit
 
