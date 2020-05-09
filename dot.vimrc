@@ -153,6 +153,19 @@ function Setup_c_opts()
         set cindent
 endfunction
 
+" VIM with box
+function Setup_box_opts()
+        set cino+=(0            " align function call breaks
+        set cinoptions+=:0      " align switch, case
+        set nu
+        set complete+=s
+        set textwidth=180
+        set tabstop=4 shiftwidth=4 softtabstop=4 expandtab
+        set smartindent
+        set autoindent
+        set cindent
+endfunction
+
 function FoldComments()
         set foldmarker=/*,*/
         set foldmethod=marker
@@ -355,8 +368,7 @@ map ..c :call FindCalling() <CR> <C-W> <C-W>
 map ..v :call FindCalled() <CR>  <C-W> <C-W>
 map <F7> :call ShowGraph() <CR>  <C-W> <C-W>
 
-if has("cscope") && filereadable("/usr/bin/cscope")
-        set csprg=/usr/bin/cscope
+if has("cscope")
         set csto=1
         set cst
         set nocsverb
@@ -557,3 +569,4 @@ endif
 
 autocmd! User GoyoEnter nested call <SID>goyo_enter()
 autocmd! User GoyoLeave nested call <SID>goyo_leave()
+call Setup_box_opts()
