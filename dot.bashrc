@@ -391,17 +391,15 @@ function define () # Define a word - USAGE: define dog
 		fi	
 		rm -f /tmp/templookup.txt
 }
-# Weather by us zip code - Can be called two ways # weather 50315 # weather "Des Moines"
+
+# Weather by City or location. weather :help  # For help
 function weather ()
 {
-    if [ -z "$1" ]; then	
-	echo "Usages: define [Pune|ZipCode]"
-        return;
-    fi
-    declare -a WEATHERARRAY
-	WEATHERARRAY=( `lynx -dump "http://www.google.com/search?hl=en&lr=&client=firefox-a&rls=org.mozilla%3Aen-US%3Aofficial&q=weather+${1}&btnG=Search" | grep -A 5 -m 1 "Weather for"`)
-	echo ${WEATHERARRAY[@]} | sed -e 's/Add to my Google homepage//g'
+	local city=${1-Cupertino}
+	local option=${2-0}
+	curl wttr.in/${city}?${option}
 }
+
 # Stock prices - can be called two ways. # stock novl  (this shows stock pricing)  #stock "novell"  (this way shows stock symbol for novell)
 function old_stock ()
 {
