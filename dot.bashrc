@@ -104,6 +104,8 @@ alias du='du -kh'
 alias df='df -kTh'
 alias grep='grep --color'
 alias cs='cscope -d .'
+alias less='less -R'
+alias more='more -R'
 
 # The 'ls' family (this assumes you use the GNU ls)
 alias la='ls -Al'               # show hidden files
@@ -165,7 +167,7 @@ function mark {
     	esac
 }
 # ONLY Valid for ksh shell
-function goto {
+function mygoto {
 	Usage="Usage: goto word"
 	case $# in
 	 1)  if env | grep "^$1=cd " > /dev/null ;
@@ -669,10 +671,12 @@ function myupdate()
 		;;
 	gen)
 		echo "Finding files ..."
-		find . -name '*.[ch]' >| $filename
-		find . -name '*.cpp' >> $filename
-		find . -name '*.hpp' >> $filename
-		find . -name '*.java' >> $filename
+		find . -name '*.[ch]' -o \
+			-name '*.cpp' -o \
+			-name '*.go' -o \
+			-name '*.hpp' -o \
+			-name '*.java' -o \
+			-name '*.groovy' >| $filename
 		;;
 	regen)
 		echo "Regenrating ctags from filelist."
@@ -699,7 +703,7 @@ function myupdate()
 	
 
     echo "- Generating tag list - "
-    ctags --extra=+f -L $filename
+    ctags --extra=+f -R .
     echo "- Generating cscope.out -"
     cscope -q -b -i $filename
     echo "- Generating Function Names for Language C -"
@@ -745,6 +749,10 @@ function myinit()
 	# apt install texlive-fonts-recommended texlive-latex-recommended texlive-latex-extra
 }
 
+function vhelp()
+{
+    curl cht.sh/$1/$2 | less -R
+}
 
 function progress_bar() {
 	local w=30 p=$1;  shift
