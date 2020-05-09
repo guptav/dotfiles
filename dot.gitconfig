@@ -1,5 +1,5 @@
 [user]
-	email = vaibhav.gupta@gmail.com
+	email = vaibhavgupta@gmail.com
 	name = Vaibhav Gupta
 
 [core]
@@ -41,6 +41,9 @@
 
 [init]
 	templatedir = ~/.git_template
+
+[include]
+	path = ~/.gitconfig.local
 
 #
 # GIT HELP
