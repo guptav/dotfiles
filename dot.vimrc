@@ -557,6 +557,8 @@ map <Leader>vp :VimuxPromptCommand<CR>
 " Run last command executed by VimuxRunCommand
 map <Leader>vl :VimuxRunLastCommand<CR>
 map <Leader>vm :VimuxPromptCommand("make ")<CR><CR>
+" Run current line by VimuxRunCommand
+map <Leader>rr :VimuxRunCommand ''.getline('.')<CR>
 
 function! VGautoWrite()
         autocmd BufWritePost  * :call VimuxRunLastCommand()
