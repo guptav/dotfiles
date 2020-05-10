@@ -747,9 +747,15 @@ function myinit()
 	# apt install texlive-fonts-recommended texlive-latex-recommended texlive-latex-extra
 }
 
+function join_by { local IFS="$1"; shift; echo "$*"; }
+
 function vhelp()
 {
-    curl cht.sh/$1/$2 | less -R
+    topic=${1}
+    shift
+    query=`join_by - $*`
+    echo "Running: curl cht.sh/${topic}/$query" >/dev/stderr
+    curl cht.sh/${topic}/$query
 }
 
 function progress_bar() {
