@@ -349,7 +349,7 @@ autocmd Filetype python call Setup_python_opts()
 autocmd Filetype rst call Setup_note_opts()
 autocmd Filetype cpp,c,cxx,h,hpp call Setup_c_opts()
 
-autocmd FileType cpp,c,cxx,h,hpp,python match ColourYellow /\%80v.\+\|,[^ ]\|\s\+$\|\n\{3,}/
+autocmd FileType cpp,c,cxx,h,hpp,python match ColourYellow /\%120v.\+\|,[^ ]\|\s\+$\|\n\{3,}/
 autocmd FileType cpp,c,cxx,h,hpp,python call matchadd('ColourRed', '\n\{3,}')
 autocmd FileType cpp,c,cxx,h,hpp,python call matchadd('ColourYellow', '|[^ =]')
 autocmd FileType cpp,c,cxx,h,hpp,python call matchadd('ColourYellow', '[^ ]|')
@@ -357,7 +357,7 @@ autocmd FileType cpp,c,cxx,h,hpp,python call matchadd('ColourYellow', '[^ ]|')
 autocmd BufNewFile,BufRead *.c,*.h exec 'match Todo /\%>' . &textwidth . 'v.\+/'
 autocmd BufNewFile,BufRead *.c,*.h exec 'match Todo /\%>' . &textwidth . 'v.\+/'
 autocmd BufRead,BufNewFile *.sh,*.py,*.xml,*pl,*.1 call matchadd('ColourRed', '\s\+$')
-autocmd BufRead,BufNewFile *.sh,*.xml,*.1,*.py call matchadd('ColourYellow', '\%80v.\+')
+autocmd BufRead,BufNewFile *.sh,*.xml,*.1,*.py call matchadd('ColourYellow', '\%120v.\+')
 
 let g:tex_flavor='latex'
 set iskeyword+=:
