@@ -24,6 +24,7 @@ Plugin 'junegunn/seoul256.vim'
 Plugin 'junegunn/goyo.vim'
 Plugin 'junegunn/limelight.vim'
 Plugin 'junegunn/fzf'
+Plugin 'junegunn/fzf.vim'
 Plugin 'VundleVim/Vundle.vim'
 Plugin 'Valloric/YouCompleteMe'
 Plugin 'vim-erlang/vim-erlang-runtime'
@@ -411,16 +412,16 @@ endif
 
 let g:currentmode={
     \ 'n'  : 'N ',
-    \ 'no' : 'N·Operator Pending ',
+    \ 'no' : 'N_Operator Pending ',
     \ 'v'  : 'V ',
-    \ 'V'  : 'V·Line ',
-    \ '' : 'V·Block ',
+    \ 'V'  : 'V_Line ',
+    \ '^V' : 'V_Block ',
     \ 's'  : 'Select ',
     \ 'S'  : 'S·Line ',
-    \ '^S' : 'S·Block ',
+    \ '^S' : 'S_Block ',
     \ 'i'  : 'I ',
     \ 'R'  : 'R ',
-    \ 'Rv' : 'V·Replace ',
+    \ 'Rv' : 'V_Replace ',
     \ 'c'  : 'Command ',
     \ 'cv' : 'Vim Ex ',
     \ 'ce' : 'Ex ',
@@ -435,7 +436,7 @@ let g:currentmode={
 function! ChangeStatuslineColor()
         if (mode() =~# '\v(n|no)')
                 exe 'hi! StatusLine ctermfg=008'
-        elseif (mode() =~# '\v(v|V)' || g:currentmode[mode()] ==# 'V·Block' || get(g:currentmode, mode(), '') ==# 't')
+        elseif (mode() =~# '\v(v|V)' || g:currentmode[mode()] ==# 'V_Block' || get(g:currentmode, mode(), '') ==# 't')
                 exe 'hi! StatusLine ctermfg=005'
         elseif (mode() ==# 'i')
                 exe 'hi! StatusLine ctermfg=004'
@@ -563,6 +564,49 @@ map <Leader>rr :VimuxRunCommand ''.getline('.')<CR>
 function! VGautoWrite()
         autocmd BufWritePost  * :call VimuxRunLastCommand()
 endfunction
+
+" START FZF : More at https://github.com/junegunn/fzf.vim#fzf-heart-vim
+fun! FzfOmniFiles()
+  let is_git = system('git status')
+  if v:shell_error
+    :Files
+  else
+    :GFiles
+  endif
+endfun
+
+" FZF Command reconfiguration.
+command! -bang -nargs=? -complete=dir Files
+     \ call fzf#vim#files(<q-args>, fzf#vim#with_preview({'options': ['--layout=reverse', '--info=inline']}), <bang>0)
+
+command! -bang -nargs=? -complete=dir GFiles
+     \ call fzf#vim#gitfiles(<q-args>, fzf#vim#with_preview({'options': ['--layout=reverse', '--info=inline']}), <bang>0)
+
+" FZF New command `GGrep` : git grep
+command! -bang -nargs=* GGrep
+  \ call fzf#vim#grep(
+  \   'git grep --line-number -- '.shellescape(<q-args>), 0,
+  \   fzf#vim#with_preview({'dir': systemlist('git rev-parse --show-toplevel')[0]}), <bang>0)
+
+function! RipgrepFzf(query, fullscreen)
+  let command_fmt = 'rg --column --line-number --no-heading --color=always --smart-case -- %s || true'
+  let initial_command = printf(command_fmt, shellescape(a:query))
+  let reload_command = printf(command_fmt, '{q}')
+  let spec = {'options': ['--phony', '--query', a:query, '--bind', 'change:reload:'.reload_command]}
+  call fzf#vim#grep(initial_command, 1, fzf#vim#with_preview(spec), a:fullscreen)
+endfunction
+
+" FZF New command `RG` : delegate serach to rg
+command! -nargs=* -bang RG call RipgrepFzf(<q-args>, <bang>0)
+
+" FZF Mappings
+:nnoremap <silent> <C-p> :call FzfOmniFiles()<CR>
+:nnoremap <leader><leader> :BLines<CR>
+:nmap <Leader>C :Commands<CR>
+:nmap <Leader>: :History:<CR>
+:nmap <Leader>M :Maps<CR>
+
+" END FZF
 
 let CODE_BROWSE = expand("$CODE_BROWSE")
 if CODE_BROWSE
