@@ -791,6 +791,8 @@ unset SSH_ASKPASS
 #START Executing
 fastprompt
 
+# Mac packages.
+# brew install highlight bat rg ag
 
 #Refrence
 #http://www.novell.com/coolsolutions/tools/18639.html
