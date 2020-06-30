@@ -97,3 +97,5 @@ $(_user_host) ${PWD} $(git_prompt_info) $(_ruby_version)
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
+
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
