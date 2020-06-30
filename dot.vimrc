@@ -566,6 +566,7 @@ function! VGautoWrite()
 endfunction
 
 " START FZF : More at https://github.com/junegunn/fzf.vim#fzf-heart-vim
+" FZF Shell Mappings: https://junegunn.kr/2016/07/fzf-git
 fun! FzfOmniFiles()
   let is_git = system('git status')
   if v:shell_error
@@ -600,11 +601,17 @@ endfunction
 command! -nargs=* -bang RG call RipgrepFzf(<q-args>, <bang>0)
 
 " FZF Mappings
-:nnoremap <silent> <C-p> :call FzfOmniFiles()<CR>
-:nnoremap <leader><leader> :BLines<CR>
-:nmap <Leader>C :Commands<CR>
-:nmap <Leader>: :History:<CR>
-:nmap <Leader>M :Maps<CR>
+nnoremap <silent><C-p>          :call FzfOmniFiles()<CR>
+nnoremap <leader><leader>       :BLines<CR>
+nnoremap <leader><Enter>        :Buffers<CR>
+nmap <Leader>c                  :Commands<CR>
+nmap <Leader>:                  :History:<CR>
+nmap <Leader>M                  :Maps<CR>
+
+nnoremap <silent> <Leader>ag    :Ag <C-R><C-W><CR>
+nnoremap <silent> <Leader>AG    :Ag <C-R><C-A><CR>
+xnoremap <silent> <Leader>ag    y:Ag <C-R>"<CR>
+nnoremap <silent> <Leader>`     :Marks<CR>
 
 " END FZF
 
