@@ -587,7 +587,7 @@ command! -bang -nargs=? -complete=dir GFiles
 command! -bang -nargs=* GGrep
   \ call fzf#vim#grep(
   \   'git grep --line-number -- '.shellescape(<q-args>), 0,
-  \   fzf#vim#with_preview({'dir': systemlist('git rev-parse --show-toplevel')[0]}), <bang>0)
+  \   fzf#vim#with_preview({'dir': systemlist('git rev-parse --show-toplevel')[0], 'options': ['--layout=reverse', '--info=inline'] }), <bang>0)
 
 function! RipgrepFzf(query, fullscreen)
   let command_fmt = 'rg --column --line-number --no-heading --color=always --smart-case -- %s || true'
@@ -607,11 +607,20 @@ nnoremap <leader><Enter>        :Buffers<CR>
 nmap <Leader>c                  :Commands<CR>
 nmap <Leader>:                  :History:<CR>
 nmap <Leader>M                  :Maps<CR>
-
-nnoremap <silent> <Leader>ag    :Ag <C-R><C-W><CR>
-nnoremap <silent> <Leader>AG    :Ag <C-R><C-A><CR>
-xnoremap <silent> <Leader>ag    y:Ag <C-R>"<CR>
 nnoremap <silent> <Leader>`     :Marks<CR>
+
+" Shoule be depricate in favour of rg
+nnoremap <silent> <Leader>AG    :Ag <C-R><C-A><CR>
+nnoremap <silent> <Leader>ag    :Ag <C-R><C-W><CR>
+xnoremap <silent> <Leader>ag    y:Ag <C-R>"<CR>
+
+" delegate serach to RG
+nnoremap <silent> <Leader>RG    :RG <C-R><C-A><CR>
+nnoremap <silent> <Leader>rg    :Rg <C-R><C-W><CR>
+xnoremap <silent> <Leader>rg    y:Rg <C-R>"<CR>
+
+nnoremap <silent> <Leader>gg    :GG <C-R><C-W><CR>
+xnoremap <silent> <Leader>gg    y:GG <C-R>"<CR>
 
 " END FZF
 
