@@ -604,12 +604,13 @@ command! -nargs=* -bang RG call RipgrepFzf(<q-args>, <bang>0)
 nnoremap <silent><C-p>          :call FzfOmniFiles()<CR>
 nnoremap <leader><leader>       :BLines<CR>
 nnoremap <leader><Enter>        :Buffers<CR>
-nmap <Leader>c                  :Commands<CR>
+nnoremap <leader>]              :BCommit<CR>
+nmap <Leader>C                  :Commands<CR>
 nmap <Leader>:                  :History:<CR>
 nmap <Leader>M                  :Maps<CR>
 nnoremap <silent> <Leader>`     :Marks<CR>
 
-" Shoule be depricate in favour of rg
+" Should be deprecate in favour of rg
 nnoremap <silent> <Leader>AG    :Ag <C-R><C-A><CR>
 nnoremap <silent> <Leader>ag    :Ag <C-R><C-W><CR>
 xnoremap <silent> <Leader>ag    y:Ag <C-R>"<CR>
