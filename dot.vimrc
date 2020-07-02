@@ -603,6 +603,7 @@ command! -nargs=* -bang RG call RipgrepFzf(<q-args>, <bang>0)
 " FZF Mappings
 nnoremap <silent><C-p>          :call FzfOmniFiles()<CR>
 nnoremap <leader><leader>       :BLines<CR>
+nnoremap <leader>qq             :BLines <C-R><C-W><CR>
 nnoremap <leader><Enter>        :Buffers<CR>
 nnoremap <leader>]              :BCommit<CR>
 nmap <Leader>C                  :Commands<CR>
