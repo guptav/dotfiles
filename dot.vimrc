@@ -34,6 +34,7 @@ Plugin 'plasticboy/vim-markdown'
 Plugin 'benmills/vimux'
 Plugin 'martinda/Jenkinsfile-vim-syntax'
 Plugin 'fatih/vim-go'
+Plugin 'zxqfl/tabnine-vim'
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
