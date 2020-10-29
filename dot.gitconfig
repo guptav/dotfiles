@@ -35,6 +35,7 @@
 	export = archive -o latest.tar.gz -9 --prefix=latest/
 	churn = !git log --all -M -C --name-only --format='format:' "$@" | sort | grep -v '^$' | uniq -c | sort | awk 'BEGIN {print "count,file"} {print $1 "," $2}'
 	fpush = !git add -u && git commit --amend --no-edit && git push -f origin `git branch --show-current`
+	pr = !git  remote -v | awk '/fetch/{print $2}' | sed -e 's/:/\\//g' -e 's/git@/https:\\/\\//g' -e 's/\\.git//g' -e 's/$/\\/pull\\/new\\//g' | xargs -I {} echo {}$(git branch --show-current) | xargs open
 
 [merge]
 	tool = vimdiff2
