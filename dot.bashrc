@@ -763,8 +763,9 @@ function vhelp()
 TIPS_FILES=~/tips.txt
 function __vg_history__()
 {
-    local cmd=`cat ${TIPS_FILES} | fzf --height=30% --ansi --multi --no-hscroll --tiebreak=begin`
-    echo "Running => $cmd"
+    local line=`cat ${TIPS_FILES} | fzf --height=30% --ansi --multi --no-hscroll --tiebreak=begin`
+    local cmd=`echo $line | awk -F'#' '{print $1}'`
+    echo "Running => $line"
     $cmd
 }
 
