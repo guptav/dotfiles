@@ -760,6 +760,16 @@ function vhelp()
     curl cht.sh/${topic}/$query
 }
 
+TIPS_FILES=~/tips.txt
+function __vg_history__()
+{
+    local cmd=`cat ${TIPS_FILES} | fzf --height=30% --ansi --multi --no-hscroll --tiebreak=begin`
+    echo "Running => $cmd"
+    $cmd
+}
+
+bind -m emacs-standard -x '"\C-v\C-v":__vg_history__'
+
 function progress_bar() {
 	local w=30 p=$1;  shift
 	local FILLC='\e[30;48;5;82m'
