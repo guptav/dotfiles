@@ -35,6 +35,8 @@ Plugin 'benmills/vimux'
 Plugin 'martinda/Jenkinsfile-vim-syntax'
 Plugin 'fatih/vim-go'
 Plugin 'zxqfl/tabnine-vim'
+Plugin 'scrooloose/syntastic'
+Plugin 'dbeniamine/cheat.sh-vim'
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
@@ -79,7 +81,7 @@ set hidden             " Hide buffers when they are abandoned
 set report=0
 set wildmode=list:longest
 set wildmenu
-set winheight=9999
+"set winheight=9999
 set so=5
 set cmdheight=2
 set nu
@@ -229,20 +231,6 @@ fun! DiffFile()
         ":    system(" diff.sh" . line)
 endfun
 
-function ShowFunc()
-        let gf_s = &grepformat
-        let gp_s = &grepprg
-        let &grepformat = '%*\k%*\sfunction%*\s%l%*\s%f %*\s%m'
-        let &grepprg = 'ctags -x --language-force=c --c-types=f --sort=no -o -'
-        ":    let &grepprg = 'ctags -x  --c-types=f --sort=no -o -'
-        write
-        silent! grep %
-        cwindow
-        redraw!
-        let &grepformat = gf_s
-        let &grepprg = gp_s
-endfunction
-
 fun! ShowFuncName()
         let lnum = line(".")
         let col = col(".")
@@ -383,8 +371,8 @@ if has("cscope")
         endif
         set csverb
 
-        map <C-_> :cstag <C-R>=expand("<cword>")<CR><CR>
-        map g<C-]> :cs find 3 <C-R>=expand("<cword>")<CR><CR>
+        "map <C-_> :cstag <C-R>=expand("<cword>")<CR><CR>
+        "map g<C-]> :cs find 3 <C-R>=expand("<cword>")<CR><CR>
         map g<C-\> :cs find 0 <C-R>=expand("<cword>")<CR><CR>
 
         nmap <C-\>s :cs find s <C-R>=expand("<cword>")<CR><CR>
