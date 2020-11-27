@@ -671,12 +671,7 @@ function myupdate()
 		;;
 	gen)
 		echo "Finding files ..."
-		find . -name '*.[ch]' -o \
-			-name '*.cpp' -o \
-			-name '*.go' -o \
-			-name '*.hpp' -o \
-			-name '*.java' -o \
-			-name '*.groovy' >| $filename
+        git ls-files  >| $filename
 		;;
 	regen)
 		echo "Regenrating ctags from filelist."
@@ -703,7 +698,7 @@ function myupdate()
 	
 
     echo "- Generating tag list - "
-    ctags --extra=+f -R .
+    ctags --extras=+f -L $filename
     echo "- Generating cscope.out -"
     cscope -q -b -i $filename
     echo "- Generating Function Names for Language C -"
