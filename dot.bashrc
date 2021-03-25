@@ -16,6 +16,7 @@ fi
 set -o notify
 set -o noclobber
 set -o ignoreeof
+set -o vi
 #set -o nounset
 
 export HISTSIZE=10000
