@@ -16,7 +16,7 @@ fi
 set -o notify
 set -o noclobber
 set -o ignoreeof
-set -o vi
+#set -o vi
 #set -o nounset
 
 export HISTSIZE=10000
@@ -25,7 +25,7 @@ export HISTFILESIZE=10000
 export GNATSDB=guptav
 
 # Enable options:
-shopt -s autocd
+#shopt -s autocd
 shopt -s cdspell
 shopt -s cdable_vars
 shopt -s checkhash
@@ -794,6 +794,14 @@ function task_tag()
 		printf "\n"
 	done
 }
+
+function rg()
+{
+    local search=${1}
+    command rg  --line-number --no-heading  --smart-case ${search}| fzf -m --delimiter : --preview 'bat --style=numbers --color=always --highlight-line {2} {1}' --preview-window +{2}-/2
+}
+
+alias tt=task_tag
 
 unset SSH_ASKPASS
 
