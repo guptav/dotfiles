@@ -19,8 +19,8 @@ set -o ignoreeof
 #set -o vi
 #set -o nounset
 
-export HISTSIZE=10000
-export HISTFILESIZE=10000
+export HISTSIZE=100000
+export HISTFILESIZE=100000
 
 export GNATSDB=guptav
 
@@ -813,3 +813,8 @@ fastprompt
 
 #Refrence
 #http://www.novell.com/coolsolutions/tools/18639.html
+
+function ts {
+    args=$@
+    tmux send-keys -t right "$args" C-m
+}

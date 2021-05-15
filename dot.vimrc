@@ -34,29 +34,28 @@ Plugin 'plasticboy/vim-markdown'
 Plugin 'benmills/vimux'
 Plugin 'martinda/Jenkinsfile-vim-syntax'
 Plugin 'fatih/vim-go'
-Plugin 'zxqfl/tabnine-vim'
+"Plugin 'zxqfl/tabnine-vim'
 Plugin 'scrooloose/syntastic'
 Plugin 'dbeniamine/cheat.sh-vim'
+Plugin 'artur-shaik/vim-javacomplete2'
+
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
 
 " TODO
 :execute pathogen#infect()
+let g:syntastic_javascript_checkers = [ 'jshint' ]
+let g:syntastic_ocaml_checkers = ['merlin']
+let g:syntastic_python_checkers = ['pylint']
+let g:syntastic_shell_checkers = ['shellcheck']
 
 "
 " You Complete me
+" brew install cmake python mono go nodejs
+" npm install -g npm-groovy-lint
 "
-if filereadable("./.ycm_extra_conf.py")
-        "let g:ycm_global_ycm_extra_conf = "~/.vim/.ycm_extra_conf.py"
-        let g:ycm_confirm_extra_conf = 0
-
-        " Additional autocomplete settings
-        let g:ycm_complete_in_comments = 0
-        let g:ycm_complete_in_strings = 1
-else
-        let g:loaded_youcompleteme = 1
-endif
+"
 
 "
 " Basic settings and mappings
@@ -81,7 +80,7 @@ set hidden             " Hide buffers when they are abandoned
 set report=0
 set wildmode=list:longest
 set wildmenu
-"set winheight=9999
+set winheight=9999
 set so=5
 set cmdheight=2
 set nu
@@ -163,7 +162,7 @@ function Setup_box_opts()
         set cinoptions+=:0      " align switch, case
         set nu
         set complete+=s
-        set textwidth=180
+        set textwidth=120
         set tabstop=4 shiftwidth=4 softtabstop=4 expandtab
         set smartindent
         set autoindent
@@ -553,6 +552,7 @@ map <Leader>vm :VimuxPromptCommand("make ")<CR><CR>
 map <Leader>rr :VimuxRunCommand ''.getline('.')<CR>
 
 function! VGautoWrite()
+        let g:VimuxRunnerType = "window"
         autocmd BufWritePost  * :call VimuxRunLastCommand()
 endfunction
 
