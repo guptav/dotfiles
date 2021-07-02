@@ -81,7 +81,7 @@ fi
 function fastprompt()
 {
     case $TERM in
-	*term* | rxvt | screen)
+	*term* | rxvt | screen | screen-256color )
 	#PS1="${HILIT}[\h]$NC \W > \[\033]0;\${TERM} [\u@\h] \w\007\]"
 	#PS1="${HILIT}[\A - ]$NC -----${BLUE}\$(git branch --show-current)${NC}--- ${red}\${PWD}${NC}  \n[\h \#] > "
 	#PS1="${HILIT}[\A - ]$NC -----${BLUE}\$(__git_ps1 '(%s)')${NC}--- ${red}\${PWD}${NC}  \n[\h \#] > "
@@ -799,6 +799,27 @@ function rg()
 {
     local search=${1}
     command rg  --line-number --no-heading  --smart-case ${search}| fzf -m --delimiter : --preview 'bat --style=numbers --color=always --highlight-line {2} {1}' --preview-window +{2}-/2
+}
+
+function vim-quickstart()
+{
+    # Basic Pkgs
+    brew install cmake python3 mono go nodejs
+
+    # Install Vundle
+    mkdir -p ~/.vim/bundle/
+    git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
+
+    # Install pathogen
+    mkdir -p ~/.vim/autoload ~/.vim/bundle
+    curl -LSso ~/.vim/autoload/pathogen.vim https://tpo.pe/pathogen.vim
+
+    # open .vimrc
+    vim ~/.vimrc
+
+    # Post vim install
+    cd ~/.vim/bundle/YouCompleteMe
+    python3 install.py --all
 }
 
 alias tt=task_tag
