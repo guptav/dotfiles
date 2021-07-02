@@ -34,6 +34,13 @@ Plugin 'plasticboy/vim-markdown'
 Plugin 'benmills/vimux'
 Plugin 'martinda/Jenkinsfile-vim-syntax'
 Plugin 'fatih/vim-go'
+Plugin 'tpope/vim-fugitive'
+Plugin 'scrooloose/nerdtree'
+Plugin 'ctrlpvim/ctrlp.vim'
+Plugin 'tpope/vim-surround'
+Plugin 'scrooloose/nerdcommenter'
+Plugin 'majutsushi/tagbar'
+Plugin 'vim-airline/vim-airline-themes'
 "Plugin 'zxqfl/tabnine-vim'
 Plugin 'scrooloose/syntastic'
 Plugin 'dbeniamine/cheat.sh-vim'
@@ -50,6 +57,10 @@ let g:syntastic_ocaml_checkers = ['merlin']
 let g:syntastic_python_checkers = ['pylint']
 let g:syntastic_shell_checkers = ['shellcheck']
 
+let g:airline_theme='dark'
+
+
+
 "
 " You Complete me
 " brew install cmake python mono go nodejs
@@ -63,6 +74,7 @@ let g:syntastic_shell_checkers = ['shellcheck']
 syntax on
 filetype plugin indent on    " required
 filetype plugin on
+set relativenumber
 set runtimepath^=~/.vim/bundle/vim-erlang-compiler
 set nocp
 set autowrite
@@ -621,6 +633,9 @@ let CODE_BROWSE = expand("$CODE_BROWSE")
 if CODE_BROWSE
         call CodeBrowse()
 endif
+
+nmap <F8> :TagbarToggle<CR>
+
 
 autocmd! User GoyoEnter nested call <SID>goyo_enter()
 autocmd! User GoyoLeave nested call <SID>goyo_leave()
