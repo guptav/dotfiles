@@ -36,7 +36,6 @@ Plugin 'martinda/Jenkinsfile-vim-syntax'
 Plugin 'fatih/vim-go'
 Plugin 'tpope/vim-fugitive'
 Plugin 'scrooloose/nerdtree'
-Plugin 'ctrlpvim/ctrlp.vim'
 Plugin 'tpope/vim-surround'
 Plugin 'scrooloose/nerdcommenter'
 Plugin 'majutsushi/tagbar'
@@ -610,7 +609,7 @@ nnoremap <leader>qq             :BLines <C-R><C-W><CR>
 nnoremap <leader><Enter>        :Buffers<CR>
 nnoremap <leader>]              :BCommit<CR>
 nmap <Leader>C                  :Commands<CR>
-nmap <Leader>:                  :History:<CR>
+nmap <Leader>;                  :History:<CR>
 nmap <Leader>M                  :Maps<CR>
 nnoremap <silent> <Leader>`     :Marks<CR>
 
@@ -636,6 +635,12 @@ endif
 
 nmap <F8> :TagbarToggle<CR>
 
+" See `man fzf-tmux` for available options
+if exists('$TMUX')
+    let g:fzf_layout = { 'tmux': '-p90%,60%' }
+else
+    let g:fzf_layout = { 'down': '40%' }
+endif
 
 autocmd! User GoyoEnter nested call <SID>goyo_enter()
 autocmd! User GoyoLeave nested call <SID>goyo_leave()
