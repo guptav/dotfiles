@@ -805,6 +805,7 @@ function vim-quickstart()
 {
     # Basic Pkgs
     brew install cmake python3 mono go nodejs
+    brew install llvm
 
     # Install Vundle
     mkdir -p ~/.vim/bundle/
@@ -819,6 +820,9 @@ function vim-quickstart()
 
     # Post vim install
     cd ~/.vim/bundle/YouCompleteMe
+    brew install gcc@10
+    CC=gcc-10 CXX=g++-10 python3 ./install.py --clangd-completer
+    CC=gcc-10 CXX=g++-10 python3 ./install.py --all
     python3 install.py --all
 }
 

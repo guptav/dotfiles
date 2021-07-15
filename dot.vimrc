@@ -44,7 +44,7 @@ Plugin 'vim-airline/vim-airline-themes'
 Plugin 'scrooloose/syntastic'
 Plugin 'dbeniamine/cheat.sh-vim'
 Plugin 'artur-shaik/vim-javacomplete2'
-
+Plugin 'neoclide/coc.nvim', {'branch': 'release'}
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
@@ -58,7 +58,16 @@ let g:syntastic_shell_checkers = ['shellcheck']
 
 let g:airline_theme='dark'
 
-
+let g:ycm_python_interpreter_path = '/usr/local/bin/python3'
+let g:ycm_python_sys_path = []
+let g:ycm_extra_conf_vim_data = [
+  \  'g:ycm_python_interpreter_path',
+  \  'g:ycm_python_sys_path'
+  \]
+let g:ycm_global_ycm_extra_conf = '~/.global_extra_conf.py'
+let g:ycm_add_preview_to_completeopt = '1'
+let g:ycm_autoclose_preview_window_after_completion = '1'
+set previewpopup=height:10,width:60
 
 "
 " You Complete me
@@ -85,16 +94,18 @@ set splitright
 set ruler
 set showcmd
 set showmatch
-"set cursorline
+set cursorline
 set smartcase
 set hidden             " Hide buffers when they are abandoned
 set report=0
 set wildmode=list:longest
 set wildmenu
-set winheight=9999
+"set winheight=9999
 set so=5
 set cmdheight=2
 set nu
+set noswapfile
+setlocal colorcolumn=120
 
 set backspace=indent,eol,start
 "set completeopt-=preview
@@ -105,7 +116,8 @@ set backspace=indent,eol,start
 " \ nocindent comments&
 " :autocmd FileType c,cpp set formatoptions=croql
 " \ cindent comments=sr:/*,mb:*,ex:*/,://
-
+"
+":inoremap jk <ESC>
 
 " Open tag in new tab
 "map <C-\> :tab split<CR>:exec("tag ".expand("<cword>"))<CR>
@@ -125,9 +137,9 @@ map <C-F12> :!ctags -R --c++-kinds=+p --fields=+iaS --extra=+q .<CR>
 ":set mouse=a           " Enable mouse usage (all modes) " NOT GOOD
 imap <silent> ,, <ESC>"_yiw:s/\(\%#\w\+\)/<\1> <\/\1>/<cr><c-o><c-l>f>a<cr><cr><UP><tab>
 
-nmap ll :cl<CR>
-nmap l; :cn<CR>
-nmap lk :cp<CR>
+"nmap ll :cl<CR>
+"nmap l; :cn<CR>
+"nmap lk :cp<CR>
 
 " For reindexing the tags for omni completion.
 
@@ -264,7 +276,6 @@ function! Myfun()
         let &grepprg = gp_s
 endfunction
 
-
 function PreviewHTML_TextOnly()
         let l:fname = expand("%:p" )
         new
@@ -314,8 +325,26 @@ function HelpVaibhav ()
         echo  ":h omnicppcomplete "
         echo  ":h surround"
         echo   ":set list listchars=tab:»·,trail:·,extends:…  Show tabs, trailing whitespace"
+        :CocInstall coc-json coc-tsserver
+        :CocInstall coc-pyright
 endfunction
 
+" This vim init function for initialize for the first time.
+function VimInit()
+        :CocInstall coc-json coc-tsserver
+        :CocInstall coc-pyright
+        :CocConfig
+                "{
+                  ""languageserver": {
+                        ""go": {
+                          ""command": "gopls",
+                          ""rootPatterns": ["go.mod"],
+                          ""trace.server": "verbose",
+                          ""filetypes": ["go"]
+                        "}
+                  "}
+                "}
+endfunction
 
 function ActiveSyn()
         if has("syntax") && (&t_Co > 2 || has("gui_running"))
@@ -327,7 +356,6 @@ function ActiveSyn()
                 autocmd BufNewFile,BufRead * call ActivateInvisibleCharIndicator()
         endif
 endfunction
-
 
 " Show tabs, trailing whitespace, and continued lines visually
 ":set list listchars=tab:»·,trail:·,extends:…
@@ -404,8 +432,6 @@ if has("cscope")
         nmap <C-@>d :scs find d <C-R>=expand("<cword>")<CR><CR>
         set csqf=s-,g-,d-,c-,t-,e-,f-,i-
 endif
-
-
 
 " Statusline
 
