@@ -106,6 +106,7 @@ set cmdheight=2
 set nu
 set noswapfile
 setlocal colorcolumn=120
+set foldmethod=marker
 
 set backspace=indent,eol,start
 "set completeopt-=preview
