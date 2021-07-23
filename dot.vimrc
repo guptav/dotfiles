@@ -36,8 +36,13 @@ Plugin 'godlygeek/tabular'
 Plugin 'plasticboy/vim-markdown'
 
 " Fuzzy Finder
+Plugin 'airblade/vim-rooter'
 Plugin 'junegunn/fzf'
 Plugin 'junegunn/fzf.vim'
+
+" Themes and color
+Plugin 'vim-airline/vim-airline'
+Plugin 'vim-airline/vim-airline-themes'
 
 " Unsorted.
 Plugin 'junegunn/seoul256.vim'
@@ -55,7 +60,7 @@ Plugin 'scrooloose/nerdtree'
 Plugin 'tpope/vim-surround'
 Plugin 'scrooloose/nerdcommenter'
 Plugin 'majutsushi/tagbar'
-Plugin 'vim-airline/vim-airline-themes'
+
 "Plugin 'zxqfl/tabnine-vim'
 Plugin 'scrooloose/syntastic'
 Plugin 'dbeniamine/cheat.sh-vim'
@@ -63,7 +68,6 @@ Plugin 'artur-shaik/vim-javacomplete2'
 Plugin 'neoclide/coc.nvim', {'branch': 'release'}
 
 " TODO Check these.
-"Plugin 'airblade/vim-rooter'
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
@@ -107,7 +111,7 @@ function! LightlineFilename()
   return expand('%:t') !=# '' ? @% : '[No Name]'
 endfunction
 
-" Pluging Settings for godlygeek/tabular Help: http://vimcasts.org/episodes/aligning-text-with-tabular-vim/
+" Plugin Settings for godlygeek/tabular Help: http://vimcasts.org/episodes/aligning-text-with-tabular-vim/
 "if exists(':Tabularize') " TODO Bug: this is not working, hence commenting.
     nmap <Leader>t= :Tabularize /=<CR>
     vmap <Leader>t= :Tabularize /=<CR>
@@ -129,8 +133,10 @@ function! s:align()
   endif
 endfunction
 
+" Plugin Settings for 'vim-airline/vim-airline'
+let g:airline_theme = 'dark'
 
-" TOREVIEW THE File content below this line
+" TO REVIEW THE File content below this line
 
 " Match it setting
 let g:loaded_matchit = 1
@@ -141,8 +147,6 @@ let g:syntastic_javascript_checkers = [ 'jshint' ]
 let g:syntastic_ocaml_checkers      = ['merlin']
 let g:syntastic_python_checkers     = ['pylint']
 let g:syntastic_shell_checkers      = ['shellcheck']
-
-let g:airline_theme = 'dark'
 
 let g:ycm_python_interpreter_path = '/usr/local/bin/python3'
 let g:ycm_python_sys_path         = []
