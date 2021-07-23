@@ -28,7 +28,7 @@ Plugin 'justinmk/vim-sneak'
 " GUI enhancements
 Plugin 'itchyny/lightline.vim'
 Plugin 'machakann/vim-highlightedyank'
-Plugin 'andymass/vim-matchup'
+Plugin 'andymass/vim-matchup' " TODO
 
 " Syntactic Language Support 
 Plugin 'rust-lang/rust.vim'
@@ -75,18 +75,78 @@ endi
 set undodir=~/.vimdid
 set undofile
 
+" Plugin settings for securemodelines ('ciaranm/securemodelines')
+let g:secure_modelines_allowed_items = [
+                \ "textwidth",   "tw",
+                \ "softtabstop", "sts",
+                \ "tabstop",     "ts",
+                \ "shiftwidth",  "sw",
+                \ "expandtab",   "et",   "noexpandtab", "noet",
+                \ "filetype",    "ft",
+                \ "foldmethod",  "fdm",
+                \ "readonly",    "ro",   "noreadonly", "noro",
+                \ "rightleft",   "rl",   "norightleft", "norl",
+                \ "colorcolumn"
+                \ ]
+
+" Plugin Setting for Lightline ('itchyny/lightline.vim')
+let g:lightline = {
+      \ 'active': {
+      \   'left': [ [ 'mode', 'paste' ],
+      \             [ 'readonly', 'filename', 'modified' ] ],
+      \   'right': [ [ 'lineinfo' ],
+      \              [ 'percent' ],
+      \              [ 'fileencoding', 'filetype' ] ],
+      \ },
+      \ 'component_function': {
+      \   'filename': 'LightlineFilename'
+      \ },
+      \ }
+
+function! LightlineFilename()
+  return expand('%:t') !=# '' ? @% : '[No Name]'
+endfunction
+
+" Pluging Settings for godlygeek/tabular Help: http://vimcasts.org/episodes/aligning-text-with-tabular-vim/
+"if exists(':Tabularize') " TODO Bug: this is not working, hence commenting.
+    nmap <Leader>t= :Tabularize /=<CR>
+    vmap <Leader>t= :Tabularize /=<CR>
+    nmap <Leader>t: :Tabularize /:\zs<CR>
+    vmap <Leader>t: :Tabularize /:\zs<CR>
+"endif
+
+" call the :Tabularize command each time you insert a | character.
+inoremap <silent> <Bar>   <Bar><Esc>:call <SID>align()<CR>a
+
+function! s:align()
+  let p = '^\s*|\s.*\s|\s*$'
+  if exists(':Tabularize') && getline('.') =~# '^\s*|' && (getline(line('.')-1) =~# p || getline(line('.')+1) =~# p)
+    let column = strlen(substitute(getline('.')[0:col('.')],'[^|]','','g'))
+    let position = strlen(matchstr(getline('.')[0:col('.')],'.*|\s*\zs.*'))
+    Tabularize/|/l1
+    normal! 0
+    call search(repeat('[^|]*|',column).'\s\{-\}'.repeat('.',position),'ce',line('.'))
+  endif
+endfunction
+
+
+" TOREVIEW THE File content below this line
+
+" Match it setting
+let g:loaded_matchit = 1
+
 " TODO
 :execute pathogen#infect()
 let g:syntastic_javascript_checkers = [ 'jshint' ]
-let g:syntastic_ocaml_checkers = ['merlin']
-let g:syntastic_python_checkers = ['pylint']
-let g:syntastic_shell_checkers = ['shellcheck']
+let g:syntastic_ocaml_checkers      = ['merlin']
+let g:syntastic_python_checkers     = ['pylint']
+let g:syntastic_shell_checkers      = ['shellcheck']
 
-let g:airline_theme='dark'
+let g:airline_theme = 'dark'
 
 let g:ycm_python_interpreter_path = '/usr/local/bin/python3'
-let g:ycm_python_sys_path = []
-let g:ycm_extra_conf_vim_data = [
+let g:ycm_python_sys_path         = []
+let g:ycm_extra_conf_vim_data     = [
   \  'g:ycm_python_interpreter_path',
   \  'g:ycm_python_sys_path'
   \]
