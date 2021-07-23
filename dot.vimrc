@@ -49,6 +49,13 @@ Plugin 'neoclide/coc.nvim', {'branch': 'release'}
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
 
+" Permanent undo
+if !isdirectory($HOME."/.vimdid")
+    call mkdir($HOME."/.vimdid", "", 0700)
+endi
+set undodir=~/.vimdid
+set undofile
+
 " TODO
 :execute pathogen#infect()
 let g:syntastic_javascript_checkers = [ 'jshint' ]
