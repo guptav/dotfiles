@@ -20,6 +20,19 @@ Unlink dot files::
 
 If old files exists then backed up in ${HOME}/\*.bak
 
+
+Install fisher for plugins::
+
+    # https://github.com/jorgebucaran/fisher
+    curl -sL https://git.io/fisher | source && fisher install jorgebucaran/fisher
+
+    fisher install jethrokuan/z
+    fisher install simnalamburt/shellder
+
+    # https://github.com/ryanoasis/nerd-fonts
+    brew tap homebrew/cask-fonts
+    brew install --cask font-hack-nerd-font
+
 TODO
 ====
 

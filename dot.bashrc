@@ -109,6 +109,7 @@ alias grep='grep --color'
 alias cs='cscope -d .'
 alias less='less -R'
 alias more='more -R'
+alias ll='exa -l -g --icons --tree --git-ignore -ha --ignore-glob .git'
 
 # The 'ls' family (this assumes you use the GNU ls)
 alias la='ls -Al'               # show hidden files
@@ -125,12 +126,6 @@ alias x=startx
 alias m="mplayer -ao alsa -vo x11 -zoom"
 alias t="task"
 complete -o nospace -F _task  t
-
-#Misc alias
-alias lll="ssh vgupta3@scmsuse9"
-alias llp="telnet -l root sanfsx2100-02"
-alias sss="telnet durga"
-alias rss="gij4 -jar /home/guptav/tools/rssowl_1_2_3_linux_bin/rssowl.jar"
 
 # Initialize HISTIGNORE with commands we don't want going into the bash history.  Only exact matches are filtered.
 export HISTIGNORE="&:bg:fg:ll:h"
