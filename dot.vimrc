@@ -5,32 +5,48 @@
 " Email:  vaibhav.gupta@gmail.com
 "
 
+set shell=/usr/local/bin/bash " fish shell does not go along.
+" let mapleader = "\<Space>"  " Only if you want to use Space as leader.
+
 set nocompatible              " be iMproved, required
 filetype off                  " required
 set clipboard=exclude:.*
 set path+=**
+set rtp+=~/.vim/bundle/Vundle.vim
 
 "
 " Vundle Settings : Load Modules
 "
 
 " set the runtime path to include Vundle and initialize
-set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
+" VIM enhancements
+Plugin 'ciaranm/securemodelines'
+Plugin 'editorconfig/editorconfig-vim'
+Plugin 'justinmk/vim-sneak'
 
-" let Vundle manage Vundle, required
+" GUI enhancements
+Plugin 'itchyny/lightline.vim'
+Plugin 'machakann/vim-highlightedyank'
+Plugin 'andymass/vim-matchup'
+
+" Syntactic Language Support 
 Plugin 'rust-lang/rust.vim'
+Plugin 'godlygeek/tabular'
+Plugin 'plasticboy/vim-markdown'
+
+" Fuzzy Finder
+Plugin 'junegunn/fzf'
+Plugin 'junegunn/fzf.vim'
+
+" Unsorted.
 Plugin 'junegunn/seoul256.vim'
 Plugin 'junegunn/goyo.vim'
 Plugin 'junegunn/limelight.vim'
-Plugin 'junegunn/fzf'
-Plugin 'junegunn/fzf.vim'
-Plugin 'VundleVim/Vundle.vim'
+"Plugin 'VundleVim/Vundle.vim'
 Plugin 'Valloric/YouCompleteMe'
 Plugin 'vim-erlang/vim-erlang-runtime'
 Plugin 'jceb/vim-orgmode'
-Plugin 'godlygeek/tabular'
-Plugin 'plasticboy/vim-markdown'
 Plugin 'benmills/vimux'
 Plugin 'martinda/Jenkinsfile-vim-syntax'
 Plugin 'fatih/vim-go'
@@ -45,6 +61,9 @@ Plugin 'scrooloose/syntastic'
 Plugin 'dbeniamine/cheat.sh-vim'
 Plugin 'artur-shaik/vim-javacomplete2'
 Plugin 'neoclide/coc.nvim', {'branch': 'release'}
+
+" TODO Check these.
+"Plugin 'airblade/vim-rooter'
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
@@ -74,7 +93,7 @@ let g:ycm_extra_conf_vim_data = [
 let g:ycm_global_ycm_extra_conf = '~/.global_extra_conf.py'
 let g:ycm_add_preview_to_completeopt = '1'
 let g:ycm_autoclose_preview_window_after_completion = '1'
-set previewpopup=height:10,width:60
+"set previewpopup=height:10,width:60
 
 "
 " You Complete me
@@ -102,11 +121,10 @@ set ruler
 set showcmd
 set showmatch
 set cursorline
+set laststatus=2
 set smartcase
 set hidden             " Hide buffers when they are abandoned
 set report=0
-set wildmode=list:longest
-set wildmenu
 "set winheight=9999
 set so=5
 set cmdheight=2
@@ -114,6 +132,8 @@ set nu
 set noswapfile
 setlocal colorcolumn=120
 set foldmethod=marker
+set wildmode=list:longest
+set wildmenu
 
 set backspace=indent,eol,start
 "set completeopt-=preview
@@ -442,97 +462,6 @@ if has("cscope")
 endif
 
 " Statusline
-
-let g:currentmode={
-    \ 'n'  : 'N ',
-    \ 'no' : 'N_Operator Pending ',
-    \ 'v'  : 'V ',
-    \ 'V'  : 'V_Line ',
-    \ '^V' : 'V_Block ',
-    \ 's'  : 'Select ',
-    \ 'S'  : 'S·Line ',
-    \ '^S' : 'S_Block ',
-    \ 'i'  : 'I ',
-    \ 'R'  : 'R ',
-    \ 'Rv' : 'V_Replace ',
-    \ 'c'  : 'Command ',
-    \ 'cv' : 'Vim Ex ',
-    \ 'ce' : 'Ex ',
-    \ 'r'  : 'Prompt ',
-    \ 'rm' : 'More ',
-    \ 'r?' : 'Confirm ',
-    \ '!'  : 'Shell ',
-    \ 't'  : 'Terminal '
-    \}
-
-" Automatically change the statusline color depending on mode
-function! ChangeStatuslineColor()
-        if (mode() =~# '\v(n|no)')
-                exe 'hi! StatusLine ctermfg=008'
-        elseif (mode() =~# '\v(v|V)' || g:currentmode[mode()] ==# 'V_Block' || get(g:currentmode, mode(), '') ==# 't')
-                exe 'hi! StatusLine ctermfg=005'
-        elseif (mode() ==# 'i')
-                exe 'hi! StatusLine ctermfg=004'
-        else
-                exe 'hi! StatusLine ctermfg=006'
-        endif
-        return ''
-endfunction
-
-" Find out current buffer's size and output it.
-function! FileSize()
-        let bytes = getfsize(expand('%:p'))
-        if (bytes >= 1024)
-                let kbytes = bytes / 1024
-        endif
-        if (exists('kbytes') && kbytes >= 1000)
-                let mbytes = kbytes / 1000
-        endif
-
-        if bytes <= 0
-                return '0'
-        endif
-
-        if (exists('mbytes'))
-                return mbytes . 'MB '
-        elseif (exists('kbytes'))
-                return kbytes . 'KB '
-        else
-                return bytes . 'B '
-        endif
-endfunction
-
-function! ReadOnly()
-        if &readonly || !&modifiable
-                return ''
-        else
-                return ''
-endfunction
-
-function! GitInfo()
-        let git = fugitive#head()
-        if git != ''
-                return ' '.fugitive#head()
-        else
-                return ''
-  endfunction
-
-" %{exists('g:loaded_fugitive')?fugitive#statusline():''}
-set laststatus=2
-set statusline=
-set statusline+=%{ChangeStatuslineColor()}               " Changing the statusline color
-set statusline+=%0*\ %{toupper(g:currentmode[mode()])}   " Current mode
-set statusline+=%1*\ [%n]                                " buffernr
-set statusline+=%2*\ %<%F\ %{ReadOnly()}\ %m\ %w\        " File+path
-"set statusline+=%3*\ %{GitInfo()}                        " Git Branch name
-set statusline+=%#warningmsg#
-set statusline+=%{SyntasticStatuslineFlag()}             " Syntastic errors
-set statusline+=%*
-set statusline+=%4*\ %=                                  " Space
-set statusline+=%1*\ %y\                                 " FileType
-"set statusline+=%2*\ %{(&fenc!=''?&fenc:&enc)}\[%{&ff}]\ " Encoding & Fileformat
-"set statusline+=%3*\ %-3(%{FileSize()}%)                 " File size
-set statusline+=%0*\ %3p%%\ \ %l:\ %3c\                 " Rownumber/total (%)
 
 hi User0 ctermfg=White    ctermbg=LightRed
 hi User1 ctermfg=White    ctermbg=LightRed
