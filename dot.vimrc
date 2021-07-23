@@ -30,28 +30,32 @@ Plugin 'itchyny/lightline.vim'
 Plugin 'machakann/vim-highlightedyank'
 Plugin 'andymass/vim-matchup' " TODO
 
-" Syntactic Language Support 
+" Syntactic Language Support
 Plugin 'rust-lang/rust.vim'
 Plugin 'godlygeek/tabular'
 Plugin 'plasticboy/vim-markdown'
+"Plugin 'vim-erlang/vim-erlang-runtime'
 
 " Fuzzy Finder
 Plugin 'airblade/vim-rooter'
 Plugin 'junegunn/fzf'
 Plugin 'junegunn/fzf.vim'
 
+" For completion
+Plugin 'Valloric/YouCompleteMe'
+
 " Themes and color
 Plugin 'vim-airline/vim-airline'
 Plugin 'vim-airline/vim-airline-themes'
+"Plugin 'junegunn/seoul256.vim'
+"Plugin 'junegunn/goyo.vim'
+"Plugin 'junegunn/limelight.vim'
+
+" Utilities
+Plugin 'jceb/vim-orgmode'
 
 " Unsorted.
-Plugin 'junegunn/seoul256.vim'
-Plugin 'junegunn/goyo.vim'
-Plugin 'junegunn/limelight.vim'
 "Plugin 'VundleVim/Vundle.vim'
-Plugin 'Valloric/YouCompleteMe'
-Plugin 'vim-erlang/vim-erlang-runtime'
-Plugin 'jceb/vim-orgmode'
 Plugin 'benmills/vimux'
 Plugin 'martinda/Jenkinsfile-vim-syntax'
 Plugin 'fatih/vim-go'
@@ -135,6 +139,37 @@ endfunction
 
 " Plugin Settings for 'vim-airline/vim-airline'
 let g:airline_theme = 'dark'
+
+" Plugin Settings for junegunn/goyo.vim
+" {{{
+"function! s:goyo_enter()
+  "silent !tmux set status off
+  "silent !tmux list-panes -F '\#F' | grep -q Z || tmux resize-pane -Z
+  "set noshowmode
+  "set noshowcmd
+  "set scrolloff=1
+  "colo seoul256
+  "Limelight1
+  "nmap l; }<CR>zt
+  "nmap lk <UP>{<CR>zt
+  "syntax off
+  "set nospell
+  "" ...
+"endfunction
+
+"function! s:goyo_leave()
+  "silent !tmux set status on
+  "silent !tmux list-panes -F '\#F' | grep -q Z && tmux resize-pane -Z
+  "set showmode
+  "set showcmd
+  "set scrolloff=5
+  "Limelight!
+  "" ...
+"endfunction
+
+"autocmd! User GoyoEnter nested call <SID>goyo_enter()
+"autocmd! User GoyoLeave nested call <SID>goyo_leave()
+" }}}
 
 " TO REVIEW THE File content below this line
 
@@ -547,31 +582,6 @@ function SetupSyntastic()
         nmap lk :lprevious<CR>
 endfunction
 
-function! s:goyo_enter()
-  silent !tmux set status off
-  silent !tmux list-panes -F '\#F' | grep -q Z || tmux resize-pane -Z
-  set noshowmode
-  set noshowcmd
-  set scrolloff=1
-  colo seoul256
-  Limelight1
-  nmap l; }<CR>zt
-  nmap lk <UP>{<CR>zt
-  syntax off
-  set nospell
-  " ...
-endfunction
-
-function! s:goyo_leave()
-  silent !tmux set status on
-  silent !tmux list-panes -F '\#F' | grep -q Z && tmux resize-pane -Z
-  set showmode
-  set showcmd
-  set scrolloff=5
-  Limelight!
-  " ...
-endfunction
-
 function! CodeBrowse()
   " export CODE_BROWSE=1
   set showmode
@@ -669,6 +679,4 @@ else
     let g:fzf_layout = { 'down': '40%' }
 endif
 
-autocmd! User GoyoEnter nested call <SID>goyo_enter()
-autocmd! User GoyoLeave nested call <SID>goyo_leave()
 call Setup_box_opts()
