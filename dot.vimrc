@@ -34,6 +34,8 @@ Plugin 'andymass/vim-matchup' " TODO
 Plugin 'rust-lang/rust.vim'
 Plugin 'godlygeek/tabular'
 Plugin 'plasticboy/vim-markdown'
+Plugin 'martinda/Jenkinsfile-vim-syntax'
+Plugin 'fatih/vim-go'
 "Plugin 'vim-erlang/vim-erlang-runtime'
 
 " Fuzzy Finder
@@ -52,17 +54,15 @@ Plugin 'vim-airline/vim-airline-themes'
 "Plugin 'junegunn/limelight.vim'
 
 " Utilities
-Plugin 'jceb/vim-orgmode'
+Plugin 'jceb/vim-orgmode'         " org
+Plugin 'benmills/vimux'           " tmux
+Plugin 'tpope/vim-fugitive'       " git
+Plugin 'scrooloose/nerdtree'      " Nerd Tree
+Plugin 'scrooloose/nerdcommenter' " Nerd Commenter
 
 " Unsorted.
 "Plugin 'VundleVim/Vundle.vim'
-Plugin 'benmills/vimux'
-Plugin 'martinda/Jenkinsfile-vim-syntax'
-Plugin 'fatih/vim-go'
-Plugin 'tpope/vim-fugitive'
-Plugin 'scrooloose/nerdtree'
 Plugin 'tpope/vim-surround'
-Plugin 'scrooloose/nerdcommenter'
 Plugin 'majutsushi/tagbar'
 
 "Plugin 'zxqfl/tabnine-vim'
@@ -139,6 +139,21 @@ endfunction
 
 " Plugin Settings for 'vim-airline/vim-airline'
 let g:airline_theme = 'dark'
+
+" Plugin Settings for 'benmills/vimux'
+" Prompt for a command to run
+map <Leader>vp :VimuxPromptCommand<CR>
+" Run last command executed by VimuxRunCommand
+map <Leader>vl :VimuxRunLastCommand<CR>
+map <Leader>vm :VimuxPromptCommand("make ")<CR><CR>
+" Run current line by VimuxRunCommand
+map <Leader>rr :VimuxRunCommand ''.getline('.')<CR>
+
+" Run the last command on a tmux window on write.
+function! VGautoWrite()
+        let g:VimuxRunnerType = "window"
+        autocmd BufWritePost  * :call VimuxRunLastCommand()
+endfunction
 
 " Plugin Settings for junegunn/goyo.vim
 " {{{
@@ -591,18 +606,6 @@ function! CodeBrowse()
   let Tlist_Auto_Open=1
 endfunction
 
-" Prompt for a command to run
-map <Leader>vp :VimuxPromptCommand<CR>
-" Run last command executed by VimuxRunCommand
-map <Leader>vl :VimuxRunLastCommand<CR>
-map <Leader>vm :VimuxPromptCommand("make ")<CR><CR>
-" Run current line by VimuxRunCommand
-map <Leader>rr :VimuxRunCommand ''.getline('.')<CR>
-
-function! VGautoWrite()
-        let g:VimuxRunnerType = "window"
-        autocmd BufWritePost  * :call VimuxRunLastCommand()
-endfunction
 
 " START FZF : More at https://github.com/junegunn/fzf.vim#fzf-heart-vim
 " FZF Shell Mappings: https://junegunn.kr/2016/07/fzf-git
