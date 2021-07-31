@@ -297,6 +297,7 @@ set foldmethod=marker
 set wildmode=list:longest
 set wildmenu
 
+":set mouse=a           " Enable mouse usage (all modes) " NOT GOOD
 " Match it setting
 let g:loaded_matchit = 1
 
@@ -559,11 +560,8 @@ function ActiveSyn()
 endfunction
 " }}}
 
-" TODO TO REVIEW THE File content below this line
-
-" TODO
-":inoremap jk <ESC>
-
+" OLD Mappings - TODO
+" {{{
 " Open tag in new tab
 "map <C-\> :tab split<CR>:exec("tag ".expand("<cword>"))<CR>
 nmap <F2> :'<,'>s/^/\/\/ /g<CR>
@@ -571,20 +569,17 @@ nmap <F3> <ESC>:mkview<CR>
 nmap <F4> <ESC>:loadview<CR>
 nmap <F5> :TlistToggle<CR>
 nmap <F6> /}<CR>zf%<ESC>:nohlsearch<CR>
-
 command -nargs=* Make make <args> | cwindow 5
 "map <F9> :w<CR>:Make %< <CR> <CR>
 map <F9> :make <CR>
 map <C-F12> :!ctags -R --c++-kinds=+p --fields=+iaS --extra=+q .<CR>
-
 "nmap <buffer> <CR> 0ye<C-W>w:tag <C-R>"<CR>z<CR><C-W><C-W># " press enter on tag name
 "nmap <buffer> <CR> 0ye:! showgraph.sh <C-R>"  1 >/dev/null & <CR><CR>
-":set mouse=a           " Enable mouse usage (all modes) " NOT GOOD
 imap <silent> ,, <ESC>"_yiw:s/\(\%#\w\+\)/<\1> <\/\1>/<cr><c-o><c-l>f>a<cr><cr><UP><tab>
-
-
+" }}}
 
 " highlight overly long lines same as TODOs.
+" {{{
 highlight ColourYellow ctermbg=yellow ctermfg=red
 highlight ColourLightYellow ctermbg=LightYellow
 highlight ColourGreen ctermfg=green
@@ -609,6 +604,7 @@ autocmd BufNewFile,BufRead *.c,*.h exec 'match Todo /\%>' . &textwidth . 'v.\+/'
 autocmd BufNewFile,BufRead *.c,*.h exec 'match Todo /\%>' . &textwidth . 'v.\+/'
 autocmd BufRead,BufNewFile *.sh,*.py,*.xml,*pl,*.1 call matchadd('ColourRed', '\s\+$')
 autocmd BufRead,BufNewFile *.sh,*.xml,*.1,*.py call matchadd('ColourYellow', '\%120v.\+')
+" }}}
 
 let g:tex_flavor='latex'
 set iskeyword+=:
@@ -765,11 +761,5 @@ call Setup_box_opts()
 "
 "
 
-" Statusline
-"hi User0 ctermfg=White    ctermbg=LightRed
-"hi User1 ctermfg=White    ctermbg=LightRed
-"hi User2 ctermfg=White    ctermbg=LightBlue
-"hi User3 ctermfg=White    ctermbg=LightMagenta
-"hi User4 ctermbg=Red      ctermbg=White
-"hi User5 ctermfg=White    ctermbg=LightGreen
-
+" TODO
+":inoremap jk <ESC>
