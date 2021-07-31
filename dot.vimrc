@@ -59,20 +59,19 @@ Plugin 'benmills/vimux'           " tmux
 Plugin 'tpope/vim-fugitive'       " git
 Plugin 'scrooloose/nerdtree'      " Nerd Tree
 Plugin 'scrooloose/nerdcommenter' " Nerd Commenter
-Plugin 'liuchengxu/vim-which-key'
-
-" Unsorted.
-"Plugin 'VundleVim/Vundle.vim'
+Plugin 'liuchengxu/vim-which-key' " Check via leader key
 Plugin 'tpope/vim-surround'
 Plugin 'majutsushi/tagbar'
 
+" Unsorted.
+"Plugin 'VundleVim/Vundle.vim'
+
+" TODO Check these.
 "Plugin 'zxqfl/tabnine-vim'
 Plugin 'scrooloose/syntastic'
 Plugin 'dbeniamine/cheat.sh-vim'
 Plugin 'artur-shaik/vim-javacomplete2'
 Plugin 'neoclide/coc.nvim', {'branch': 'release'}
-
-" TODO Check these.
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
@@ -83,8 +82,10 @@ if !isdirectory($HOME."/.vimdid")
 endi
 set undodir=~/.vimdid
 set undofile
+execute pathogen#infect()
 
 " Plugin settings for securemodelines ('ciaranm/securemodelines')
+" {{{
 let g:secure_modelines_allowed_items = [
                 \ "textwidth",   "tw",
                 \ "softtabstop", "sts",
@@ -97,8 +98,10 @@ let g:secure_modelines_allowed_items = [
                 \ "rightleft",   "rl",   "norightleft", "norl",
                 \ "colorcolumn"
                 \ ]
+" }}}
 
 " Plugin Setting for Lightline ('itchyny/lightline.vim')
+" {{{
 let g:lightline = {
       \ 'active': {
       \   'left': [ [ 'mode', 'paste' ],
@@ -115,8 +118,10 @@ let g:lightline = {
 function! LightlineFilename()
   return expand('%:t') !=# '' ? @% : '[No Name]'
 endfunction
+" }}}
 
 " Plugin Settings for godlygeek/tabular Help: http://vimcasts.org/episodes/aligning-text-with-tabular-vim/
+" {{{
 "if exists(':Tabularize') " TODO Bug: this is not working, hence commenting.
     nmap <Leader>t= :Tabularize /=<CR>
     vmap <Leader>t= :Tabularize /=<CR>
@@ -137,11 +142,15 @@ function! s:align()
     call search(repeat('[^|]*|',column).'\s\{-\}'.repeat('.',position),'ce',line('.'))
   endif
 endfunction
+" }}}
 
 " Plugin Settings for 'vim-airline/vim-airline'
+" {{{
 let g:airline_theme = 'dark'
+" }}}
 
 " Plugin Settings for 'benmills/vimux'
+" {{{
 " Prompt for a command to run
 map <Leader>vp :VimuxPromptCommand<CR>
 " Run last command executed by VimuxRunCommand
@@ -155,8 +164,10 @@ function! VGautoWrite()
         let g:VimuxRunnerType = "window"
         autocmd BufWritePost  * :call VimuxRunLastCommand()
 endfunction
+" }}}
 
 " Plugin Settings for 'liuchengxu/vim-which-key'
+" {{{
 " By default timeoutlen is 1000 ms
 set timeoutlen=500
 let g:which_key_map = {
@@ -180,7 +191,12 @@ let g:which_key_map = {
       \ '?' : ['Windows'    , 'fzf-window']            ,
       \ }
 nnoremap <silent> <leader> :WhichKey! which_key_map<CR>
+" }}}
 
+" Plugin Settings for 'majutsushi/tagbar'
+" {{{
+nmap <F8> :TagbarToggle<CR>
+" }}}
 
 " Plugin Settings for junegunn/goyo.vim
 " {{{
@@ -213,18 +229,29 @@ nnoremap <silent> <leader> :WhichKey! which_key_map<CR>
 "autocmd! User GoyoLeave nested call <SID>goyo_leave()
 " }}}
 
-" TO REVIEW THE File content below this line
-
-" Match it setting
-let g:loaded_matchit = 1
-
-" TODO
-:execute pathogen#infect()
+" Plugin Settings for 'scrooloose/syntastic'
+" {{{
+" https://github.com/vim-syntastic/syntastic
 let g:syntastic_javascript_checkers = [ 'jshint' ]
 let g:syntastic_ocaml_checkers      = ['merlin']
 let g:syntastic_python_checkers     = ['pylint']
 let g:syntastic_shell_checkers      = ['shellcheck']
+let g:syntastic_python_python_exec = 'python3'
+let g:syntastic_python_checkers = ['python']
 
+function SetupSyntastic()
+        let g:syntastic_always_populate_loc_list = 1
+        let g:syntastic_auto_loc_list = 1
+        let g:syntastic_check_on_open = 1
+        let g:syntastic_check_on_wq = 0
+        nmap ll :llist<CR>
+        nmap l; :lnext<CR>
+        nmap lk :lprevious<CR>
+endfunction
+" }}}
+
+" Plugin Settings for 'Valloric/YouCompleteMe'
+" {{{
 let g:ycm_python_interpreter_path = '/usr/local/bin/python3'
 let g:ycm_python_sys_path         = []
 let g:ycm_extra_conf_vim_data     = [
@@ -235,22 +262,16 @@ let g:ycm_global_ycm_extra_conf = '~/.global_extra_conf.py'
 let g:ycm_add_preview_to_completeopt = '1'
 let g:ycm_autoclose_preview_window_after_completion = '1'
 "set previewpopup=height:10,width:60
+" }}}
 
-"
-" You Complete me
-" brew install cmake python mono go nodejs
-" npm install -g npm-groovy-lint
-"
-"
-
-"
 " Basic settings and mappings
-"
+" {{{
 syntax on
 filetype plugin indent on    " required
 filetype plugin on
 set relativenumber
 set runtimepath^=~/.vim/bundle/vim-erlang-compiler
+set nowrap
 set nocp
 set autowrite
 set hlsearch
@@ -276,41 +297,13 @@ set foldmethod=marker
 set wildmode=list:longest
 set wildmenu
 
+" Match it setting
+let g:loaded_matchit = 1
+
 set backspace=indent,eol,start
 "set completeopt-=preview
 "set autoindent
-
-" TODO
-" :autocmd FileType * set formatoptions=tcql
-" \ nocindent comments&
-" :autocmd FileType c,cpp set formatoptions=croql
-" \ cindent comments=sr:/*,mb:*,ex:*/,://
-"
-":inoremap jk <ESC>
-
-" Open tag in new tab
-"map <C-\> :tab split<CR>:exec("tag ".expand("<cword>"))<CR>
-nmap <F2> :'<,'>s/^/\/\/ /g<CR>
-nmap <F3> <ESC>:mkview<CR>
-nmap <F4> <ESC>:loadview<CR>
-nmap <F5> :TlistToggle<CR>
-nmap <F6> /}<CR>zf%<ESC>:nohlsearch<CR>
-
-command -nargs=* Make make <args> | cwindow 5
-"map <F9> :w<CR>:Make %< <CR> <CR>
-map <F9> :make <CR>
-map <C-F12> :!ctags -R --c++-kinds=+p --fields=+iaS --extra=+q .<CR>
-
-"nmap <buffer> <CR> 0ye<C-W>w:tag <C-R>"<CR>z<CR><C-W><C-W># " press enter on tag name
-"nmap <buffer> <CR> 0ye:! showgraph.sh <C-R>"  1 >/dev/null & <CR><CR>
-":set mouse=a           " Enable mouse usage (all modes) " NOT GOOD
-imap <silent> ,, <ESC>"_yiw:s/\(\%#\w\+\)/<\1> <\/\1>/<cr><c-o><c-l>f>a<cr><cr><UP><tab>
-
-"nmap ll :cl<CR>
-"nmap l; :cn<CR>
-"nmap lk :cp<CR>
-
-" For reindexing the tags for omni completion.
+" }}}
 
 "
 " My Helper functions
@@ -318,6 +311,7 @@ imap <silent> ,, <ESC>"_yiw:s/\(\%#\w\+\)/<\1> <\/\1>/<cr><c-o><c-l>f>a<cr><cr><
 
 " VIM with .py files.
 function Setup_python_opts()
+" {{{
         "set cinoptions=:0,l1,t0,g0,(0
         set cindent
         set shiftround
@@ -325,9 +319,11 @@ function Setup_python_opts()
         set tabstop=4 shiftwidth=4 softtabstop=4 expandtab
         "set equalprg=/home/tushar/python/Python-2.7.13/Tools/scripts/reindent.py
 endfunction
+" }}}
 
 " VIM with .note files.
 function Setup_note_opts()
+" {{{
         set nu
         setlocal spell spelllang=en_us
         set complete+=s
@@ -337,9 +333,11 @@ function Setup_note_opts()
         set noautoindent
         "match ColourYellow /^[^\t].*$/
 endfunction
+" }}}
 
 " VIM with c files.
 function Setup_c_opts()
+" {{{
         set cino+=(0            " align function call breaks
         set cinoptions+=:0      " align switch, case
         set tabstop=8 softtabstop=8 shiftwidth=8 noexpandtab
@@ -347,43 +345,55 @@ function Setup_c_opts()
         set autoindent
         set cindent
 endfunction
+" }}}
 
 " VIM with box
 function Setup_box_opts()
+" {{{
         set cino+=(0            " align function call breaks
         set cinoptions+=:0      " align switch, case
         set nu
         set complete+=s
         set textwidth=120
-        set tabstop=4 shiftwidth=4 softtabstop=4 expandtab
+        set tabstop=2 shiftwidth=2 softtabstop=2 expandtab
         set smartindent
         set autoindent
         set cindent
 endfunction
+" }}}
 
 function FoldComments()
+" {{{
         set foldmarker=/*,*/
         set foldmethod=marker
         silent! zx
 endfunction
+" }}}
 
 function DateInsert()
+" {{{
         .!date
 endfunction
+" }}}
 
 function FoldFunction()
+" {{{
         set foldmarker={,}
         set foldmethod=marker
         silent! zx
 endfunction
+" }}}
 
 function ShowGraph()
+" {{{
         let l:word = expand(expand("<cword>"))
         let execmd = 'showgraph.sh ' . l:word
         execute '!'.execmd.' &'
 endfunction
+" }}}
 
 function FindCalling()
+" {{{
         let l:word = expand(expand("<cword>"))
         let gf_s = &grepformat
         let gp_s = &grepprg
@@ -397,8 +407,10 @@ function FindCalling()
         let &grepformat = gf_s
         let &grepprg = gp_s
 endfunction
+" }}}
 
 function FindCalled()
+" {{{
         let l:word = expand(expand("<cword>"))
         let gf_s = &grepformat
         let gp_s = &grepprg
@@ -412,8 +424,10 @@ function FindCalled()
         let &grepformat = gf_s
         let &grepprg = gp_s
 endfunction
+" }}}
 
 fun! DiffFile()
+" {{{
         let lnum = line(".")
         echohl ModeMsg
         let line = getline(lnum)
@@ -421,8 +435,10 @@ fun! DiffFile()
         execute "!diff.sh " . line
         ":    system(" diff.sh" . line)
 endfun
+" }}}
 
 fun! ShowFuncName()
+" {{{
         let lnum = line(".")
         let col = col(".")
         echohl ModeMsg
@@ -430,8 +446,10 @@ fun! ShowFuncName()
         echohl None
         call search("\\%" . lnum . "l" . "\\%" . col . "c")
 endfun
+"}}}
 
 function! Myfun()
+" {{{
         let gf_s = &grepformat
         let gp_s = &grepprg
         let &grepformat = '%*\k%*\sfunction%*\s%l%*\s%f %*\s%m'
@@ -444,15 +462,19 @@ function! Myfun()
         let &grepformat = gf_s
         let &grepprg = gp_s
 endfunction
+" }}}
 
 function PreviewHTML_TextOnly()
+" {{{
         let l:fname = expand("%:p" )
         new
         set buftype=nofile nonumber
         exe "%!lynx " . l:fname . " -dump -nolist -underscore :    -width " . winwidth( 0 )
 endfunction
+" }}}
 
 function! Mosh_html2text()
+" {{{
         silent! %s/&lt;/</g
         silent! %s/&gt;/>/g
         silent! %s/&amp;/&/g
@@ -464,17 +486,23 @@ function! Mosh_html2text()
         silent! %s/</\?[BI]>/ /g
         set readonly
 endfun
+" }}}
 
 function! Test()
+" {{{
         cwindow
 endfunction
+" }}}
 
 function CleanComments ()
+" {{{
         g/^$/d
         g/^#/d
 endfunction
+" }}}
 
 function HelpVaibhav ()
+" {{{
         echo "Vim### nmap <buffer> <CR> :call DiffFile()  <CR><CR> ###Mapping command to current buffer."
         echo "Vim###vim -f +\":runtime! syntax/2html.vim | :wq | :q \" a.c ### Convert a file to html file with color."
         echo "Vim###:set tw=0 wrap linebreak noautoindent ### For copying text from gui to vim"
@@ -497,9 +525,11 @@ function HelpVaibhav ()
         :CocInstall coc-json coc-tsserver
         :CocInstall coc-pyright
 endfunction
+" }}}
 
 " This vim init function for initialize for the first time.
 function VimInit()
+" {{{
         :CocInstall coc-json coc-tsserver
         :CocInstall coc-pyright
         :CocConfig
@@ -514,8 +544,10 @@ function VimInit()
                   "}
                 "}
 endfunction
+" }}}
 
 function ActiveSyn()
+" {{{
         if has("syntax") && (&t_Co > 2 || has("gui_running"))
                 syntax on
                 function! ActivateInvisibleCharIndicator()
@@ -525,9 +557,32 @@ function ActiveSyn()
                 autocmd BufNewFile,BufRead * call ActivateInvisibleCharIndicator()
         endif
 endfunction
+" }}}
 
-" Show tabs, trailing whitespace, and continued lines visually
-":set list listchars=tab:»·,trail:·,extends:…
+" TODO TO REVIEW THE File content below this line
+
+" TODO
+":inoremap jk <ESC>
+
+" Open tag in new tab
+"map <C-\> :tab split<CR>:exec("tag ".expand("<cword>"))<CR>
+nmap <F2> :'<,'>s/^/\/\/ /g<CR>
+nmap <F3> <ESC>:mkview<CR>
+nmap <F4> <ESC>:loadview<CR>
+nmap <F5> :TlistToggle<CR>
+nmap <F6> /}<CR>zf%<ESC>:nohlsearch<CR>
+
+command -nargs=* Make make <args> | cwindow 5
+"map <F9> :w<CR>:Make %< <CR> <CR>
+map <F9> :make <CR>
+map <C-F12> :!ctags -R --c++-kinds=+p --fields=+iaS --extra=+q .<CR>
+
+"nmap <buffer> <CR> 0ye<C-W>w:tag <C-R>"<CR>z<CR><C-W><C-W># " press enter on tag name
+"nmap <buffer> <CR> 0ye:! showgraph.sh <C-R>"  1 >/dev/null & <CR><CR>
+":set mouse=a           " Enable mouse usage (all modes) " NOT GOOD
+imap <silent> ,, <ESC>"_yiw:s/\(\%#\w\+\)/<\1> <\/\1>/<cr><c-o><c-l>f>a<cr><cr><UP><tab>
+
+
 
 " highlight overly long lines same as TODOs.
 highlight ColourYellow ctermbg=yellow ctermfg=red
@@ -558,13 +613,16 @@ autocmd BufRead,BufNewFile *.sh,*.xml,*.1,*.py call matchadd('ColourYellow', '\%
 let g:tex_flavor='latex'
 set iskeyword+=:
 
-set nowrap
-":nmap <buffer> <CR> :call DiffFile()  <CR><CR>
+" TOBE DEPERECATED
+" {{{
 map .f :call ShowFuncName() <CR>
 map ..c :call FindCalling() <CR> <C-W> <C-W>
 map ..v :call FindCalled() <CR>  <C-W> <C-W>
 map <F7> :call ShowGraph() <CR>  <C-W> <C-W>
+" }}}
 
+" cscope setttings C-\ 
+" {{{
 if has("cscope")
         set csto=1
         set cst
@@ -600,31 +658,15 @@ if has("cscope")
         nmap <C-@>i :scs find i ^<C-R>=expand("<cfile>")<CR>$<CR>
         nmap <C-@>d :scs find d <C-R>=expand("<cword>")<CR><CR>
         set csqf=s-,g-,d-,c-,t-,e-,f-,i-
+
+        nmap ll :cl<CR>
+        nmap l; :cn<CR>
+        nmap lk :cp<CR>
 endif
-
-" Statusline
-
-hi User0 ctermfg=White    ctermbg=LightRed
-hi User1 ctermfg=White    ctermbg=LightRed
-hi User2 ctermfg=White    ctermbg=LightBlue
-hi User3 ctermfg=White    ctermbg=LightMagenta
-hi User4 ctermbg=Red      ctermbg=White
-hi User5 ctermfg=White    ctermbg=LightGreen
-
-" https://github.com/vim-syntastic/syntastic
-let g:syntastic_python_python_exec = 'python3'
-let g:syntastic_python_checkers = ['python']
-function SetupSyntastic()
-        let g:syntastic_always_populate_loc_list = 1
-        let g:syntastic_auto_loc_list = 1
-        let g:syntastic_check_on_open = 1
-        let g:syntastic_check_on_wq = 0
-        nmap ll :llist<CR>
-        nmap l; :lnext<CR>
-        nmap lk :lprevious<CR>
-endfunction
+" }}}
 
 function! CodeBrowse()
+" {{{
   " export CODE_BROWSE=1
   set showmode
   set showcmd
@@ -633,9 +675,16 @@ function! CodeBrowse()
   let Tlist_Auto_Open=1
 endfunction
 
+let CODE_BROWSE = expand("$CODE_BROWSE")
+if CODE_BROWSE
+        call CodeBrowse()
+endif
+
+" }}}
 
 " START FZF : More at https://github.com/junegunn/fzf.vim#fzf-heart-vim
 " FZF Shell Mappings: https://junegunn.kr/2016/07/fzf-git
+" {{{
 fun! FzfOmniFiles()
   let is_git = system('git status')
   if v:shell_error
@@ -659,12 +708,14 @@ command! -bang -nargs=* GGrep
   \   fzf#vim#with_preview({'dir': systemlist('git rev-parse --show-toplevel')[0], 'options': ['--layout=reverse', '--info=inline'] }), <bang>0)
 
 function! RipgrepFzf(query, fullscreen)
+" {{{
   let command_fmt = 'rg --column --line-number --no-heading --color=always --smart-case -- %s || true'
   let initial_command = printf(command_fmt, shellescape(a:query))
   let reload_command = printf(command_fmt, '{q}')
   let spec = {'options': ['--phony', '--query', a:query, '--bind', 'change:reload:'.reload_command]}
   call fzf#vim#grep(initial_command, 1, fzf#vim#with_preview(spec), a:fullscreen)
 endfunction
+" }}}
 
 " FZF New command `RG` : delegate serach to rg
 command! -nargs=* -bang RG call RipgrepFzf(<q-args>, <bang>0)
@@ -693,20 +744,32 @@ xnoremap <silent> <Leader>rg    y:Rg <C-R>"<CR>
 nnoremap <silent> <Leader>gg    :GG <C-R><C-W><CR>
 xnoremap <silent> <Leader>gg    y:GG <C-R>"<CR>
 
-" END FZF
-
-let CODE_BROWSE = expand("$CODE_BROWSE")
-if CODE_BROWSE
-        call CodeBrowse()
-endif
-
-nmap <F8> :TagbarToggle<CR>
-
 " See `man fzf-tmux` for available options
 if exists('$TMUX')
     let g:fzf_layout = { 'tmux': '-p90%,60%' }
 else
     let g:fzf_layout = { 'down': '40%' }
 endif
+" }}}
 
+" Start Here
 call Setup_box_opts()
+
+"
+" You Complete me
+" brew install cmake python mono go nodejs
+" npm install -g npm-groovy-lint
+"
+" Show tabs, trailing whitespace, and continued lines visually
+":set list listchars=tab:»·,trail:·,extends:…
+"
+"
+
+" Statusline
+"hi User0 ctermfg=White    ctermbg=LightRed
+"hi User1 ctermfg=White    ctermbg=LightRed
+"hi User2 ctermfg=White    ctermbg=LightBlue
+"hi User3 ctermfg=White    ctermbg=LightMagenta
+"hi User4 ctermbg=Red      ctermbg=White
+"hi User5 ctermfg=White    ctermbg=LightGreen
+
