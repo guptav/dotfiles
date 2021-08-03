@@ -825,6 +825,11 @@ alias tt=task_tag
 
 unset SSH_ASKPASS
 
+# FZF Defaults
+export FZF_DEFAULT_OPTS='--layout=reverse --border --layout=reverse --info=inline --preview "~/.vim/bundle/fzf.vim/bin/preview.sh {}"'
+export FZF_DEFAULT_COMMAND='fd --type f'
+export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+
 #START Executing
 fastprompt
 
