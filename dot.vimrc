@@ -84,6 +84,14 @@ set undodir=~/.vimdid
 set undofile
 execute pathogen#infect()
 
+" Plugin settings for 'dbeniamine/cheat.sh-vim'
+let g:CheatSheetFrameworks = {
+      \ 'python' :      ['python', 'django', ],
+      \ 'javascript' :  ['javascript', 'node', 'angular', 'jquery'],
+      \ 'php' :         ['php', 'symphony', 'yii', 'zend'],
+      \}
+
+
 " Plugin settings for securemodelines ('ciaranm/securemodelines')
 " {{{
 let g:secure_modelines_allowed_items = [
@@ -189,6 +197,7 @@ let g:which_key_map = {
       \ 's' : ['<C-W>s'     , 'split-window-below']    ,
       \ 'v' : ['<C-W>v'     , 'split-window-below']    ,
       \ '?' : ['Windows'    , 'fzf-window']            ,
+      \ 'c' : ['Cheat'      , 'cheat']            ,
       \ }
 nnoremap <silent> <leader> :WhichKey! which_key_map<CR>
 " }}}
@@ -760,6 +769,14 @@ call Setup_box_opts()
 ":set list listchars=tab:»·,trail:·,extends:…
 "
 "
+
+" Statusline
+"hi User0 ctermfg=White    ctermbg=LightRed
+"hi User1 ctermfg=White    ctermbg=LightRed
+"hi User2 ctermfg=White    ctermbg=LightBlue
+"hi User3 ctermfg=White    ctermbg=LightMagenta
+"hi User4 ctermbg=Red      ctermbg=White
+"hi User5 ctermfg=White    ctermbg=LightGreen
 
 " TODO
 ":inoremap jk <ESC>
