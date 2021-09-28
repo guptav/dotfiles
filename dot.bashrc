@@ -110,6 +110,10 @@ alias cs='cscope -d .'
 alias less='less -R'
 alias more='more -R'
 alias ll='exa -l -g --icons --tree --git-ignore -ha --ignore-glob .git'
+alias k=kubectl
+
+source <(kubectl completion bash)
+complete -F __start_kubectl k
 
 # The 'ls' family (this assumes you use the GNU ls)
 alias la='ls -Al'               # show hidden files
@@ -738,6 +742,7 @@ function myinit()
     sudo apt install timewarrior taskwarrior
     sudo pip3 install Sphinx
     # apt install texlive-fonts-recommended texlive-latex-recommended texlive-latex-extra
+    git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 }
 
 function join_by { local IFS="$1"; shift; echo "$*"; }
