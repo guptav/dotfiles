@@ -19,6 +19,7 @@ export EDITOR=vim
 alias l="exa -l -snew -g --icons  --git-ignore --ignore-glob .git"
 alias lt="exa -l -snew -g --icons  --git-ignore --ignore-glob .git"
 alias g="git"
+alias b=~/bin/b
 
 # FZF Settings
 export FZF_DEFAULT_OPTS='--layout=reverse --border --layout=reverse --info=inline --preview "~/.vim/bundle/fzf.vim/bin/preview.sh {}"'
