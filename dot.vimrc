@@ -37,6 +37,7 @@ Plugin 'plasticboy/vim-markdown'
 Plugin 'martinda/Jenkinsfile-vim-syntax'
 Plugin 'fatih/vim-go'
 "Plugin 'vim-erlang/vim-erlang-runtime'
+Plugin 'google/vim-jsonnet'
 
 " Fuzzy Finder
 Plugin 'airblade/vim-rooter'
@@ -61,6 +62,8 @@ Plugin 'scrooloose/nerdtree'      " Nerd Tree
 Plugin 'scrooloose/nerdcommenter' " Nerd Commenter
 Plugin 'liuchengxu/vim-which-key' " Check via leader key
 Plugin 'tpope/vim-surround'
+Plugin 'tpope/vim-obsession'      " Saving vim session.
+
 Plugin 'majutsushi/tagbar'
 
 " Unsorted.
@@ -80,8 +83,8 @@ call vundle#end()            " required
 if !isdirectory($HOME."/.vimdid")
     call mkdir($HOME."/.vimdid", "", 0700)
 endi
-set undodir=~/.vimdid
-set undofile
+"set undodir=~/.vimdid
+"set undofile
 execute pathogen#infect()
 
 " Plugin settings for 'dbeniamine/cheat.sh-vim'
@@ -291,7 +294,7 @@ set splitright
 set ruler
 set showcmd
 set showmatch
-set cursorline
+" set cursorline
 set laststatus=2
 set smartcase
 set hidden             " Hide buffers when they are abandoned
@@ -589,30 +592,30 @@ imap <silent> ,, <ESC>"_yiw:s/\(\%#\w\+\)/<\1> <\/\1>/<cr><c-o><c-l>f>a<cr><cr><
 
 " highlight overly long lines same as TODOs.
 " {{{
-highlight ColourYellow ctermbg=yellow ctermfg=red
-highlight ColourLightYellow ctermbg=LightYellow
-highlight ColourGreen ctermfg=green
-highlight ColourBlue ctermfg=blue
-highlight ColourBlack ctermfg=Black
-highlight ColourRed ctermbg=red
-highlight Directory ctermfg=DarkGreen
-highlight Comment ctermfg=DarkCyan
-highlight Search cterm=NONE ctermfg=black ctermbg=yellow
+"highlight ColourYellow ctermbg=yellow ctermfg=red
+"highlight ColourLightYellow ctermbg=LightYellow
+"highlight ColourGreen ctermfg=green
+"highlight ColourBlue ctermfg=blue
+"highlight ColourBlack ctermfg=Black
+"highlight ColourRed ctermbg=red
+"highlight Directory ctermfg=DarkGreen
+"highlight Comment ctermfg=DarkCyan
+"highlight Search cterm=NONE ctermfg=black ctermbg=yellow
 
-autocmd BufRead,BufNewFile *.note call Setup_note_opts()
-autocmd Filetype python call Setup_python_opts()
-autocmd Filetype rst call Setup_note_opts()
-autocmd Filetype cpp,c,cxx,h,hpp call Setup_c_opts()
+"autocmd BufRead,BufNewFile *.note call Setup_note_opts()
+"autocmd Filetype python call Setup_python_opts()
+"autocmd Filetype rst call Setup_note_opts()
+"autocmd Filetype cpp,c,cxx,h,hpp call Setup_c_opts()
 
-autocmd FileType cpp,c,cxx,h,hpp,python match ColourYellow /\%120v.\+\|,[^ ]\|\s\+$\|\n\{3,}/
-autocmd FileType cpp,c,cxx,h,hpp,python call matchadd('ColourRed', '\n\{3,}')
-autocmd FileType cpp,c,cxx,h,hpp,python call matchadd('ColourYellow', '|[^ =]')
-autocmd FileType cpp,c,cxx,h,hpp,python call matchadd('ColourYellow', '[^ ]|')
+"autocmd FileType cpp,c,cxx,h,hpp,python match ColourYellow /\%120v.\+\|,[^ ]\|\s\+$\|\n\{3,}/
+"autocmd FileType cpp,c,cxx,h,hpp,python call matchadd('ColourRed', '\n\{3,}')
+"autocmd FileType cpp,c,cxx,h,hpp,python call matchadd('ColourYellow', '|[^ =]')
+"autocmd FileType cpp,c,cxx,h,hpp,python call matchadd('ColourYellow', '[^ ]|')
 
-autocmd BufNewFile,BufRead *.c,*.h exec 'match Todo /\%>' . &textwidth . 'v.\+/'
-autocmd BufNewFile,BufRead *.c,*.h exec 'match Todo /\%>' . &textwidth . 'v.\+/'
-autocmd BufRead,BufNewFile *.sh,*.py,*.xml,*pl,*.1 call matchadd('ColourRed', '\s\+$')
-autocmd BufRead,BufNewFile *.sh,*.xml,*.1,*.py call matchadd('ColourYellow', '\%120v.\+')
+"autocmd BufNewFile,BufRead *.c,*.h exec 'match Todo /\%>' . &textwidth . 'v.\+/'
+"autocmd BufNewFile,BufRead *.c,*.h exec 'match Todo /\%>' . &textwidth . 'v.\+/'
+"autocmd BufRead,BufNewFile *.sh,*.py,*.xml,*pl,*.1 call matchadd('ColourRed', '\s\+$')
+"autocmd BufRead,BufNewFile *.sh,*.xml,*.1,*.py call matchadd('ColourYellow', '\%120v.\+')
 " }}}
 
 let g:tex_flavor='latex'
