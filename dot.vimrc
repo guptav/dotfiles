@@ -771,7 +771,9 @@ call Setup_box_opts()
 " Show tabs, trailing whitespace, and continued lines visually
 ":set list listchars=tab:»·,trail:·,extends:…
 "
-"
+" To disable jsonnet format on save.
+let g:jsonnet_fmt_on_save = 1
+
 
 " Statusline
 "hi User0 ctermfg=White    ctermbg=LightRed
