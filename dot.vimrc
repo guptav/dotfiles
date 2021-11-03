@@ -308,6 +308,8 @@ setlocal colorcolumn=120
 set foldmethod=marker
 set wildmode=list:longest
 set wildmenu
+" Add a line in insert mode.
+"autocmd InsertEnter,InsertLeave * set cul!
 
 ":set mouse=a           " Enable mouse usage (all modes) " NOT GOOD
 " Match it setting
