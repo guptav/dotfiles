@@ -19,6 +19,7 @@ export EDITOR=vim
 alias l="exa -l -snew -g --icons  --git-ignore --ignore-glob .git"
 alias lt="exa -l -snew -g --icons  --git-ignore --ignore-glob .git"
 alias g="git"
+alias t="task"
 alias b=~/bin/b
 
 # FZF Settings
