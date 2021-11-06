@@ -33,6 +33,17 @@ tasksh.autoclear=true
 search.case.sensitive=no
 journal.time=on
 color=on
+alias.@=context
+alias.l=long
+alias.a=add
+alias.w=waiting
+alias.p=projects
+alias.c=calendar
+alias.r=recurring
+alias.b=blocking
+alias.u=unblocked
+alias.t=timesheet
+alias.n=next
 
 # List all projects with `task projects`, including those completed.
 list.all.projects=yes
@@ -59,11 +70,15 @@ report._reviewed.sort=reviewed+,modified+
 report._reviewed.filter=( reviewed.none: or reviewed.before:now-1week ) and ( +PENDING or +WAITING )
 
 # next report: don't show annotations
-report.next.columns=id,start.age,entry.age,depends,priority,project,tags,recur,scheduled.countdown,due.relative,until.remaining,description.count,urgency
+report.next.description=Most urgent tasks
+report.next.columns=id,start.age,entry.age,urgency,depends,priority,project,tags,recur,scheduled.countdown,due.remaining,until.remaining,description,brainpower,estimate
+report.next.filter=status:pending and +next
+report.next.labels=ID,Active,Age,Urgency,Deps,P,Project,Tag,Recur,S,Due,Until,Description,Brainpower,Estimate
+report.next.sort=brainpower-,priority-,urgency-
 
 # Ready report: don't show annotations. Don't show depends.indicator
-report.ready.columns=id,start.age,entry.age,priority,project,tags,recur.indicator,scheduled.countdown,due.relative,until.remaining,description.count,urgency
-report.ready.labels=ID,Active,Age,P,Project,Tags,R,S,Due,Until,Description,Urg
+report.ready.columns=id,start.age,entry.age,priority,project,tags,recur.indicator,scheduled.countdown,due.relative,until.remaining,description.count,urgency,brainpower,estimate
+report.ready.labels=ID,Active,Age,P,Project,Tags,R,S,Due,Until,Description,Urg,Brainpower,Estimate
 
 # OMG completed report, don't show me annotations.
 report.completed.columns=id,uuid.short,entry,end,entry.age,depends,priority,project,tags,recur.indicator,due,description.count
@@ -93,6 +108,14 @@ urgency.user.tag.costly.coefficient=3.0
 # Fun things are less important
 urgency.user.project.fun.coefficient=-1.0
 urgency.user.tag.fun.coefficient=-1.0
+
+uda.brainpower.type=string
+uda.brainpower.label=Brainpower
+uda.brainpower.values=H,M,L
+uda.brainpower.default=M
+
+uda.estimate.type=numeric
+uda.estimate.label=Estimate
 
 # Enable hooks
 hooks=on

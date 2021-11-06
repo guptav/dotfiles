@@ -90,3 +90,9 @@ Undo task::
 Purge a task::
 
     task 806f8ef5 purge
+
+Reference::
+
+    https://gtalug.org/meeting/2019-11/
+    https://www.youtube.com/watch?v=tijnc65soEI
+    https://www.youtube.com/watch?v=zl68asL9jZA&t=2s
