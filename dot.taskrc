@@ -34,6 +34,7 @@ search.case.sensitive=no
 journal.time=on
 color=on
 alias.@=context
+alias.archive=modify project:archive
 alias.l=long
 alias.a=add
 alias.w=waiting
@@ -49,6 +50,7 @@ alias.n=next
 list.all.projects=yes
 
 # Context
+context.inbox=project:inbox
 context.work=project:work
 context.personal=project.not:work project.not:fun -fun
 context.fun=project:fun or +fun
