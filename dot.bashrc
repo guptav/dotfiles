@@ -85,7 +85,7 @@ function fastprompt()
     #PS1="${HILIT}[\h]$NC \W > \[\033]0;\${TERM} [\u@\h] \w\007\]"
     #PS1="${HILIT}[\A - ]$NC -----${BLUE}\$(git branch --show-current)${NC}--- ${red}\${PWD}${NC}  \n[\h \#] > "
     #PS1="${HILIT}[\A - ]$NC -----${BLUE}\$(__git_ps1 '(%s)')${NC}--- ${red}\${PWD}${NC}  \n[\h \#] > "
-    PROMPT_COMMAND='__git_ps1 "${HILIT}[\A - $(task_indicator)]$NC -----${BLUE}" "${NC}--- ${red}\${PWD}${NC}  \n[\h \#] > "'
+    PROMPT_COMMAND='__git_ps1 "${HILIT}[\A - \$(task_indicator)]$NC -----${BLUE}" "${NC}--- ${red}\${PWD}${NC}  \n[\h \#] > "'
     ;;
     linux )
     PS1="${HILIT}[\h]$NC \W > " ;;
@@ -831,7 +831,7 @@ function task_indicator {
     elif [ `task +READY urgency \> 10 count` -gt "0" ]; then
         echo "$URGENT"
     else
-        echo '$'
+        echo '🚀'
     fi
 }
 
