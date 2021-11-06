@@ -37,14 +37,67 @@ color=on
 # List all projects with `task projects`, including those completed.
 list.all.projects=yes
 
+# Context
+context.work=project:work
+context.personal=project.not:work project.not:fun -fun
+context.fun=project:fun or +fun
+context.nofun=project.not:fun -nsfw -fun
+
+# Let's make our own scheduled report.
+report.scheduled.description=Scheduled tasks
+report.scheduled.columns=id,start.age,entry.age,priority,project,tags,recur.indicator,scheduled.relative,due.relative,until.remaining,description.count,urgency
+report.scheduled.labels=ID,Active,Age,P,Project,Tags,R,S,Due,Until,Description,Urg
+report.scheduled.sort=scheduled
+report.scheduled.filter=+SCHEDULED -COMPLETED -DELETED
+
+# I never really got into the review system in `tasksh`, but here's the config from when I tried.
+uda.reviewed.type=date
+uda.reviewed.label=Reviewed
+report._reviewed.description=Tasksh review report.  Adjust the filter to your needs.
+report._reviewed.columns=uuid
+report._reviewed.sort=reviewed+,modified+
+report._reviewed.filter=( reviewed.none: or reviewed.before:now-1week ) and ( +PENDING or +WAITING )
+
 # next report: don't show annotations
 report.next.columns=id,start.age,entry.age,depends,priority,project,tags,recur,scheduled.countdown,due.relative,until.remaining,description.count,urgency
 
 # Ready report: don't show annotations. Don't show depends.indicator
 report.ready.columns=id,start.age,entry.age,priority,project,tags,recur.indicator,scheduled.countdown,due.relative,until.remaining,description.count,urgency
-report.ready.labels=ID,Active,Age,P,Project,Tags,R,S,Due,Until,Description,
+report.ready.labels=ID,Active,Age,P,Project,Tags,R,S,Due,Until,Description,Urg
 
-# Context
-context.work=project:work
-context.personal=project.not:work project.not:fun -fun
-context.fun=project:fun or +fun
+# OMG completed report, don't show me annotations.
+report.completed.columns=id,uuid.short,entry,end,entry.age,depends,priority,project,tags,recur.indicator,due,description.count
+report.completed.labels=ID,UUID,Created,Completed,Age,Deps,P,Project,Tags,R,Due,Description
+
+# No. Nothing should show annotations. No. Also relative dates please.
+report.waiting.labels=ID,A,Age,D,P,Project,Tags,R,Waiting,Sched,Due,Until,Description
+report.waiting.columns=id,start.active,entry.age,depends.indicator,priority,project,tags,recur.indicator,wait.remaining,scheduled,due.relative,until,description.count
+report.waiting.sort=wait+,due+,entry+
+
+# Child tasks inherit their parent's urgency if that's higher.
+# It's like this option was made for me.
+urgency.inherit=on
+
+# How urgent something is depends upon what's waiting on it.
+urgency.blocking.coefficient=0
+urgency.blocked.coefficient=0
+
+# More sensible priorities, plz.
+uda.priority.values = H,M,,L
+urgency.uda.priority.L.coefficient=0
+urgency.uda.priority..coefficient=1.8
+
+# Costly tasks are most important.
+urgency.user.tag.costly.coefficient=3.0
+
+# Fun things are less important
+urgency.user.project.fun.coefficient=-1.0
+urgency.user.tag.fun.coefficient=-1.0
+
+# Enable hooks
+hooks=on
+debug.hooks=0
+
+# Our verbosity does not include the 2.6.x 'override' value, so I don't get warned of
+# custom overrides in my shell aliases and functions.
+verbose=blank,header,footnote,label,new-id,affected,edit,special,project,sync,unwait,recur
