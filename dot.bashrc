@@ -85,7 +85,7 @@ function fastprompt()
     #PS1="${HILIT}[\h]$NC \W > \[\033]0;\${TERM} [\u@\h] \w\007\]"
     #PS1="${HILIT}[\A - ]$NC -----${BLUE}\$(git branch --show-current)${NC}--- ${red}\${PWD}${NC}  \n[\h \#] > "
     #PS1="${HILIT}[\A - ]$NC -----${BLUE}\$(__git_ps1 '(%s)')${NC}--- ${red}\${PWD}${NC}  \n[\h \#] > "
-    PROMPT_COMMAND='__git_ps1 "${HILIT}[\A - ]$NC -----${BLUE}" "${NC}--- ${red}\${PWD}${NC}  \n[\h \#] > "'
+    PROMPT_COMMAND='__git_ps1 "${HILIT}[\A - $(task_indicator)]$NC -----${BLUE}" "${NC}--- ${red}\${PWD}${NC}  \n[\h \#] > "'
     ;;
     linux )
     PS1="${HILIT}[\h]$NC \W > " ;;
@@ -729,6 +729,11 @@ function tmw()
     tmux split-window -dh "$*"
 }
 
+function ts {
+    args=$@
+    tmux send-keys -t right "$args" C-m
+}
+
 function install_zsh()
 {
     sh -c "$(wget --no-check-certificate https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh -O -)"
@@ -780,6 +785,7 @@ function progress_bar() {
     printf "\e[K${FILLC}%-*s${NC}${EMPTYC}%-*s${NC} %3d %% %s" "$_fillw" "$dots" "$_emptyw" "" "$p" "$*";
 }
 
+# Task and GTD
 function task_tag()
 {
     printf "%20s %10s %10s %11s\n" "Tag" "Remaining" "Total" "Complete"
@@ -795,6 +801,41 @@ function task_tag()
     done
 }
 
+webpage_title (){
+    wget -qO- "$*" |   gawk -v IGNORECASE=1 -v RS='</title' 'RT{gsub(/.*<title[^>]*>/,"");print;exit}'
+}
+
+read_and_review (){
+    link="$1"
+    title=$(webpage_title $link)
+    echo $title
+    descr="\"Read and review: $title\""
+    id=$(task add project:rnr +rnr "$descr" | sed -n 's/Created task \(.*\)./\1/p')
+    task "$id" annotate "$link"
+}
+
+alias rnr=read_and_review
+
+URGENT="❗"
+OVERDUE="☠️"
+DUETODAY="😱"
+DUETOMORROW="📅"
+
+function task_indicator {
+    if [ `task +READY +OVERDUE count` -gt "0" ]; then
+        echo "$OVERDUE"
+    elif [ `task +READY +DUETODAY count` -gt "0" ]; then
+        echo "$DUETODAY"
+    elif [ `task +READY +DUETOMORROW count` -gt "0" ]; then
+        echo "$DUETOMORROW"
+    elif [ `task +READY urgency \> 10 count` -gt "0" ]; then
+        echo "$URGENT"
+    else
+        echo '$'
+    fi
+}
+
+# Search using rg from command line.
 function rg()
 {
     local search=${1}
@@ -844,7 +885,3 @@ fastprompt
 #Refrence
 #http://www.novell.com/coolsolutions/tools/18639.html
 
-function ts {
-    args=$@
-    tmux send-keys -t right "$args" C-m
-}

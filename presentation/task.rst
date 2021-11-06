@@ -49,7 +49,8 @@ Annotate::
 
     task 3 annotate "one line note to a task"
 
-Log ::
+Log::
+
     task log "did something"            # Log things completed.
 
 Waiting and Scheduled task::
@@ -85,3 +86,7 @@ Active Task::
 Undo task::
 
     task undo               # Revert the last change you made.
+
+Purge a task::
+
+    task 806f8ef5 purge
