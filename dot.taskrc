@@ -25,5 +25,26 @@ include ~/.dark-256.theme
 #include /usr/share/doc/task/rc/dark-yellow-green.theme
 #include /usr/share/doc/task/rc/dark-gray-256.theme
 
+# Basic config
+default.project=inbox
+default.command=ready limit:page
+weekstart=monday
+tasksh.autoclear=true
+search.case.sensitive=no
 journal.time=on
 color=on
+
+# List all projects with `task projects`, including those completed.
+list.all.projects=yes
+
+# next report: don't show annotations
+report.next.columns=id,start.age,entry.age,depends,priority,project,tags,recur,scheduled.countdown,due.relative,until.remaining,description.count,urgency
+
+# Ready report: don't show annotations. Don't show depends.indicator
+report.ready.columns=id,start.age,entry.age,priority,project,tags,recur.indicator,scheduled.countdown,due.relative,until.remaining,description.count,urgency
+report.ready.labels=ID,Active,Age,P,Project,Tags,R,S,Due,Until,Description,
+
+# Context
+context.work=project:work
+context.personal=project.not:work project.not:fun -fun
+context.fun=project:fun or +fun
