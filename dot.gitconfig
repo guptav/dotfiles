@@ -1,56 +1,59 @@
 [user]
-	email = vaibhavgupta@gmail.com
-	name = Vaibhav Gupta
+  email = vaibhavgupta@gmail.com
+  name = Vaibhav Gupta
 
 [core]
-	editor = vim
-	excludesfile = ~/.gitignore
+  editor = vim
+  excludesfile = ~/.gitignore
 
 [color]
-	diff = auto
-	status = auto
-	branch = auto
-	pager = true
-	ui = true
+  diff = auto
+  status = auto
+  branch = auto
+  pager = true
+  ui = true
 
 [alias]
-	aliases = !git config --list | grep 'alias\\.' | sed 's/alias\\.\\([^=]*\\)=\\(.*\\)/\\1\\ \t => \\2/' | sort
+  aliases = !git config --list | grep 'alias\\.' | sed 's/alias\\.\\([^=]*\\)=\\(.*\\)/\\1\\ \t => \\2/' | sort
 
-	ls = show  --name-only --oneline --name-only
-	st = status -uno
-	ss = status -s -b
-	ww = branch -avv
+  ls = show  --name-only --oneline --name-only
+  st = status -uno
+  ss = status -s -b
+  ww = branch -avv
 
-	last = log -1 HEAD
-	ll = log --stat
-	gl = log --graph --pretty=oneline --abbrev-commit --decorate
-	gll = log --abbrev-commit --graph --decorate --pretty=format:\"%C(green)%h%Creset -%C(yellow)%d%Creset %s %Cred<%an>%Creset %Cblue(%ar)%Creset\"
-	diffc = diff --cached
+  last = log -1 HEAD
+  ll = log --stat
+  gl = log --graph --pretty=oneline --abbrev-commit --decorate
+  gll = log --abbrev-commit --graph --decorate --pretty=format:\"%C(green)%h%Creset -%C(yellow)%d%Creset %s %Cred<%an>%Creset %Cblue(%ar)%Creset\"
+  diffc = diff --cached
 
-    #
-    # git grep
-    og = "!f() { git grep --line-number \"$1\" | fzf --delimiter : --preview 'bat --style=numbers --color=always --highlight-line {2} {1}' --preview-window +{2}-/2; }; f"
-    of = !git ls-files | fzf --preview 'bat --style=numbers --color=always {1}' --preview-window +{2}-/2
+  #
+  # git grep
+  og = "!f() { git grep --line-number \"$1\" | fzf --delimiter : --preview 'bat --style=numbers --color=always --highlight-line {2} {1}' --preview-window +{2}-/2; }; f"
+  of = !git ls-files | fzf --preview 'bat --style=numbers --color=always {1}' --preview-window +{2}-/2
 
-	#
-	# Commands
-	#
+  #
+  # Commands
+  #
 
-	ctags = !~/.git_template/hooks/ctags
-	export = archive -o latest.tar.gz -9 --prefix=latest/
-	churn = !git log --all -M -C --name-only --format='format:' "$@" | sort | grep -v '^$' | uniq -c | sort | awk 'BEGIN {print "count,file"} {print $1 "," $2}'
-	fpush = !git add -u && git commit --amend --no-edit && git push -f origin `git branch --show-current`
-	pr = !git  remote -v | awk '/fetch/{print $2}' | sed -e 's/:/\\//g' -e 's/git@/https:\\/\\//g' -e 's/\\.git//g' -e 's/$/\\/pull\\/new\\//g' | xargs -I {} echo {}$(git branch --show-current) | xargs open
+  ctags = !~/.git_template/hooks/ctags
+  export = archive -o latest.tar.gz -9 --prefix=latest/
+  churn = !git log --all -M -C --name-only --format='format:' "$@" | sort | grep -v '^$' | uniq -c | sort | awk 'BEGIN {print "count,file"} {print $1 "," $2}'
+  fpush = !git add -u && git commit --amend --no-edit && git push -f origin `git branch --show-current`
+  pr = !git  remote -v | awk '/fetch/{print $2}' | sed -e 's/:/\\//g' -e 's/git@/https:\\/\\//g' -e 's/\\.git//g' -e 's/$/\\/pull\\/new\\//g' | xargs -I {} echo {}$(git branch --show-current) | xargs open
+  fremote = !git remote show origin | sed -n '/HEAD branch/s/.*: //p'
+  fclean = !git remote prune origin
+  update = "!_f() { git diff-index --quiet HEAD -- || return; myremote=$(git symbolic-ref refs/remotes/origin/HEAD | sed 's@^refs/remotes/origin/@@'); echo "Fetching $myremote";git fetch origin && git checkout $myremote; git rebase origin/$myremote; git st;}; _f || echo 'untracked changes. Stash first'"
 
 [merge]
-	tool = vimdiff2
+  tool = vimdiff2
 
 [init]
-	templatedir = ~/.git_template
-	defaultBranch = main
+  templatedir = ~/.git_template
+  defaultBranch = main
 
 [include]
-	path = ~/.gitconfig.local
+  path = ~/.gitconfig.local
 
 #
 # GIT HELP
