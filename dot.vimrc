@@ -711,6 +711,12 @@ command! -bang -nargs=? -complete=dir Files
 command! -bang -nargs=? -complete=dir GFiles
      \ call fzf#vim#gitfiles(<q-args>, fzf#vim#with_preview({'options': ['--layout=reverse', '--info=inline']}), <bang>0)
 
+command! -bang -nargs=? -complete=dir BLines
+      \ call fzf#vim#buffer_lines(<q-args>, {'options': ['--no-preview']}, <bang>0)
+
+command! -bang -nargs=? -complete=dir Commands
+      \ call fzf#vim#commands({'options': ['--no-preview']}, <bang>0)
+
 " FZF New command `GGrep` : git grep
 command! -bang -nargs=* GGrep
   \ call fzf#vim#grep(
@@ -736,7 +742,7 @@ nnoremap <leader><leader>       :BLines<CR>
 nnoremap <leader>qq             :BLines <C-R><C-W><CR>
 nnoremap <leader><Enter>        :Buffers<CR>
 nnoremap <leader>]              :BCommit<CR>
-nmap <Leader>C                  :Commands<CR>
+nmap <Leader>[                  :Commands<CR>
 nmap <Leader>;                  :History:<CR>
 nmap <Leader>M                  :Maps<CR>
 nnoremap <silent> <Leader>`     :Marks<CR>
@@ -756,7 +762,7 @@ xnoremap <silent> <Leader>gg    y:GG <C-R>"<CR>
 
 " See `man fzf-tmux` for available options
 if exists('$TMUX')
-    let g:fzf_layout = { 'tmux': '-p90%,60%' }
+    let g:fzf_layout = { 'tmux': '-p95%,90%' }
 else
     let g:fzf_layout = { 'down': '40%' }
 endif
