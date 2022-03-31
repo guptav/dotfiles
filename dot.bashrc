@@ -729,9 +729,16 @@ function tmw()
     tmux split-window -dh "$*"
 }
 
-function ts {
+function ts() {
     args=$@
     tmux send-keys -t right "$args" C-m
+}
+
+function ide() {
+    tmux split-window -v -p 20
+    tmux select-pane -t 1
+    tmux split-window -h -p 30
+    tmux select-pane -t 1
 }
 
 function install_zsh()
