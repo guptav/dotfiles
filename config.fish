@@ -45,3 +45,5 @@ end
 function theme
   starship init fish | source
 end
+
+set PATH $PATH ~/bin

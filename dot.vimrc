@@ -717,6 +717,9 @@ command! -bang -nargs=? -complete=dir BLines
 command! -bang -nargs=? -complete=dir Commands
       \ call fzf#vim#commands({'options': ['--no-preview']}, <bang>0)
 
+"command! -bang -nargs=? -complete=dir History
+      "\ call fzf#vim#history(<q-args>, {'options': ['--no-preview']})
+
 " FZF New command `GGrep` : git grep
 command! -bang -nargs=* GGrep
   \ call fzf#vim#grep(
@@ -783,7 +786,7 @@ call Setup_box_opts()
 let g:jsonnet_fmt_on_save = 0
 
 " Change directory as we open a file.
-let g:rooter_manual_only = 1
+let g:rooter_manual_only = 0
 
 
 " Statusline
