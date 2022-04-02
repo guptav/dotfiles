@@ -23,6 +23,9 @@ alias t="task"
 alias rm="rm -i"
 alias b=~/bin/b
 
+set tmux_sess (tmux display-message -p '#S');
+alias tkill="tmux list-sessions | awk '{print \$1}'| sed -e 's/$tmux_sess//g' | fzf --no-preview  | xargs -I{} tmux kill-session -t '{}'"
+
 # FZF Settings
 export FZF_DEFAULT_OPTS='--layout=reverse --border --layout=reverse --info=inline --preview "~/.vim/bundle/fzf.vim/bin/preview.sh {}"'
 export FZF_DEFAULT_COMMAND='fd --type f'
