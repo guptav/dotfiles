@@ -44,6 +44,7 @@
   fremote = !git remote show origin | sed -n '/HEAD branch/s/.*: //p'
   fclean = !git remote prune origin
   update = "!_f() { git diff-index --quiet HEAD -- || return; myremote=$(git symbolic-ref refs/remotes/origin/HEAD | sed 's@^refs/remotes/origin/@@'); echo "Fetching $myremote";git fetch origin && git checkout $myremote; git rebase origin/$myremote; git st;}; _f || echo 'untracked changes. Stash first'"
+  fza = "!git ls-files -m -o --exclude-standard | fzf --print0 -m --preview='git diff --color {}' | xargs -0 -t -o git add"
 
 [merge]
   tool = vimdiff2
