@@ -63,6 +63,7 @@ Plugin 'scrooloose/nerdcommenter' " Nerd Commenter
 Plugin 'liuchengxu/vim-which-key' " Check via leader key
 Plugin 'tpope/vim-surround'
 Plugin 'tpope/vim-obsession'      " Saving vim session.
+Plugin 'christoomey/vim-tmux-navigator' " vim tmux navigation
 
 Plugin 'majutsushi/tagbar'
 
@@ -320,6 +321,9 @@ set backspace=indent,eol,start
 "set autoindent
 " }}}
 
+" automatically rebalance windows on vim resize
+:autocmd VimResized * :wincmd =
+
 "
 " My Helper functions
 "
@@ -370,7 +374,7 @@ function Setup_box_opts()
         set nu
         set complete+=s
         set textwidth=120
-        set tabstop=2 shiftwidth=2 softtabstop=2 expandtab
+        set tabstop=4 shiftwidth=4 softtabstop=4 expandtab
         set smartindent
         set autoindent
         set cindent
