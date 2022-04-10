@@ -277,6 +277,9 @@ let g:ycm_autoclose_preview_window_after_completion = '1'
 "set previewpopup=height:10,width:60
 " }}}
 
+" Plugin Settings for 'plasticboy/vim-markdown'
+let g:vim_markdown_folding_disabled = 1
+
 " Basic settings and mappings
 " {{{
 syntax on
@@ -673,9 +676,9 @@ if has("cscope")
         nmap <C-@>d :scs find d <C-R>=expand("<cword>")<CR><CR>
         set csqf=s-,g-,d-,c-,t-,e-,f-,i-
 
-        nmap ll :cl<CR>
-        nmap l; :cn<CR>
-        nmap lk :cp<CR>
+        "nmap ll :cl<CR>
+        "nmap l; :cn<CR>
+        "nmap lk :cp<CR>
 endif
 " }}}
 
