@@ -279,7 +279,7 @@ let g:ycm_autoclose_preview_window_after_completion = '1'
 
 " Plugin Settings for 'plasticboy/vim-markdown'
 let g:vim_markdown_folding_disabled = 1
-let g:vim_markdown_auto_extension_ext = 'txt'
+let g:vim_markdown_auto_extension_ext = 'txt' " It seems this is not working.
 
 " Basic settings and mappings
 " {{{
