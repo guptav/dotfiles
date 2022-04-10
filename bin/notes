@@ -30,12 +30,13 @@ if [ ! -d "${NOTES_DIRECTORY}" ]; then
     done
 fi
 
-echo -n "# " >> "${NOTES_PATH}"
+printf "# " >> "${NOTES_PATH}"
 if [ ${#} -eq 0 ]; then
     if [ -p "/dev/stdin" ]; then
         (cat; printf "\n\n") >> "${NOTES_PATH}"
     else
-        eval "${NOTES_EDITOR}" "${NOTES_PATH}"
+        "${NOTES_EDITOR}" "+normal G$" +startinsert "${NOTES_PATH}"
+        printf "\n\n" >>  "${NOTES_PATH}"
     fi
 else
     printf "%s\n\n" "${*}" >> "${NOTES_PATH}"
