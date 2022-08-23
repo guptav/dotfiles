@@ -49,4 +49,7 @@ function theme
   starship init fish | source
 end
 
+# Keyboard Bindings
+bind \cs beginning-of-line
+
 set PATH $PATH ~/bin
