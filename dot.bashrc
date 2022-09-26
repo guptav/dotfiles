@@ -883,6 +883,9 @@ export FZF_DEFAULT_OPTS='--layout=reverse --border --layout=reverse --info=inlin
 export FZF_DEFAULT_COMMAND='fd --type f'
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 
+# podman
+export DOCKER_HOST='unix:///Users/vaibhavgupta/.local/share/containers/podman/machine/podman-machine-default/podman.sock'
+
 #START Executing
 fastprompt
 
