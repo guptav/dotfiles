@@ -39,12 +39,28 @@
   ctags = !~/.git_template/hooks/ctags
   export = archive -o latest.tar.gz -9 --prefix=latest/
   churn = !git log --all -M -C --name-only --format='format:' "$@" | sort | grep -v '^$' | uniq -c | sort | awk 'BEGIN {print "count,file"} {print $1 "," $2}'
-  fpush = !git add -u && git commit --amend --no-edit && git push -f origin `git branch --show-current`
+
+  # Create a new PR in browser
   pr = !git  remote -v | awk '/fetch/{print $2}' | sed -e 's/:/\\//g' -e 's/git@/https:\\/\\//g' -e 's/\\.git//g' -e 's/$/\\/pull\\/new\\//g' | xargs -I {} echo {}$(git branch --show-current) | xargs open
-  fremote = !git remote show origin | sed -n '/HEAD branch/s/.*: //p'
+
+  # Show remote HEAD branch
+  sremote = !git remote show origin | sed -n '/HEAD branch/s/.*: //p'
+
+  # Force Push
+  fpush = !git add -u && git commit --amend --no-edit && git push -f origin `git branch --show-current`
+
+  # Purge remote branch
   fclean = !git remote prune origin
+
+  # Checkout the head branch, rebase and switch
   update = "!_f() { git diff-index --quiet HEAD -- || return; myremote=$(git symbolic-ref refs/remotes/origin/HEAD | sed 's@^refs/remotes/origin/@@'); echo "Fetching $myremote";git fetch origin && git checkout $myremote; git rebase origin/$myremote; git st;}; _f || echo 'untracked changes. Stash first'"
-  fza = "!git ls-files -m -o --exclude-standard | fzf --print0 -m --preview='git diff --color {}' | xargs -0 -t -o git add"
+
+  # Git fuzzy add. Add an option -o if you want to include others files.
+  za = "!git ls-files -m  --exclude-standard | fzf --print0 -m --preview='git diff --color {}' | xargs -0 -t -o git add"
+  zb = "!git ls-files -m -o --exclude-standard | fzf --print0 -m --preview='git diff --color {}' | xargs -0 -t -o git add"
+
+  browse = "!gh browse"
+  cb = "!git branch --sort=-committerdate --format='%(refname:short)' | fzf --header Checkout --print0 -m --preview='git show {}' | xargs git checkout"
 
 [merge]
   tool = vimdiff2
