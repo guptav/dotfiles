@@ -48,6 +48,7 @@
 
   # Force Push
   fpush = !git add -u && git commit --amend --no-edit && git push -f origin `git branch --show-current`
+  po = !git push origin $(git rev-parse --abbrev-ref HEAD)
 
   # Purge remote branch
   fclean = !git remote prune origin
