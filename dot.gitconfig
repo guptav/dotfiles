@@ -56,7 +56,7 @@
   update = "!_f() { git diff-index --quiet HEAD -- || return; myremote=$(git symbolic-ref refs/remotes/origin/HEAD | sed 's@^refs/remotes/origin/@@'); echo "Fetching $myremote";git fetch origin && git checkout $myremote; git rebase origin/$myremote; git st;}; _f || echo 'untracked changes. Stash first'"
 
   # Git fuzzy add. Add an option -o if you want to include others files.
-  za = "!git ls-files -m  --exclude-standard | fzf --print0 -m --preview='git diff --color {}' | xargs -0 -t -o git add"
+  za = "!git ls-files -m  --exclude-standard | fzf --print0 -m --preview='git diff --color {}' | xargs -0 -t -o git add; git st"
   zb = "!git ls-files -m -o --exclude-standard | fzf --print0 -m --preview='git diff --color {}' | xargs -0 -t -o git add"
 
   # browse the repo in repo. Need github cli.
