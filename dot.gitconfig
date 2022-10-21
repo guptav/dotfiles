@@ -59,8 +59,14 @@
   za = "!git ls-files -m  --exclude-standard | fzf --print0 -m --preview='git diff --color {}' | xargs -0 -t -o git add"
   zb = "!git ls-files -m -o --exclude-standard | fzf --print0 -m --preview='git diff --color {}' | xargs -0 -t -o git add"
 
+  # browse the repo in repo. Need github cli.
   browse = "!gh browse"
+
+  # Switch to a different branch
   cb = "!git branch --sort=-committerdate --format='%(refname:short)' | fzf --header Checkout --print0 -m --preview='git show {}' | xargs git checkout"
+
+  # Open all the files from last commit.
+  open = "!vim $(git show --pretty= --name-only)"
 
 [merge]
   tool = vimdiff2
