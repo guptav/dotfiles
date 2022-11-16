@@ -69,6 +69,9 @@
   # Open all the files from last commit.
   open = "!vim $(git show --pretty= --name-only)"
 
+  root = "!git rev-parse --show-toplevel"
+  op = "!_f() { cd -- ${GIT_PREFIX:-.};gh browse $(git rev-parse --show-prefix)$1; }; _f"
+
 [merge]
   tool = vimdiff2
 
