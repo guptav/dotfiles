@@ -169,7 +169,18 @@ map <Leader>vp :VimuxPromptCommand<CR>
 map <Leader>vl :VimuxRunLastCommand<CR>
 map <Leader>vm :VimuxPromptCommand("make ")<CR><CR>
 " Run current line by VimuxRunCommand
-map <Leader>rr :VimuxRunCommand ''.getline('.')<CR>
+map <Leader>x :VimuxRunCommand ''.getline('.')<CR>
+
+function! VimuxSlime()
+  call VimuxRunCommand(@v)
+endfunction
+
+" If text is selected, save it in the v buffer and send that buffer it to tmux
+vmap <LocalLeader>vs "vy :call VimuxSlime()<CR>
+
+" Select current paragraph and send it to tmux
+nmap <LocalLeader>vs vip<LocalLeader>vs<CR>
+
 
 " Run the last command on a tmux window on write.
 function! VGautoWrite()
