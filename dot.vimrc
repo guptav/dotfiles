@@ -642,6 +642,16 @@ imap <silent> ,, <ESC>"_yiw:s/\(\%#\w\+\)/<\1> <\/\1>/<cr><c-o><c-l>f>a<cr><cr><
 let g:tex_flavor='latex'
 set iskeyword+=:
 
+" git functions
+" {{{
+fun! GHBrowse()
+    let lnum = line(".")
+    echohl None
+    execute "!git op " . expand("%" ).":".lnum
+endfun
+nmap op :call GHBrowse()<CR><CR>
+" }}}
+
 " TOBE DEPERECATED
 " {{{
 map .f :call ShowFuncName() <CR>
