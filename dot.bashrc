@@ -778,6 +778,7 @@ function __vg_history__()
 }
 
 bind -m emacs-standard -x '"\C-v\C-v":__vg_history__'
+bind "\C-s":beginning-of-line
 
 function progress_bar() {
     local w=30 p=$1;  shift
