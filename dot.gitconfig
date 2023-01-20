@@ -65,12 +65,15 @@
 
   # Switch to a different branch
   cb = "!git branch --sort=-committerdate --format='%(refname:short)' | fzf --header Checkout --print0 -m --preview='git show {}' | xargs git checkout"
+  ;b = "!git for-each-ref --sort='-authordate' --format='%(authordate)%09%(objectname:short)%09%(refname)' refs/heads | sed -e 's-refs/heads/--'"
+
 
   # Open all the files from last commit.
   open = "!vim $(git show --pretty= --name-only)"
 
   root = "!git rev-parse --show-toplevel"
-  op = "!_f() { cd -- ${GIT_PREFIX:-.};gh browse $(git rev-parse --show-prefix)$1; }; _f"
+  op = "!_f() { cd -- ${GIT_PREFIX:-.};gh browse $1; }; _f"
+  sha = "!gh browse $(git log -1 --pretty=format:'%H')"
 
 [merge]
   tool = vimdiff2
@@ -98,3 +101,6 @@
 # Git update author
 # git commit --amend --author="Vaibhav Gupta<vaibhav.gupta@gmail.com>" --no-edit
 
+[credential "https://git.dev.box.net"]
+	helper = 
+	helper = !/usr/local/bin/gh auth git-credential
