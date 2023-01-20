@@ -22,6 +22,7 @@ alias g="git"
 alias t="task"
 alias rm="rm -i"
 alias b=~/bin/b
+alias aa="cd (git root)"
 
 set tmux_sess (tmux display-message -p '#S');
 alias tkill="tmux list-sessions | awk '{print \$1}'| sed -e 's/$tmux_sess//g' | fzf --no-preview  | xargs -I{} tmux kill-session -t '{}'"
