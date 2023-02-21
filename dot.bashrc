@@ -42,6 +42,7 @@ if [ -f /etc/bash_completion ]; then
 fi
 
 source ~/.git-prompt.sh
+source /Users/vaibhavgupta/repo/fzf-git.sh/fzf-git.sh
 
 green='\E[32;40m'
 white='\E[37;40m'
@@ -778,6 +779,7 @@ function __vg_history__()
 }
 
 bind -m emacs-standard -x '"\C-v\C-v":__vg_history__'
+bind -m emacs-standard -x '"\C-p":fzf'
 bind "\C-s":beginning-of-line
 
 function progress_bar() {

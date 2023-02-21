@@ -184,7 +184,7 @@ nmap <LocalLeader>vs vip<LocalLeader>vs<CR>
 
 " Run the last command on a tmux window on write.
 function! VGautoWrite()
-        let g:VimuxRunnerType = "window"
+        let g:VimuxRunnerType = "pane"
         autocmd BufWritePost  * :call VimuxRunLastCommand()
 endfunction
 " }}}
@@ -600,7 +600,9 @@ endfunction
 nmap <F2> :'<,'>s/^/\/\/ /g<CR>
 nmap <F3> <ESC>:mkview<CR>
 nmap <F4> <ESC>:loadview<CR>
-nmap <F5> :TlistToggle<CR>
+"nmap <F5> :TlistToggle<CR>
+nmap <F4> :cprev<CR>
+nmap <F5> :cnext<CR>
 nmap <F6> /}<CR>zf%<ESC>:nohlsearch<CR>
 command -nargs=* Make make <args> | cwindow 5
 "map <F9> :w<CR>:Make %< <CR> <CR>
@@ -815,7 +817,7 @@ call Setup_box_opts()
 let g:jsonnet_fmt_on_save = 0
 
 " Change directory as we open a file.
-let g:rooter_manual_only = 0
+let g:rooter_manual_only = 1
 
 
 " Statusline
