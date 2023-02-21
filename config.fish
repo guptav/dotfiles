@@ -31,7 +31,7 @@ alias tkill="tmux list-sessions | awk '{print \$1}'| sed -e 's/$tmux_sess//g' | 
 export FZF_DEFAULT_OPTS='--layout=reverse --border --layout=reverse --info=inline --preview "~/.vim/bundle/fzf.vim/bin/preview.sh {}"'
 export FZF_DEFAULT_COMMAND='fd --type f'
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
-fzf_configure_bindings --directory=\cp
+fzf_configure_bindings --directory=\cp --git_log=\cg --git_status=\ct
 
 function rg
   command rg -n $argv | fzf
@@ -54,4 +54,4 @@ end
 bind \cs beginning-of-line
 
 set PATH $PATH ~/bin
-export DOCKER_HOST='unix:///Users/vaibhavgupta/.local/share/containers/podman/machine/podman-machine-default/podman.sock'
+# export DOCKER_HOST='unix:///Users/vaibhavgupta/.local/share/containers/podman/machine/podman-machine-default/podman.sock'
