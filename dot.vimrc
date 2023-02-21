@@ -170,12 +170,14 @@ map <Leader>vl :VimuxRunLastCommand<CR>
 map <Leader>vm :VimuxPromptCommand("make ")<CR><CR>
 " Run current line by VimuxRunCommand
 map <Leader>x :VimuxRunCommand ''.getline('.')<CR>
+map <F3> :VimuxRunCommand ''.getline('.')<CR>j
 
 function! VimuxSlime()
   call VimuxRunCommand(@v)
 endfunction
 
 " If text is selected, save it in the v buffer and send that buffer it to tmux
+vmap <F3> "vy :call VimuxSlime()<CR>
 vmap <LocalLeader>vs "vy :call VimuxSlime()<CR>
 
 " Select current paragraph and send it to tmux
@@ -598,8 +600,8 @@ endfunction
 " Open tag in new tab
 "map <C-\> :tab split<CR>:exec("tag ".expand("<cword>"))<CR>
 nmap <F2> :'<,'>s/^/\/\/ /g<CR>
-nmap <F3> <ESC>:mkview<CR>
-nmap <F4> <ESC>:loadview<CR>
+"nmap <F3> <ESC>:mkview<CR>
+"nmap <F4> <ESC>:loadview<CR>
 "nmap <F5> :TlistToggle<CR>
 nmap <F4> :cprev<CR>
 nmap <F5> :cnext<CR>
