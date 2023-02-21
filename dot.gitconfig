@@ -64,7 +64,7 @@
   browse = "!gh browse"
 
   # Switch to a different branch
-  cb = "!git branch --sort=-committerdate --format='%(refname:short)' | fzf --header Checkout --print0 -m --preview='git show {}' | xargs git checkout"
+  cb = "!git branch --sort=-committerdate --format='%(refname:short)' | fzf --header Checkout --print0 -m --preview='git show --color=always {}' | xargs git checkout"
   ;b = "!git for-each-ref --sort='-authordate' --format='%(authordate)%09%(objectname:short)%09%(refname)' refs/heads | sed -e 's-refs/heads/--'"
 
 
