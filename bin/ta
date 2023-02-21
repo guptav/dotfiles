@@ -64,7 +64,7 @@ else
     (TMUX='' 
     tmux new-session -Ad -s "$session_name" -c $path_name;
     tmux split-window -vb -t "$session_name" -c $path_name -p 80;
-    tmux send-keys -t "$session_name" "vim +GFiles" Enter;
+    # tmux send-keys -t "$session_name" "vim +GFiles" Enter;
     )
 fi
  }
