@@ -783,6 +783,7 @@ bind -m emacs-standard -x '"\C-p":fzf'
 bind "\C-s":beginning-of-line
 bind -m emacs-standard -x '"\C-o":git cb'
 bind -m emacs-standard -x '"\C-t":git fuzzy status'
+bind -m emacs-standard -x '"\C-g":git gl'
 
 function progress_bar() {
     local w=30 p=$1;  shift

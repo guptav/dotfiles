@@ -22,7 +22,6 @@
 
   last = log -1 HEAD
   ll = log --stat
-  gl = log --graph --pretty=oneline --abbrev-commit --decorate
   gll = log --abbrev-commit --graph --decorate --pretty=format:\"%C(green)%h%Creset -%C(yellow)%d%Creset %s %Cred<%an>%Creset %Cblue(%ar)%Creset\"
   diffc = diff --cached
 
@@ -65,8 +64,9 @@
 
   # Switch to a different branch
   cb = "!git branch --sort=-committerdate --color --format='%(color:yellow)%(refname:short) %(color:red)%(HEAD) %(color:green)(%(committerdate:relative)) - %(color:blue)%(subject)' | fzf --ansi  --header Checkout -m --preview='git show --color=always {1} ' | cut -d' ' -f 1 | xargs git checkout"
-  ;cb = "!git branch "$@" --sort=-committerdate --sort=-HEAD --format=$'%(HEAD) %(color:yellow)%(refname:short) %(color:green)(%(committerdate:relative))\t%(color:blue)%(subject)%(color:reset)' --color=always| column -ts$'\t'  | fzf --header Checkout --print0 -m --preview='git show --color=always {}' | xargs git checkout"
-  ;b = "!git for-each-ref --sort='-authordate' --format='%(authordate)%09%(objectname:short)%09%(refname)' refs/heads | sed -e 's-refs/heads/--'"
+
+  # Git logs browser
+  gl = "!git log --oneline --color --pretty=format:\"%C(green)%h%Creset -%C(yellow)%d%Creset %s %Cred<%an>%Creset %Cblue(%ar)%Creset\" | fzf --ansi  --header GitHistory --bind 'ctrl-/:change-preview-window(down,70%|hidden|)' --bind 'ctrl-w:toggle-preview-wrap' -m --preview=\"git show --color=always {1} $1\""
 
   # Open all the files from last commit.
   open = "!vim $(git show --pretty= --name-only)"
