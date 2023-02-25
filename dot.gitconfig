@@ -19,7 +19,6 @@
   ls = show  --name-only --oneline --name-only
   st = status -uno
   ss = status -s -b
-  ww = branch -avv
 
   last = log -1 HEAD
   ll = log --stat
@@ -31,6 +30,7 @@
   # git grep
   og = "!f() { git grep --line-number \"$1\" | fzf --delimiter : --preview 'bat --style=numbers --color=always --highlight-line {2} {1}' --preview-window +{2}-/2; }; f"
   of = !git ls-files | fzf --preview 'bat --style=numbers --color=always {}' --preview-window +{2}-/2
+  file = "!l() { git log --oneline \"$1\" | fzf --ansi  --header FileHistory -m --preview=\"git show --color=always {1} $1\"; }; l"
 
   #
   # Commands
@@ -67,7 +67,6 @@
   cb = "!git branch --sort=-committerdate --color --format='%(color:yellow)%(refname:short) %(color:red)%(HEAD) %(color:green)(%(committerdate:relative)) - %(color:blue)%(subject)' | fzf --ansi  --header Checkout -m --preview='git show --color=always {1} ' | cut -d' ' -f 1 | xargs git checkout"
   ;cb = "!git branch "$@" --sort=-committerdate --sort=-HEAD --format=$'%(HEAD) %(color:yellow)%(refname:short) %(color:green)(%(committerdate:relative))\t%(color:blue)%(subject)%(color:reset)' --color=always| column -ts$'\t'  | fzf --header Checkout --print0 -m --preview='git show --color=always {}' | xargs git checkout"
   ;b = "!git for-each-ref --sort='-authordate' --format='%(authordate)%09%(objectname:short)%09%(refname)' refs/heads | sed -e 's-refs/heads/--'"
-
 
   # Open all the files from last commit.
   open = "!vim $(git show --pretty= --name-only)"
