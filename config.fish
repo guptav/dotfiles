@@ -56,3 +56,8 @@ bind \co "git cb"
 
 set PATH $PATH ~/bin
 # export DOCKER_HOST='unix:///Users/vaibhavgupta/.local/share/containers/podman/machine/podman-machine-default/podman.sock'
+
+# git-fuzzy
+export GIT_FUZZY_STATUS_ADD_KEY='Ctrl-g'
+export GIT_FUZZY_STATUS_RESET_KEY='Ctrl-f'
+set -x PATH "/Users/vaibhavgupta/repo/git-fuzzy/bin:$PATH"
