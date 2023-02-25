@@ -30,7 +30,7 @@
   # git grep
   og = "!f() { git grep --line-number \"$1\" | fzf --delimiter : --preview 'bat --style=numbers --color=always --highlight-line {2} {1}' --preview-window +{2}-/2; }; f"
   of = !git ls-files | fzf --preview 'bat --style=numbers --color=always {}' --preview-window +{2}-/2
-  file = "!l() { git log --oneline --color --pretty=format:\"%C(green)%h%Creset -%C(yellow)%d%Creset %s %Cred<%an>%Creset %Cblue(%ar)%Creset\" \"$1\" | fzf --ansi  --header FileHistory --bind 'ctrl-/:change-preview-window(down,70%|hidden|)' -m --preview=\"git show --color=always {1} $1\"; }; l"
+  file = "!l() { git log --oneline --color --pretty=format:\"%C(green)%h%Creset -%C(yellow)%d%Creset %s %Cred<%an>%Creset %Cblue(%ar)%Creset\" \"$1\" | fzf --ansi  --header FileHistory --bind 'ctrl-/:change-preview-window(down,70%|hidden|)' --bind 'ctrl-m:toggle-preview-wrap' -m --preview=\"git show --color=always {1} $1\"; }; l"
 
   #
   # Commands
