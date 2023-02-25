@@ -60,4 +60,5 @@ set PATH $PATH ~/bin
 # git-fuzzy
 export GIT_FUZZY_STATUS_ADD_KEY='Ctrl-g'
 export GIT_FUZZY_STATUS_RESET_KEY='Ctrl-f'
+export GF_DIFF_FILE_PREVIEW_DEFAULTS="--color"
 set -x PATH "/Users/vaibhavgupta/repo/git-fuzzy/bin:$PATH"
