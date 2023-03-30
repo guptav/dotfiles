@@ -306,7 +306,7 @@ set nocp
 set autowrite
 set hlsearch
 set incsearch
-set textwidth=80
+set textwidth=120
 set history=1000
 set splitright
 set ruler
@@ -707,6 +707,11 @@ if has("cscope")
         "nmap lk :cp<CR>
 endif
 " }}}
+
+function! ToggleNext()
+    nmap <F4> :bprev<CR>
+    nmap <F5> :bnext<CR>
+endfunction
 
 function! CodeBrowse()
 " {{{
