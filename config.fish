@@ -57,7 +57,7 @@ set PATH $PATH ~/bin
 export GIT_FUZZY_STATUS_ADD_KEY='Ctrl-g'
 export GIT_FUZZY_STATUS_RESET_KEY='Ctrl-f'
 export GF_DIFF_FILE_PREVIEW_DEFAULTS="--color"
-set -x PATH "/Users/vaibhavgupta/repo/git-fuzzy/bin:$PATH"
+set -x PATH "/opt/homebrew/Cellar/vim/9.1.0350/bin:/Users/vaibhavgupta/repo/git-fuzzy/bin:$PATH"
 
 # Keyboard Bindings
 bind \cs beginning-of-line
