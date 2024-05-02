@@ -5,7 +5,7 @@
 " Email:  vaibhav.gupta@gmail.com
 "
 
-set shell=/usr/local/bin/bash " fish shell does not go along.
+set shell=/bin/bash " fish shell does not go along.
 " let mapleader = "\<Space>"  " Only if you want to use Space as leader.
 
 set nocompatible              " be iMproved, required
@@ -278,7 +278,7 @@ endfunction
 
 " Plugin Settings for 'Valloric/YouCompleteMe'
 " {{{
-let g:ycm_python_interpreter_path = '/usr/local/bin/python3'
+let g:ycm_python_interpreter_path = '/usr/bin/python3'
 let g:ycm_python_sys_path         = []
 let g:ycm_extra_conf_vim_data     = [
   \  'g:ycm_python_interpreter_path',
