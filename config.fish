@@ -52,6 +52,7 @@ end
 
 set PATH $PATH ~/bin
 # export DOCKER_HOST='unix:///Users/vaibhavgupta/.local/share/containers/podman/machine/podman-machine-default/podman.sock'
+export DOCKER_HOST="unix://$HOME/.colima/docker.sock"
 
 # git-fuzzy
 export GIT_FUZZY_STATUS_ADD_KEY='Ctrl-g'

@@ -42,7 +42,7 @@ if [ -f /etc/bash_completion ]; then
 fi
 
 source ~/.git-prompt.sh
-source /Users/vaibhavgupta/repo/fzf-git.sh/fzf-git.sh
+source /Users/vaibhavgupta/Personal/repo/fzf-git.sh/fzf-git.sh
 
 green='\E[32;40m'
 white='\E[37;40m'
@@ -869,15 +869,30 @@ function vim-quickstart()
     mkdir -p ~/.vim/autoload ~/.vim/bundle
     curl -LSso ~/.vim/autoload/pathogen.vim https://tpo.pe/pathogen.vim
 
-    # open .vimrc
+    # open .vimrc and do PluginInstall
     vim ~/.vimrc
 
-    # Post vim install
-    cd ~/.vim/bundle/YouCompleteMe
-    brew install gcc@10
-    CC=gcc-10 CXX=g++-10 python3 ./install.py --clangd-completer
-    CC=gcc-10 CXX=g++-10 python3 ./install.py --all
-    python3 install.py --all
+    curl -sL install-node.vercel.app/lts | sudo bash
+
+    cd ~/.vim/bundle/coc.nvim
+    npm ci
+
+
+    ## Post vim install
+    #cd ~/.vim/bundle/YouCompleteMe
+    #brew install gcc
+    #CC=gcc-10 CXX=g++-10 python3 ./install.py --clangd-completer
+    #CC=gcc-10 CXX=g++-10 python3 ./install.py --all
+    #python3 install.py --all
+}
+
+function mac-reint()
+{
+    # Basic 
+    brew install tmux fish fzf ripgrep fisher fd python3 task vim tpm gh awscli
+    mv /Users/vaibhavgupta/.config/fish/config.fish /Users/vaibhavgupta/.config/fish/config.fish.bkp
+    ln -sf  /Users/vaibhavgupta/Personal/repo/dotfiles/config.fish /Users/vaibhavgupta/.config/fish/config.fish
+    git clone https://github.com/junegunn/fzf-git.sh.git
 }
 
 alias tt=task_tag
@@ -890,7 +905,9 @@ export FZF_DEFAULT_COMMAND='fd --type f'
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 
 # podman
-export DOCKER_HOST='unix:///Users/vaibhavgupta/.local/share/containers/podman/machine/podman-machine-default/podman.sock'
+#export DOCKER_HOST='unix:///Users/vaibhavgupta/.local/share/containers/podman/machine/podman-machine-default/podman.sock'
+# colima
+export DOCKER_HOST="unix://$HOME/.colima/docker.sock"
 
 #START Executing
 fastprompt
