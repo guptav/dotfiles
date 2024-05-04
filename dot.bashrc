@@ -889,7 +889,8 @@ function vim-quickstart()
 function mac-reint()
 {
     # Basic 
-    brew install tmux fish fzf ripgrep fisher fd python3 task vim tpm gh awscli
+    brew install tmux fish fzf ripgrep fisher fd python3 task vim tpm gh awscli jfrog-cli
+    brew install colima
     mv /Users/vaibhavgupta/.config/fish/config.fish /Users/vaibhavgupta/.config/fish/config.fish.bkp
     ln -sf  /Users/vaibhavgupta/Personal/repo/dotfiles/config.fish /Users/vaibhavgupta/.config/fish/config.fish
     git clone https://github.com/junegunn/fzf-git.sh.git
@@ -905,9 +906,7 @@ export FZF_DEFAULT_COMMAND='fd --type f'
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 
 # podman
-#export DOCKER_HOST='unix:///Users/vaibhavgupta/.local/share/containers/podman/machine/podman-machine-default/podman.sock'
-# colima
-export DOCKER_HOST="unix://$HOME/.colima/docker.sock"
+export DOCKER_HOST='unix:///Users/vaibhavgupta/.local/share/containers/podman/machine/podman-machine-default/podman.sock'
 
 #START Executing
 fastprompt
