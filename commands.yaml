@@ -1,0 +1,12 @@
+version: 1.0
+commands:
+  git:
+    - cmd: git checkout {BRANCH}
+      help: " # checkout a given branch"
+    - cmd: git branch -a
+      help: " # List all the git branch"
+  tr:
+    - cmd: tr -d '\n' < yourfile.txt
+      help: " # Delete \\n from a given file."
+
+
