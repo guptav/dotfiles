@@ -1,0 +1,995 @@
+[
+  {
+    "command": "yank",
+    "bindings": [
+      {
+        "readable_binding": "CTRL - y",
+        "raw_bindings": [
+          "reset \\cy yank"
+        ]
+      }
+    ],
+    "description": null
+  },
+  {
+    "command": "yank-pop",
+    "bindings": [
+      {
+        "readable_binding": "ALT - y",
+        "raw_bindings": [
+          "bind --preset \\ey yank-pop"
+        ]
+      }
+    ],
+    "description": null
+  },
+  {
+    "command": "forward-char",
+    "bindings": [
+      {
+        "readable_binding": "Right Arrow",
+        "raw_bindings": [
+          "bind --preset -k right forward-char",
+          "bind --preset \\e\\[C forward-char"
+        ]
+      },
+      {
+        "readable_binding": "CTRL - f",
+        "raw_bindings": [
+          "bind --preset \\cf forward-char"
+        ]
+      }
+    ],
+    "description": null
+  },
+  {
+    "command": "backward-char",
+    "bindings": [
+      {
+        "readable_binding": "Left Arrow",
+        "raw_bindings": [
+          "bind --preset -k left backward-char",
+          "bind --preset \\e\\[D backward-char"
+        ]
+      },
+      {
+        "readable_binding": "CTRL - b",
+        "raw_bindings": [
+          "bind --preset \\cb backward-char"
+        ]
+      }
+    ],
+    "description": null
+  },
+  {
+    "command": "forward-word",
+    "bindings": [
+      {
+        "readable_binding": "CTRL - Right Arrow",
+        "raw_bindings": [
+          "bind --preset \\e\\[1\\;5C forward-word"
+        ]
+      },
+      {
+        "readable_binding": "ALT - f",
+        "raw_bindings": [
+          "bind --preset \\ef forward-word"
+        ]
+      }
+    ],
+    "description": null
+  },
+  {
+    "command": "backward-word",
+    "bindings": [
+      {
+        "readable_binding": "CTRL - Left Arrow",
+        "raw_bindings": [
+          "bind --preset \\e\\[1\\;5D backward-word"
+        ]
+      },
+      {
+        "readable_binding": "ALT - b",
+        "raw_bindings": [
+          "bind --preset \\eb backward-word"
+        ]
+      }
+    ],
+    "description": null
+  },
+  {
+    "command": "beginning-of-history",
+    "bindings": [
+      {
+        "readable_binding": "Page Down",
+        "raw_bindings": [
+          "bind --preset -k ppage beginning-of-history"
+        ]
+      }
+    ],
+    "description": null
+  },
+  {
+    "command": "end-of-history",
+    "bindings": [
+      {
+        "readable_binding": "Page Up",
+        "raw_bindings": [
+          "bind --preset -k npage end-of-history"
+        ]
+      }
+    ],
+    "description": null
+  },
+  {
+    "command": "fish_clipboard_copy",
+    "bindings": [
+      {
+        "readable_binding": "CTRL - x",
+        "raw_bindings": [
+          "bind --preset \\cx fish_clipboard_copy"
+        ]
+      }
+    ],
+    "description": null
+  },
+  {
+    "command": "fish_clipboard_paste",
+    "bindings": [
+      {
+        "readable_binding": "CTRL - v",
+        "raw_bindings": [
+          "bind --preset \\cv fish_clipboard_paste"
+        ]
+      }
+    ],
+    "description": null
+  },
+  {
+    "command": "cancel",
+    "bindings": [
+      {
+        "readable_binding": "ESC",
+        "raw_bindings": [
+          "bind --preset \\e cancel"
+        ]
+      },
+      {
+        "readable_binding": "CTRL - g",
+        "raw_bindings": [
+          "bind --preset \\cg cancel"
+        ]
+      }
+    ],
+    "description": null
+  },
+  {
+    "command": "complete",
+    "bindings": [
+      {
+        "readable_binding": "Tab",
+        "raw_bindings": [
+          "bind --preset \\t complete"
+        ]
+      }
+    ],
+    "description": null
+  },
+  {
+    "command": "pager-toggle-search",
+    "bindings": [
+      {
+        "readable_binding": "CTRL - s",
+        "raw_bindings": [
+          "bind --preset \\cs pager-toggle-search"
+        ]
+      }
+    ],
+    "description": null
+  },
+  {
+    "command": "complete-and-search",
+    "bindings": [
+      {
+        "readable_binding": "Shift Tab",
+        "raw_bindings": [
+          "bind --preset -k btab complete-and-search"
+        ]
+      }
+    ],
+    "description": null
+  },
+  {
+    "command": "commandline\\ -f\\ expand-abbr\\;\\ commandline\\ -i\\ \\\\n",
+    "bindings": [
+      {
+        "readable_binding": "ALT - Enter",
+        "raw_bindings": [
+          "bind --preset \\e\\n commandline\\ -f\\ expand-abbr\\;\\ commandline\\ -i\\ \\\\n"
+        ]
+      },
+      {
+        "readable_binding": "ALT - \\r",
+        "raw_bindings": [
+          "bind --preset \\e\\r commandline\\ -f\\ expand-abbr\\;\\ commandline\\ -i\\ \\\\n"
+        ]
+      }
+    ],
+    "description": null
+  },
+  {
+    "command": "down-or-search",
+    "bindings": [
+      {
+        "readable_binding": "Down Arrow",
+        "raw_bindings": [
+          "bind --preset -k down down-or-search",
+          "bind --preset \\e\\[B down-or-search"
+        ]
+      },
+      {
+        "readable_binding": "CTRL - n",
+        "raw_bindings": [
+          "bind --preset \\cn down-or-search"
+        ]
+      }
+    ],
+    "description": null
+  },
+  {
+    "command": "up-or-search",
+    "bindings": [
+      {
+        "readable_binding": "Up Arrow",
+        "raw_bindings": [
+          "bind --preset -k up up-or-search",
+          "bind --preset \\e\\[A up-or-search"
+        ]
+      },
+      {
+        "readable_binding": "CTRL - p",
+        "raw_bindings": [
+          "bind --preset \\cp up-or-search"
+        ]
+      }
+    ],
+    "description": null
+  },
+  {
+    "command": "nextd-or-forward-word",
+    "bindings": [
+      {
+        "readable_binding": "ALT - Right Arrow",
+        "raw_bindings": [
+          "bind --preset \\e\\eOC nextd-or-forward-word",
+          "bind --preset \\e\\e\\[C nextd-or-forward-word",
+          "bind --preset \\eO3C nextd-or-forward-word",
+          "bind --preset \\e\\[3C nextd-or-forward-word",
+          "bind --preset \\e\\[1\\;3C nextd-or-forward-word",
+          "bind --preset \\e\\[1\\;9C nextd-or-forward-word"
+        ]
+      }
+    ],
+    "description": null
+  },
+  {
+    "command": "prevd-or-backward-word",
+    "bindings": [
+      {
+        "readable_binding": "ALT - Left Arrow",
+        "raw_bindings": [
+          "bind --preset \\e\\eOD prevd-or-backward-word",
+          "bind --preset \\e\\e\\[D prevd-or-backward-word",
+          "bind --preset \\eO3D prevd-or-backward-word",
+          "bind --preset \\e\\[3D prevd-or-backward-word",
+          "bind --preset \\e\\[1\\;3D prevd-or-backward-word",
+          "bind --preset \\e\\[1\\;9D prevd-or-backward-word"
+        ]
+      }
+    ],
+    "description": null
+  },
+  {
+    "command": "history-token-search-backward",
+    "bindings": [
+      {
+        "readable_binding": "ALT - Up Arrow",
+        "raw_bindings": [
+          "bind --preset \\e\\eOA history-token-search-backward",
+          "bind --preset \\e\\e\\[A history-token-search-backward",
+          "bind --preset \\eO3A history-token-search-backward",
+          "bind --preset \\e\\[3A history-token-search-backward",
+          "bind --preset \\e\\[1\\;3A history-token-search-backward",
+          "bind --preset \\e\\[1\\;9A history-token-search-backward"
+        ]
+      },
+      {
+        "readable_binding": "ALT - .",
+        "raw_bindings": [
+          "bind --preset \\e. history-token-search-backward"
+        ]
+      }
+    ],
+    "description": null
+  },
+  {
+    "command": "history-token-search-forward",
+    "bindings": [
+      {
+        "readable_binding": "ALT - Down Arrow",
+        "raw_bindings": [
+          "bind --preset \\e\\eOB history-token-search-forward",
+          "bind --preset \\e\\e\\[B history-token-search-forward",
+          "bind --preset \\eO3B history-token-search-forward",
+          "bind --preset \\e\\[3B history-token-search-forward",
+          "bind --preset \\e\\[1\\;3B history-token-search-forward",
+          "bind --preset \\e\\[1\\;9B history-token-search-forward"
+        ]
+      }
+    ],
+    "description": null
+  },
+  {
+    "command": "__fish_list_current_token",
+    "bindings": [
+      {
+        "readable_binding": "ALT - l",
+        "raw_bindings": [
+          "bind --preset \\el __fish_list_current_token"
+        ]
+      }
+    ],
+    "description": null
+  },
+  {
+    "command": "__fish_preview_current_file",
+    "bindings": [
+      {
+        "readable_binding": "ALT - o",
+        "raw_bindings": [
+          "bind --preset \\eo __fish_preview_current_file"
+        ]
+      }
+    ],
+    "description": null
+  },
+  {
+    "command": "__fish_whatis_current_token",
+    "bindings": [
+      {
+        "readable_binding": "ALT - w",
+        "raw_bindings": [
+          "bind --preset \\ew __fish_whatis_current_token"
+        ]
+      }
+    ],
+    "description": null
+  },
+  {
+    "command": "clear-screen",
+    "bindings": [
+      {
+        "readable_binding": "CTRL - l",
+        "raw_bindings": [
+          "bind --preset \\cl clear-screen"
+        ]
+      }
+    ],
+    "description": null
+  },
+  {
+    "command": "cancel-commandline",
+    "bindings": [
+      {
+        "readable_binding": "CTRL - c",
+        "raw_bindings": [
+          "bind --preset \\cc cancel-commandline"
+        ]
+      }
+    ],
+    "description": null
+  },
+  {
+    "command": "backward-kill-line",
+    "bindings": [
+      {
+        "readable_binding": "CTRL - u",
+        "raw_bindings": [
+          "bind --preset \\cu backward-kill-line"
+        ]
+      }
+    ],
+    "description": null
+  },
+  {
+    "command": "backward-kill-path-component",
+    "bindings": [
+      {
+        "readable_binding": "CTRL - w",
+        "raw_bindings": [
+          "bind --preset \\cw backward-kill-path-component"
+        ]
+      }
+    ],
+    "description": null
+  },
+  {
+    "command": "end-of-line",
+    "bindings": [
+      {
+        "readable_binding": "End",
+        "raw_bindings": [
+          "bind --preset \\e\\[F end-of-line",
+          "bind --preset -k end end-of-line"
+        ]
+      },
+      {
+        "readable_binding": "CTRL - e",
+        "raw_bindings": [
+          "bind --preset \\ce end-of-line"
+        ]
+      }
+    ],
+    "description": null
+  },
+  {
+    "command": "beginning-of-line",
+    "bindings": [
+      {
+        "readable_binding": "Home",
+        "raw_bindings": [
+          "bind --preset \\e\\[H beginning-of-line",
+          "bind --preset -k home beginning-of-line"
+        ]
+      },
+      {
+        "readable_binding": "CTRL - a",
+        "raw_bindings": [
+          "bind --preset \\ca beginning-of-line"
+        ]
+      },
+      {
+        "readable_binding": "CTRL - s",
+        "raw_bindings": [
+          "bind \\cs beginning-of-line"
+        ]
+      }
+    ],
+    "description": null
+  },
+  {
+    "command": "kill-word",
+    "bindings": [
+      {
+        "readable_binding": "ALT - d",
+        "raw_bindings": [
+          "bind --preset \\ed kill-word"
+        ]
+      }
+    ],
+    "description": null
+  },
+  {
+    "command": "delete-or-exit",
+    "bindings": [
+      {
+        "readable_binding": "CTRL - d",
+        "raw_bindings": [
+          "bind --preset \\cd delete-or-exit"
+        ]
+      }
+    ],
+    "description": null
+  },
+  {
+    "command": "'for cmd in sudo doas please; if command -q $cmd; fish_commandline_prepend $cmd; break; end; end'",
+    "bindings": [
+      {
+        "readable_binding": "ALT - s",
+        "raw_bindings": [
+          "bind --preset \\es 'for cmd in sudo doas please; if command -q $cmd; fish_commandline_prepend $cmd; break; end; end'"
+        ]
+      }
+    ],
+    "description": null
+  },
+  {
+    "command": "__fish_man_page",
+    "bindings": [
+      {
+        "readable_binding": "F1",
+        "raw_bindings": [
+          "bind --preset -k f1 __fish_man_page"
+        ]
+      },
+      {
+        "readable_binding": "ALT - h",
+        "raw_bindings": [
+          "bind --preset \\eh __fish_man_page"
+        ]
+      }
+    ],
+    "description": null
+  },
+  {
+    "command": "__fish_paginate",
+    "bindings": [
+      {
+        "readable_binding": "ALT - p",
+        "raw_bindings": [
+          "bind --preset \\ep __fish_paginate"
+        ]
+      }
+    ],
+    "description": null
+  },
+  {
+    "command": "__fish_toggle_comment_commandline",
+    "bindings": [
+      {
+        "readable_binding": "ALT - #",
+        "raw_bindings": [
+          "bind --preset \\e\\# __fish_toggle_comment_commandline"
+        ]
+      }
+    ],
+    "description": null
+  },
+  {
+    "command": "edit_command_buffer",
+    "bindings": [
+      {
+        "readable_binding": "ALT - e",
+        "raw_bindings": [
+          "bind --preset \\ee edit_command_buffer"
+        ]
+      },
+      {
+        "readable_binding": "ALT - v",
+        "raw_bindings": [
+          "bind --preset \\ev edit_command_buffer"
+        ]
+      }
+    ],
+    "description": null
+  },
+  {
+    "command": "'emit fish_focus_in'",
+    "bindings": [
+      {
+        "readable_binding": "unknown-control-sequence",
+        "raw_bindings": [
+          "bind --preset \\e\\[I 'emit fish_focus_in'"
+        ]
+      }
+    ],
+    "description": null
+  },
+  {
+    "command": "false",
+    "bindings": [
+      {
+        "readable_binding": "unknown-control-sequence",
+        "raw_bindings": [
+          "bind --preset \\e\\[O false"
+        ]
+      },
+      {
+        "readable_binding": "?1004h",
+        "raw_bindings": [
+          "bind --preset \\e\\[\\?1004h false"
+        ]
+      }
+    ],
+    "description": null
+  },
+  {
+    "command": "paste \\e\\[200\\~ __fish_start_bracketed_paste",
+    "bindings": [
+      {
+        "readable_binding": "-m",
+        "raw_bindings": [
+          "bind --preset -m paste \\e\\[200\\~ __fish_start_bracketed_paste"
+        ]
+      }
+    ],
+    "description": null
+  },
+  {
+    "command": "paste \\e\\[201\\~ __fish_stop_bracketed_paste",
+    "bindings": [
+      {
+        "readable_binding": "-M",
+        "raw_bindings": [
+          "bind --preset -M paste \\e\\[201\\~ __fish_stop_bracketed_paste"
+        ]
+      }
+    ],
+    "description": null
+  },
+  {
+    "command": "paste '' self-insert",
+    "bindings": [
+      {
+        "readable_binding": "-M",
+        "raw_bindings": [
+          "bind --preset -M paste '' self-insert"
+        ]
+      }
+    ],
+    "description": null
+  },
+  {
+    "command": "paste \\r commandline\\ -i\\ \\\\n",
+    "bindings": [
+      {
+        "readable_binding": "-M",
+        "raw_bindings": [
+          "bind --preset -M paste \\r commandline\\ -i\\ \\\\n"
+        ]
+      }
+    ],
+    "description": null
+  },
+  {
+    "command": "paste \\' __fish_commandline_insert_escaped\\ \\\\\\'\\ \\$__fish_paste_quoted",
+    "bindings": [
+      {
+        "readable_binding": "-M",
+        "raw_bindings": [
+          "bind --preset -M paste \\' __fish_commandline_insert_escaped\\ \\\\\\'\\ \\$__fish_paste_quoted"
+        ]
+      }
+    ],
+    "description": null
+  },
+  {
+    "command": "paste \\\\ __fish_commandline_insert_escaped\\ \\\\\\\\\\ \\$__fish_paste_quoted",
+    "bindings": [
+      {
+        "readable_binding": "-M",
+        "raw_bindings": [
+          "bind --preset -M paste \\\\ __fish_commandline_insert_escaped\\ \\\\\\\\\\ \\$__fish_paste_quoted"
+        ]
+      }
+    ],
+    "description": null
+  },
+  {
+    "command": "paste ' ' self-insert-notfirst",
+    "bindings": [
+      {
+        "readable_binding": "-M",
+        "raw_bindings": [
+          "bind --preset -M paste ' ' self-insert-notfirst"
+        ]
+      }
+    ],
+    "description": null
+  },
+  {
+    "command": "' self-insert expand-abbr",
+    "bindings": [
+      {
+        "readable_binding": "'",
+        "raw_bindings": [
+          "bind --preset ' ' self-insert expand-abbr"
+        ]
+      }
+    ],
+    "description": null
+  },
+  {
+    "command": "self-insert expand-abbr",
+    "bindings": [
+      {
+        "readable_binding": "';'",
+        "raw_bindings": [
+          "bind --preset ';' self-insert expand-abbr"
+        ]
+      },
+      {
+        "readable_binding": "'|'",
+        "raw_bindings": [
+          "bind --preset '|' self-insert expand-abbr"
+        ]
+      },
+      {
+        "readable_binding": "'&'",
+        "raw_bindings": [
+          "bind --preset '&' self-insert expand-abbr"
+        ]
+      },
+      {
+        "readable_binding": "'>'",
+        "raw_bindings": [
+          "bind --preset '>' self-insert expand-abbr"
+        ]
+      },
+      {
+        "readable_binding": "'<'",
+        "raw_bindings": [
+          "bind --preset '<' self-insert expand-abbr"
+        ]
+      },
+      {
+        "readable_binding": "')'",
+        "raw_bindings": [
+          "bind --preset ')' self-insert expand-abbr"
+        ]
+      }
+    ],
+    "description": null
+  },
+  {
+    "command": "'test -n \"$(commandline)\" && commandline -i \" \"'",
+    "bindings": [
+      {
+        "readable_binding": "Nul",
+        "raw_bindings": [
+          "bind --preset -k nul 'test -n \"$(commandline)\" && commandline -i \" \"'"
+        ]
+      }
+    ],
+    "description": null
+  },
+  {
+    "command": "'commandline -i \" \"; commandline -f expand-abbr'",
+    "bindings": [
+      {
+        "readable_binding": "ALT - ;2u",
+        "raw_bindings": [
+          "bind --preset \\e\\[32\\;2u 'commandline -i \" \"; commandline -f expand-abbr'"
+        ]
+      }
+    ],
+    "description": null
+  },
+  {
+    "command": "execute",
+    "bindings": [
+      {
+        "readable_binding": "Enter",
+        "raw_bindings": [
+          "bind --preset \\n execute"
+        ]
+      },
+      {
+        "readable_binding": "\\r",
+        "raw_bindings": [
+          "bind --preset \\r execute"
+        ]
+      },
+      {
+        "readable_binding": "7;5;13~",
+        "raw_bindings": [
+          "bind --preset \\e\\[27\\;5\\;13\\~ execute"
+        ]
+      },
+      {
+        "readable_binding": ";5u",
+        "raw_bindings": [
+          "bind --preset \\e\\[13\\;5u execute"
+        ]
+      },
+      {
+        "readable_binding": "7;2;13~",
+        "raw_bindings": [
+          "bind --preset \\e\\[27\\;2\\;13\\~ execute"
+        ]
+      },
+      {
+        "readable_binding": ";2u",
+        "raw_bindings": [
+          "bind --preset \\e\\[13\\;2u execute"
+        ]
+      }
+    ],
+    "description": null
+  },
+  {
+    "command": "kill-line",
+    "bindings": [
+      {
+        "readable_binding": "CTRL - k",
+        "raw_bindings": [
+          "bind --preset \\ck kill-line"
+        ]
+      }
+    ],
+    "description": null
+  },
+  {
+    "command": "delete-char",
+    "bindings": [
+      {
+        "readable_binding": "Delete",
+        "raw_bindings": [
+          "bind --preset -k dc delete-char"
+        ]
+      }
+    ],
+    "description": null
+  },
+  {
+    "command": "backward-delete-char",
+    "bindings": [
+      {
+        "readable_binding": "Backspace",
+        "raw_bindings": [
+          "bind --preset -k backspace backward-delete-char",
+          "bind --preset \\b backward-delete-char"
+        ]
+      }
+    ],
+    "description": null
+  },
+  {
+    "command": "transpose-chars",
+    "bindings": [
+      {
+        "readable_binding": "CTRL - t",
+        "raw_bindings": [
+          "bind --preset \\ct transpose-chars"
+        ]
+      }
+    ],
+    "description": null
+  },
+  {
+    "command": "undo",
+    "bindings": [
+      {
+        "readable_binding": "\\x1f",
+        "raw_bindings": [
+          "bind --preset \\x1f undo"
+        ]
+      },
+      {
+        "readable_binding": "CTRL - z",
+        "raw_bindings": [
+          "bind --preset \\cz undo"
+        ]
+      }
+    ],
+    "description": null
+  },
+  {
+    "command": "redo",
+    "bindings": [
+      {
+        "readable_binding": "ALT - /",
+        "raw_bindings": [
+          "bind --preset \\e/ redo"
+        ]
+      }
+    ],
+    "description": null
+  },
+  {
+    "command": "transpose-words",
+    "bindings": [
+      {
+        "readable_binding": "ALT - t",
+        "raw_bindings": [
+          "bind --preset \\et transpose-words"
+        ]
+      }
+    ],
+    "description": null
+  },
+  {
+    "command": "upcase-word",
+    "bindings": [
+      {
+        "readable_binding": "ALT - u",
+        "raw_bindings": [
+          "bind --preset \\eu upcase-word"
+        ]
+      }
+    ],
+    "description": null
+  },
+  {
+    "command": "capitalize-word",
+    "bindings": [
+      {
+        "readable_binding": "ALT - c",
+        "raw_bindings": [
+          "bind --preset \\ec capitalize-word"
+        ]
+      }
+    ],
+    "description": null
+  },
+  {
+    "command": "backward-kill-word",
+    "bindings": [
+      {
+        "readable_binding": "ALT - \\x7f",
+        "raw_bindings": [
+          "bind --preset \\e\\x7f backward-kill-word"
+        ]
+      },
+      {
+        "readable_binding": "ALT - Backspace",
+        "raw_bindings": [
+          "bind --preset \\e\\b backward-kill-word"
+        ]
+      }
+    ],
+    "description": null
+  },
+  {
+    "command": "beginning-of-buffer",
+    "bindings": [
+      {
+        "readable_binding": "ALT - <",
+        "raw_bindings": [
+          "bind --preset \\e\\< beginning-of-buffer"
+        ]
+      }
+    ],
+    "description": null
+  },
+  {
+    "command": "end-of-buffer",
+    "bindings": [
+      {
+        "readable_binding": "ALT - >",
+        "raw_bindings": [
+          "bind --preset \\e\\> end-of-buffer"
+        ]
+      }
+    ],
+    "description": null
+  },
+  {
+    "command": "history-pager",
+    "bindings": [
+      {
+        "readable_binding": "CTRL - r",
+        "raw_bindings": [
+          "bind --preset \\cr history-pager"
+        ]
+      }
+    ],
+    "description": null
+  },
+  {
+    "command": "'git cb'",
+    "bindings": [
+      {
+        "readable_binding": "CTRL - o",
+        "raw_bindings": [
+          "bind \\co 'git cb'"
+        ]
+      }
+    ],
+    "description": null
+  },
+  {
+    "command": "'git fuzzy status'",
+    "bindings": [
+      {
+        "readable_binding": "CTRL - t",
+        "raw_bindings": [
+          "bind \\ct 'git fuzzy status'"
+        ]
+      }
+    ],
+    "description": null
+  },
+  {
+    "command": "'git gl'",
+    "bindings": [
+      {
+        "readable_binding": "CTRL - g",
+        "raw_bindings": [
+          "bind \\cg 'git gl'"
+        ]
+      }
+    ],
+    "description": null
+  }
+]
