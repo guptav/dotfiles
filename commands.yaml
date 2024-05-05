@@ -1,5 +1,13 @@
 version: 1.0
+
+bookmarks:
+  git:
+    - https://mikefarah.gitbook.io/yq/usage/convert
+    - https://google.com
 commands:
+  fish:
+    - cmd: bind -a | fzf --no-preview
+      help: " # list all the keyboard binding for fish shell"
   git:
     - cmd: git checkout {BRANCH}
       help: " # checkout a given branch"

@@ -13,3 +13,5 @@ function jenkins_lint() {
 
     curl -X POST --user "${JENKINS_AUTH}" -F "jenkinsfile=<${JENKINS_FILE}" "$JENKINS_URL/pipeline-model-converter/validate"
 }
+
+jenkins_lint "$1" "$2"
