@@ -16,5 +16,12 @@ commands:
   tr:
     - cmd: tr -d '\n' < yourfile.txt
       help: " # Delete \\n from a given file."
+  task:
+    - cmd: task
+      help: " # List all the task"
+    - cmd: task add {TASK}
+      help: " # Add a task"
+    - cmd: task {TASK_ID} export | jq .
+      help: " # Export a task as json"
 
 
