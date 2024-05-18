@@ -23,5 +23,14 @@ commands:
       help: " # Add a task"
     - cmd: task {TASK_ID} export | jq .
       help: " # Export a task as json"
-
+  column:
+    - cmd: column -s, -t < yourfile.csv
+      help: " # Format the output as a table"
+  gh:
+    - cmd: gh repo view
+      help: " # List all the repo"
+    - cmd: gh repo clone {REPO}
+      help: " # Clone a repo"
+    - cmd: gh copilot suggest "install git"
+      help: " # Get suggestion from github copilot"
 
