@@ -4,10 +4,14 @@ bookmarks:
   git:
     - https://mikefarah.gitbook.io/yq/usage/convert
     - https://google.com
+  jira:
+    - https://github.com/ankitpokhrel/jira-cli?tab=readme-ov-file#usage
 commands:
   fish:
     - cmd: bind -a | fzf --no-preview
       help: " # list all the keyboard binding for fish shell"
+    - cmd: j
+      help: " # Jump to a url via goto"
   git:
     - cmd: git checkout {BRANCH}
       help: " # checkout a given branch"

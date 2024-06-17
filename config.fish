@@ -1,6 +1,6 @@
 #/usr/local/bin/fish
 
-# Fish config 
+# Fish config
 # Author: Vaibhav Gupta
 #
 . ~/.envrc
@@ -73,9 +73,11 @@ bind \cg "git gl"
 
 # open in browser
 function op
-    cat ~/commands.yaml | yq '.bookmarks.[] | .[]' | fzf --preview '~/bin/b.sh {}'
+    cat ~/commands.yaml | yq '.bookmarks.[] | .[]' | fzf --preview '~/bin/b.sh {}' | xargs open
 end
 
 # Jira token and aliases
-# JIRA_API_TOKEN and JIRA_AUTH_TYPE="bearer"
-alias jira-my="jira issue list -a$(jira me) -sopen" 
+# JIRA_API_TOKEN and JIRA_AUTH_TYPE="bearer" are set in .envrc
+alias my-open-issue="jira issue list -a$(jira me) -sopen"
+# Jira completion
+jira completion fish | source
