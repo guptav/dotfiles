@@ -3,7 +3,7 @@
 # Fish config 
 # Author: Vaibhav Gupta
 #
-
+. ~/.envrc
 if status is-interactive
     # Commands to run in interactive sessions can go here
 end
@@ -20,12 +20,13 @@ end
 export EDITOR=vim
 
 # Default alias
-alias l="exa -l -snew -g --icons  --git-ignore --ignore-glob .git"
-alias lt="exa -l -snew -g --icons  --git-ignore --ignore-glob .git"
+alias l="ls -l -snew -g"
+alias lt="ls -l -snew -g"
 alias g="git"
 alias t="task"
 alias rm="rm -i"
 alias b=~/bin/b
+alias pp='cd ~/Personal/repo/notes'
 
 set tmux_sess (tmux display-message -p '#S');
 alias tkill="tmux list-sessions | awk '{print \$1}'| sed -e 's/$tmux_sess//g' | fzf --no-preview  | xargs -I{} tmux kill-session -t '{}'"
@@ -70,6 +71,11 @@ bind \co "git cb"
 bind \ct "git fuzzy status"
 bind \cg "git gl"
 
+# open in browser
 function op
     cat ~/commands.yaml | yq '.bookmarks.[] | .[]' | fzf --preview '~/bin/b.sh {}'
 end
+
+# Jira token and aliases
+# JIRA_API_TOKEN and JIRA_AUTH_TYPE="bearer"
+alias jira-my="jira issue list -a$(jira me) -sopen" 

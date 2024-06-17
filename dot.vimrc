@@ -186,7 +186,8 @@ nmap <LocalLeader>vs vip<LocalLeader>vs<CR>
 
 " Run the last command on a tmux window on write.
 function! VGautoWrite()
-        let g:VimuxRunnerType = "pane"
+        " window or pane
+        let g:VimuxRunnerType = "window"
         autocmd BufWritePost  * :call VimuxRunLastCommand()
 endfunction
 " }}}
@@ -352,7 +353,7 @@ function Setup_python_opts()
         set cindent
         set shiftround
         set autoindent
-        set tabstop=4 shiftwidth=4 softtabstop=4 expandtab
+        set tabstop=2 shiftwidth=2 softtabstop=2 expandtab
         "set equalprg=/home/tushar/python/Python-2.7.13/Tools/scripts/reindent.py
 endfunction
 " }}}
@@ -365,7 +366,7 @@ function Setup_note_opts()
         set complete+=s
         set textwidth=80
         setlocal wrap
-        set tabstop=4 shiftwidth=4 softtabstop=4 expandtab
+        set tabstop=2 shiftwidth=2 softtabstop=2 expandtab
         set noautoindent
         "match ColourYellow /^[^\t].*$/
 endfunction
@@ -376,7 +377,7 @@ function Setup_c_opts()
 " {{{
         set cino+=(0            " align function call breaks
         set cinoptions+=:0      " align switch, case
-        set tabstop=8 softtabstop=8 shiftwidth=8 noexpandtab
+        set tabstop=4 softtabstop=4 shiftwidth=4 noexpandtab
         set smartindent
         set autoindent
         set cindent
@@ -391,7 +392,7 @@ function Setup_box_opts()
         set nu
         set complete+=s
         set textwidth=120
-        set tabstop=4 shiftwidth=4 softtabstop=4 expandtab
+        set tabstop=2 shiftwidth=2 softtabstop=2 expandtab
         set smartindent
         set autoindent
         set cindent
@@ -664,7 +665,7 @@ map ..v :call FindCalled() <CR>  <C-W> <C-W>
 map <F7> :call ShowGraph() <CR>  <C-W> <C-W>
 " }}}
 
-" cscope setttings C-\ 
+" cscope setttings C-\
 " {{{
 if has("cscope")
         set csto=1

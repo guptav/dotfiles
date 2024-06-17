@@ -23,6 +23,8 @@ commands:
       help: " # Add a task"
     - cmd: task {TASK_ID} export | jq .
       help: " # Export a task as json"
+    - cmd: task {TASK_ID} export | jq .[].annotations[].description
+      help: " # Get the annotations of a task"
   column:
     - cmd: column -s, -t < yourfile.csv
       help: " # Format the output as a table"
@@ -33,4 +35,20 @@ commands:
       help: " # Clone a repo"
     - cmd: gh copilot suggest "install git"
       help: " # Get suggestion from github copilot"
+    - help: Find all the PR which were old and open. Close those PRs and delete that branch
+      ref: https://git.dev.box.net/gist/vaibhavgupta/85769407f7a39f165244eb85f026089d
+      cmd:
+        - FILENAME=/tmp/pr.json
+        - gh pr list --search "state:open sort:created-asc created:<2022-04-01" --json "id,title,number,headRefName,createdAt" > $FILENAME
+        - for i in (cat $FILENAME | jq  -r .[].number); gh pr close  "$i" ; end
+        - for i in (cat $FILENAME | jq  -r .[].headRefName); git push origin :$i ; end
+
+  jenkins:
+    - cmd: curl --user $JENKINS_USER:$JENKINS_TOKEN -X POST $JENKINS_URL/job/$JENKINS_JOB/build
+      help: " # Trigger a jenkins job"
+    - cmd: curl --user $JENKINS_USER:$JENKINS_TOKEN $JENKINS_URL/job/$JENKINS_JOB/lastBuild/api/json
+      help: " # Get the last build status"
+    - cmd: curl --user $JENKINS_USER:$JENKINS_TOKEN $JENKINS_URL/job/$JENKINS_JOB/lastBuild/consoleText
+      help: " # Get the last build log"
+
 
