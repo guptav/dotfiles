@@ -56,7 +56,7 @@ context.work=project:work
 context.personal=project.not:work project.not:fun -fun
 context.fun=project:fun or +fun
 context.nofun=project.not:fun -nsfw -fun
-context.interview=project:interview or +interview
+context.learning=project:learning or +learning
 
 # Let's make our own scheduled report.
 report.scheduled.description=Scheduled tasks
@@ -128,4 +128,3 @@ debug.hooks=0
 # Our verbosity does not include the 2.6.x 'override' value, so I don't get warned of
 # custom overrides in my shell aliases and functions.
 verbose=blank,header,footnote,label,new-id,affected,edit,special,project,sync,unwait,recur
-context=work
