@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+set -x
+# JIRA_API_TOKEN should be set
+# export JIRA_AUTH_TYPE="bearer"
+export JIRA_URL="https://jira.inside-box.net"
+
+curl -X GET \
+  -H "Authorization: Bearer ${JIRA_API_TOKEN}" \
+  -H "Content-Type: application/json" \
+  "https://jira.inside-box.net/rest/api/latest/issue/SREPROD-1181"
+
