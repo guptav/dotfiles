@@ -8,36 +8,49 @@ bookmarks:
     - https://github.com/ankitpokhrel/jira-cli?tab=readme-ov-file#usage
 commands:
   fish:
-    - cmd: bind -a | fzf --no-preview
+    - cmd:
+      - bind -a | fzf --no-preview
       help: " # list all the keyboard binding for fish shell"
-    - cmd: j
+    - cmd:
+      - j
       help: " # Jump to a url via goto"
   git:
-    - cmd: git checkout {BRANCH}
+    - cmd:
+      - git checkout {BRANCH}
       help: " # checkout a given branch"
-    - cmd: git branch -a
+    - cmd:
+      - git branch -a
       help: " # List all the git branch"
   tr:
-    - cmd: tr -d '\n' < yourfile.txt
+    - cmd:
+      - tr -d '\n' < yourfile.txt
       help: " # Delete \\n from a given file."
   task:
-    - cmd: task
+    - cmd:
+      - task
       help: " # List all the task"
-    - cmd: task add {TASK}
+    - cmd:
+      - task add {TASK}
       help: " # Add a task"
-    - cmd: task {TASK_ID} export | jq .
+    - cmd:
+      - task {TASK_ID} export | jq .
       help: " # Export a task as json"
-    - cmd: task {TASK_ID} export | jq .[].annotations[].description
+    - cmd:
+      - task {TASK_ID} export | jq .[].annotations[].description
       help: " # Get the annotations of a task"
   column:
-    - cmd: column -s, -t < yourfile.csv
+    - cmd:
+      - column -s, -t < yourfile.csv
       help: " # Format the output as a table"
   gh:
-    - cmd: gh repo view
+    - cmd:
+      - gh repo view
       help: " # List all the repo"
-    - cmd: gh repo clone {REPO}
+    - cmd:
+      - gh repo clone {REPO}
       help: " # Clone a repo"
-    - cmd: gh copilot suggest "install git"
+    - cmd:
+      - gh copilot suggest "install git"
       help: " # Get suggestion from github copilot"
     - help: Find all the PR which were old and open. Close those PRs and delete that branch
       ref: https://git.dev.box.net/gist/vaibhavgupta/85769407f7a39f165244eb85f026089d
@@ -48,11 +61,28 @@ commands:
         - for i in (cat $FILENAME | jq  -r .[].headRefName); git push origin :$i ; end
 
   jenkins:
-    - cmd: curl --user $JENKINS_USER:$JENKINS_TOKEN -X POST $JENKINS_URL/job/$JENKINS_JOB/build
+    - cmd:
+      - curl --user $JENKINS_USER:$JENKINS_TOKEN -X POST $JENKINS_URL/job/$JENKINS_JOB/build
       help: " # Trigger a jenkins job"
-    - cmd: curl --user $JENKINS_USER:$JENKINS_TOKEN $JENKINS_URL/job/$JENKINS_JOB/lastBuild/api/json
+    - cmd:
+      - curl --user $JENKINS_USER:$JENKINS_TOKEN $JENKINS_URL/job/$JENKINS_JOB/lastBuild/api/json
       help: " # Get the last build status"
-    - cmd: curl --user $JENKINS_USER:$JENKINS_TOKEN $JENKINS_URL/job/$JENKINS_JOB/lastBuild/consoleText
+    - cmd:
+      - curl --user $JENKINS_USER:$JENKINS_TOKEN $JENKINS_URL/job/$JENKINS_JOB/lastBuild/consoleText
       help: " # Get the last build log"
+
+  gradlew:
+    - cmd:
+      - ./gradlew test --tests {TEST_NAME}
+      help: " # Run a specific test"
+
+  vim:
+    - cmd:
+      - gx
+      help: " # Open the url under the cursor"
+    - cmd:
+      - :%s/foo/bar/g
+      help: " # Replace foo with bar in the whole file"
+
 
 
