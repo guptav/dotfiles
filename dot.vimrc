@@ -184,7 +184,7 @@ vmap <LocalLeader>vs "vy :call VimuxSlime()<CR>
 nmap <LocalLeader>vs vip<LocalLeader>vs<CR>
 
 
-" Run the last command on a tmux window on write.
+" Run the last command on a tmux window on write. Call <Leader>vp
 function! VGautoWrite()
         " window or pane
         let g:VimuxRunnerType = "window"
@@ -655,6 +655,7 @@ fun! GHBrowse()
     execute "!git op " . expand("%" ).":".lnum
 endfun
 nmap op :call GHBrowse()<CR><CR>
+
 " }}}
 
 " TOBE DEPERECATED
