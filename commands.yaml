@@ -84,5 +84,13 @@ commands:
       - :%s/foo/bar/g
       help: " # Replace foo with bar in the whole file"
 
+  box-kubectl:
+    - cmd:
+      - "for i in `seq 1 3`; do kubectl get pods -n jenkins-agents-dev -o=json --cluster=apps-us-west1-dev-0$i | jq -c '.items[] | {name: .metadata.name, namespace: .metadata.namespace, claimName: .spec | select(has(\"volumes\")).volumes[] | select(has(\"persistentVolumeClaim\")).persistentVolumeClaim.claimName} | select(.claimName != null)'; done"
+      help: " # Get the pvc name of all the pods in a namespace"
+    - cmd:
+      - "for i in `seq 1 3`; do kubectl get pvc -n jenkins-agents-dev --cluster=apps-us-west1-dev-0$i ; done"
+      help: " # Get the pvc details of all the pvc in a namespace"
+
 
 
