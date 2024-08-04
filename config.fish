@@ -10,10 +10,16 @@ end
 
 # TMUX Helper
 function ide
-    tmux split-window -v -p 20
+    tmux split-window -v -l 20%
     tmux select-pane -t 1
-    tmux split-window -h -p 30
+    tmux split-window -h -l 30%
+    tmux send-keys -t 2 'tty-clock -s' C-m
+    tmux split-window -v -l 70%
     tmux select-pane -t 1
+end
+
+function install_tools
+  brew install tty-clock neofetch lolcat
 end
 
 # Default settings
@@ -27,6 +33,7 @@ alias t="task"
 alias rm="rm -i"
 alias b=~/bin/b
 alias pp='cd ~/Personal/repo/notes'
+alias ai='tmux display-popup -E -h "80%" -w "80%" "tmux a -t ai "'
 
 set tmux_sess (tmux display-message -p '#S');
 alias tkill="tmux list-sessions | awk '{print \$1}'| sed -e 's/$tmux_sess//g' | fzf --no-preview  | xargs -I{} tmux kill-session -t '{}'"
