@@ -112,6 +112,9 @@ commands:
       - >-
         free | grep Mem | awk '{ printf("free: %.4f %\n", $4/$2 * 100.0) }'
       help: " # Get the free memory in percentage"
+    - cmd:
+      - echo 1 > /proc/sys/vm/drop_caches
+      help: " # Clear the cache"
 
 
 
