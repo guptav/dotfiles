@@ -917,3 +917,5 @@ fastprompt
 #Refrence
 #http://www.novell.com/coolsolutions/tools/18639.html
 
+
+. "$HOME/.local/bin/env"
