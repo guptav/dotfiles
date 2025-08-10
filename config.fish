@@ -29,7 +29,7 @@ export EDITOR=vim
 alias l="ls -l -snew -g"
 alias lt="ls -l -snew -g"
 alias g="git"
-alias t="task"
+alias t="todoist"
 alias rm="rm -i"
 alias vim="nvim"
 alias b=~/bin/b
@@ -51,10 +51,11 @@ end
 
 # Install plugins
 function _install
-    fisher install jorgebucaran/fisher                                                                                                 │
+    fisher install jorgebucaran/fisher
     fisher install PatrickF1/fzf.fish
-    fisher install jethrokuan/z                                                                                                        │
-    fisher install simnalamburt/shellder                                                                                               │
+    fisher install jethrokuan/z
+    fisher install simnalamburt/shellder
+    fisher install mordax7/fish-fzf-todoist
 end
 
 # Start the theme
