@@ -105,3 +105,6 @@
 [credential "https://git.dev.box.net"]
 	helper = 
 	helper = !/usr/local/bin/gh auth git-credential
+[safe]
+	directory = .
+	directory = .

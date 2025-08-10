@@ -24,6 +24,9 @@ commands:
     - cmd:
       - git branch -a
       help: " # List all the git branch"
+    - cmd:
+      -  git log --format='%aN <%aE>' | sort -uf
+      help: " # List all the git author"
   tr:
     - cmd:
       - tr -d '\n' < yourfile.txt
