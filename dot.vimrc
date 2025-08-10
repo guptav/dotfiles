@@ -17,6 +17,12 @@ set rtp+=~/.vim/bundle/Vundle.vim
 "
 " Vundle Settings : Load Modules
 "
+" Bootstrap
+" - mkdir -p ~/.vim/bundle
+" - git clone https://github.com/VundleVim/Vundle.vim.git
+" - open vim
+" - :PluginInstall
+"
 
 " set the runtime path to include Vundle and initialize
 call vundle#begin()
@@ -768,7 +774,7 @@ command! -bang -nargs=* GGrep
 
 function! RipgrepFzf(query, fullscreen)
 " {{{
-  let command_fmt = 'rg --column --line-number --no-heading --color=always --smart-case -- %s || true'
+  let command_fmt = 'rgg --column --line-number --no-heading --color=always --smart-case -- %s || true'
   let initial_command = printf(command_fmt, shellescape(a:query))
   let reload_command = printf(command_fmt, '{q}')
   let spec = {'options': ['--phony', '--query', a:query, '--bind', 'change:reload:'.reload_command]}

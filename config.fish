@@ -31,6 +31,7 @@ alias lt="ls -l -snew -g"
 alias g="git"
 alias t="task"
 alias rm="rm -i"
+alias vim="nvim"
 alias b=~/bin/b
 alias pp='cd ~/Personal/repo/notes'
 alias ai='tmux display-popup -E -h "80%" -w "80%" "tmux a -t ai "'
@@ -44,7 +45,7 @@ export FZF_DEFAULT_COMMAND='fd --type f'
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 fzf_configure_bindings --directory=\cp
 
-function rg
+function rgg
   command rg -n $argv | fzf
 end
 
@@ -88,3 +89,6 @@ end
 alias my-open-issue="jira issue list -a$(jira me) -sopen"
 # Jira completion
 jira completion fish | source
+
+# The next line updates PATH for the Google Cloud SDK.
+if [ -f '/Users/vaibhavgupta/Desktop/google-cloud-sdk/path.fish.inc' ]; . '/Users/vaibhavgupta/Desktop/google-cloud-sdk/path.fish.inc'; end
