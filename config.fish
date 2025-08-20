@@ -87,9 +87,9 @@ end
 
 # Jira token and aliases
 # JIRA_API_TOKEN and JIRA_AUTH_TYPE="bearer" are set in .envrc
-alias my-open-issue="jira issue list -a$(jira me) -sopen"
+# alias my-open-issue="jira issue list -a$(jira me) -sopen"
 # Jira completion
-jira completion fish | source
+# jira completion fish | source
 
 # The next line updates PATH for the Google Cloud SDK.
 if [ -f '/Users/vaibhavgupta/Desktop/google-cloud-sdk/path.fish.inc' ]; . '/Users/vaibhavgupta/Desktop/google-cloud-sdk/path.fish.inc'; end

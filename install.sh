@@ -44,13 +44,13 @@ function main ()
     [ $? -ne 0 ] && echo "Command not found : $command" && help_file
 
     # For each dot file
-    for i in `find . -type f -name 'dot*' -printf "%f\n"`
+    for i in `find . -type f -name 'dot*'`
     do
       eval ${command}_file $i
     done
 
     # For each dot directory.
-    for d in `find . -type d -name 'dot*' -printf "%f\n"`
+    for d in `find . -type d -name 'dot*'`
     do
       mkdir ~/${d/dot/} 2> /dev/null > /dev/null
       for i in `find ${d} -maxdepth 1 -type f `
