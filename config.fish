@@ -91,5 +91,7 @@ end
 # Jira completion
 # jira completion fish | source
 
+source "$HOME/.cargo/env.fish"
+
 # The next line updates PATH for the Google Cloud SDK.
 if [ -f '/Users/vaibhavgupta/Desktop/google-cloud-sdk/path.fish.inc' ]; . '/Users/vaibhavgupta/Desktop/google-cloud-sdk/path.fish.inc'; end
