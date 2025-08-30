@@ -600,6 +600,7 @@ function ActiveSyn()
                 autocmd BufNewFile,BufRead * call ActivateInvisibleCharIndicator()
         endif
 endfunction
+
 " }}}
 
 " OLD Mappings - TODO
