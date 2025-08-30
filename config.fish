@@ -40,7 +40,7 @@ set tmux_sess (tmux display-message -p '#S');
 alias tkill="tmux list-sessions | awk '{print \$1}'| sed -e 's/$tmux_sess//g' | fzf --no-preview  | xargs -I{} tmux kill-session -t '{}'"
 
 # FZF Settings
-export FZF_DEFAULT_OPTS='--layout=reverse --border --layout=reverse --info=inline --preview "~/.vim/bundle/fzf.vim/bin/preview.sh {}" --header "CTRL-O (open in browser) ╱ ALT-E (examine in editor)/ CTRL-/ (Change preview window)"  --bind "ctrl-/:change-preview-window(down,70%|hidden|)" --bind 'ctrl-w:toggle-preview-wrap'  --bind "ctrl-o:execute-silent:git op {}" --bind "alt-e:execute:vim {} > /dev/tty" --bind "ctrl-b:preview-half-page-up,ctrl-f:preview-half-page-down"'
+export FZF_DEFAULT_OPTS='--layout=reverse --border --layout=reverse --info=inline --preview "/opt/homebrew/bin/bat {}" --header "CTRL-O (open in browser) ╱ ALT-E (examine in editor)/ CTRL-/ (Change preview window)"  --bind "ctrl-/:change-preview-window(down,70%|hidden|)" --bind 'ctrl-w:toggle-preview-wrap'  --bind "ctrl-o:execute-silent:git op {}" --bind "alt-e:execute:vim {} > /dev/tty" --bind "ctrl-b:preview-half-page-up,ctrl-f:preview-half-page-down"'
 export FZF_DEFAULT_COMMAND='fd --type f'
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 fzf_configure_bindings --directory=\cp
