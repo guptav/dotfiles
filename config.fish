@@ -75,7 +75,7 @@ export GF_DIFF_FILE_PREVIEW_DEFAULTS="--color"
 set -x PATH "/opt/homebrew/Cellar/vim/9.1.0350/bin:/Users/vaibhavgupta/Personal/repo/git-fuzzy/bin:$PATH"
 set -x PATH "/Users/vaibhavgupta/Library/Python/3.9/bin/:$PATH"
 set -x PATH "/opt/homebrew/opt/ruby/bin:$PATH"
-set -x PATH "~/repo/everything.fzf:$PATH"
+set -x PATH "$HOME/github/everything.fzf:$PATH"
 
 # Keyboard Bindings
 bind \cs beginning-of-line
@@ -99,4 +99,4 @@ source "$HOME/.cargo/env.fish"
 # The next line updates PATH for the Google Cloud SDK.
 if [ -f '/Users/vaibhavgupta/Desktop/google-cloud-sdk/path.fish.inc' ]; . '/Users/vaibhavgupta/Desktop/google-cloud-sdk/path.fish.inc'; end
 
-tmux mouse off
+tmux set mouse off
