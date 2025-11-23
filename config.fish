@@ -24,6 +24,7 @@ end
 
 # Default settings
 export EDITOR=vim
+export REPO_PATH="~/repo"
 
 # Default alias
 alias l="ls -l -snew -g"
@@ -73,6 +74,8 @@ export GIT_FUZZY_STATUS_RESET_KEY='Ctrl-f'
 export GF_DIFF_FILE_PREVIEW_DEFAULTS="--color"
 set -x PATH "/opt/homebrew/Cellar/vim/9.1.0350/bin:/Users/vaibhavgupta/Personal/repo/git-fuzzy/bin:$PATH"
 set -x PATH "/Users/vaibhavgupta/Library/Python/3.9/bin/:$PATH"
+set -x PATH "/opt/homebrew/opt/ruby/bin:$PATH"
+set -x PATH "~/repo/everything.fzf:$PATH"
 
 # Keyboard Bindings
 bind \cs beginning-of-line
@@ -95,3 +98,5 @@ source "$HOME/.cargo/env.fish"
 
 # The next line updates PATH for the Google Cloud SDK.
 if [ -f '/Users/vaibhavgupta/Desktop/google-cloud-sdk/path.fish.inc' ]; . '/Users/vaibhavgupta/Desktop/google-cloud-sdk/path.fish.inc'; end
+
+tmux mouse off

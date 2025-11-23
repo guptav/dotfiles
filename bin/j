@@ -1,5 +1,10 @@
 #!/usr/bin/env bash
 
 GO_FILE=/Users/vaibhavgupta/box-repo/box-jump/go.json
-cat ${GO_FILE} | jq -r 'keys[] as $k | "\($k), \(.[$k] | .url) , \(.[$k] | .aliases)"' | fzf --no-preview| awk '{print $2}' | xargs open
+if [ ! -f ${GO_FILE} ]; then
+    ~/bin/b
+    exit 1
+else
+    cat ${GO_FILE} | jq -r 'keys[] as $k | "\($k), \(.[$k] | .url) , \(.[$k] | .aliases)"' | fzf --no-preview| awk '{print $2}' | xargs open
+fi
 

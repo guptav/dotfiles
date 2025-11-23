@@ -1,5 +1,7 @@
 #!/bin/bash
 
+COMMANDS_FILE="commands.yaml"
+
 function link_file ()
 {
     source="${PWD}/$1"
@@ -62,6 +64,7 @@ function main ()
         eval ${command}_file $i
       done
     done
+    eval ${command}_file ${COMMANDS_FILE}
 }
 
 
