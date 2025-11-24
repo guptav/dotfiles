@@ -13,10 +13,11 @@ commands:
   fish:
     - cmd:
       - bind -a | fzf --no-preview
-      help: " # list all the keyboard binding for fish shell"
+      help: " # list all the key binding for fish shell"
     - cmd:
       - j
       help: " # Jump to a url via goto"
+
   git:
     - cmd:
       - git checkout {BRANCH}
@@ -27,10 +28,12 @@ commands:
     - cmd:
       -  git log --format='%aN <%aE>' | sort -uf
       help: " # List all the git author"
+
   tr:
     - cmd:
       - tr -d '\n' < yourfile.txt
       help: " # Delete \\n from a given file."
+
   task:
     - cmd:
       - task
@@ -44,10 +47,12 @@ commands:
     - cmd:
       - task {TASK_ID} export | jq .[].annotations[].description
       help: " # Get the annotations of a task"
+
   column:
     - cmd:
       - column -s, -t < yourfile.csv
       help: " # Format the output as a table"
+
   gh:
     - cmd:
       - gh repo view
@@ -110,6 +115,7 @@ commands:
     - cmd:
       - "for i in `seq 1 3`; do kubectl get pvc -n jenkins-agents-dev --cluster=apps-us-west1-dev-0$i ; done"
       help: " # Get the pvc details of all the pvc in a namespace"
+
   linux:
     - cmd:
       - >-
@@ -119,5 +125,10 @@ commands:
       - echo 1 > /proc/sys/vm/drop_caches
       help: " # Clear the cache"
 
-
-
+  tmux:
+    - cmd:
+      - tmux ls
+      help: " # List all the tmux sessions"
+    - cmd:
+      - tmux list-keys | fzf --no-preview
+      help: " # List all the tmux key bindings"
