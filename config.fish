@@ -110,7 +110,24 @@ function op
     cat ~/commands.yaml | yq '.bookmarks.[] | .[]' | fzf --preview '~/bin/b.sh {}' | xargs open
 end
 
+# Check git status in all repos in current directory
+function git-check
+    for dir in *;
+        if test -d "$dir/.git"
+            cd $dir
+            if test (git status --porcelain -uno | wc -l) -gt 0
+                # In different color
+                echo (set_color red) "==> Uncommitted changes in $dir" (set_color normal)
+                git st
+            end
+            echo ""
+            cd ..
+        end
+    end
+end
+
 # }}} Functions
+
 # Jira token and aliases
 # JIRA_API_TOKEN and JIRA_AUTH_TYPE="bearer" are set in .envrc
 # alias my-open-issue="jira issue list -a$(jira me) -sopen"
