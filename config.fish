@@ -54,9 +54,14 @@ set PATH $PATH ~/bin
 set -x PATH "/opt/homebrew/opt/ruby/bin:$PATH"
 set -x PATH "$HOME/github/everything.fzf:$PATH"
 set -x PATH "$HOME/github/git-fuzzy/bin:$PATH"
-source "$HOME/.cargo/env.fish"
 if test -f $HOME/.env.fish
     source $HOME/.env.fish
+end
+if test -f $HOME/.tcargo/env.fish
+    source $HOME/.tcargo/env.fish
+end
+if test -f $HOME/.cargo/env.fish
+    source $HOME/.cargo/env.fish
 end
 
 # }}} Path Settings
@@ -154,6 +159,7 @@ alias my-history="jira issue list -a$(jira me) --paginate $JIRA_PAGE -RUnresolve
 jira completion fish | source
 # }}} Jira Settings
 
+# source "$HOME/.cargo/env.fish"
+
 # The next line updates PATH for the Google Cloud SDK.
 if [ -f '/Users/vaibhavgupta/Desktop/google-cloud-sdk/path.fish.inc' ]; . '/Users/vaibhavgupta/Desktop/google-cloud-sdk/path.fish.inc'; end
-

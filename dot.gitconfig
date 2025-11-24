@@ -1,5 +1,5 @@
 [user]
-  email = vaibhav.gupta@gmail.com
+  email = vaibhavgupta@box.com
   name = Vaibhav Gupta
 
 [core]
@@ -114,3 +114,4 @@
 [safe]
 	directory = .
 	directory = .
+	directory = *
