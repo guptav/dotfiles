@@ -617,7 +617,7 @@ function decryptfile ()
 {
     zenity --title="zcrypt: Select a file to decrypt" --file-selection > zcrypt
     decryptthisfile=`cat zcrypt`;rm zcrypt
-    # NOTE: This will OVERWRITE existing files with the same name !!!
+    # This will OVERWRITE existing files with the same name !!!
     gpg --yes -q ${decryptthisfile}
     zenity --info --title "File Decrypted" --text "$encryptthisfile has been decrypted"
 }

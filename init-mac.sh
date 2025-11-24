@@ -17,6 +17,8 @@ brew install julia
 brew install php
 brew install composer
 brew install tree-sitter-cli
+brew install gs
+brew install yq
 
 # Monitoring tools
 brew install htop

@@ -18,7 +18,7 @@ def read_file(file_name):
 
 def pre_process(content):
     """Preprocess file"""
-    out = [line.strip() for line in content if line is not ""]
+    out = [line.strip() for line in content if line != ""]
     hash = [hash_funct(line.encode()).hexdigest() for line in out]
     hash_map  = {h:0 for h in set(hash)}
     for i, j in zip(hash, out):
