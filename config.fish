@@ -55,6 +55,9 @@ set -x PATH "/opt/homebrew/opt/ruby/bin:$PATH"
 set -x PATH "$HOME/github/everything.fzf:$PATH"
 set -x PATH "$HOME/github/git-fuzzy/bin:$PATH"
 source "$HOME/.cargo/env.fish"
+if test -f $HOME/.env.fish
+    source $HOME/.env.fish
+end
 
 # }}} Path Settings
 

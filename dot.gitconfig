@@ -70,7 +70,7 @@
   gl = "!git log --oneline --color --pretty=format:\"%C(green)%h%Creset -%C(yellow)%d%Creset %s %Cred<%an>%Creset %Cblue(%ar)%Creset\" | fzf --ansi  --header GitHistory --bind 'ctrl-/:change-preview-window(down,70%|hidden|)' --bind 'ctrl-w:toggle-preview-wrap' -m --preview=\"git show --color=always {1} $1\""
 
   # Open all the files from last commit.
-  open = "!vim $(git show --pretty= --name-only)"
+  open = "!nvim $(git show --pretty= --name-only)"
 
   root = "!git rev-parse --show-toplevel"
   op = "!_f() { cd -- ${GIT_PREFIX:-.};gh browse $1; }; _f"
