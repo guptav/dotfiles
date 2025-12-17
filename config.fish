@@ -131,11 +131,28 @@ end
 
 # }}} Functions
 
+# {{{ Jira Settings
+export JIRA_USER=(jira me)
+export JIRA_PAGE=50
 # Jira token and aliases
 # JIRA_API_TOKEN and JIRA_AUTH_TYPE="bearer" are set in .envrc
-# alias my-open-issue="jira issue list -a$(jira me) -sopen"
+alias my-open-issue="jira issue list -a$(jira me) -sopen"
+alias ji="fzf --preview-window down \
+                --header-lines=1 \
+                --preview-label 'Enter = View in browser,  Alt-Enter = Edit in terminal, Alt-j = Move, Alt-c = Create' \
+                --color 'label:bold:red' \
+                --preview 'jira issue view {1}' \
+                --bind 'alt-enter:execute(jira issue edit {1})' \
+                --bind 'enter:execute(jira open {1})' \
+                --bind 'alt-c:execute(jira issue create)' \
+                --bind 'alt-j:execute(jira issue move {1})'"
+alias my-sprint="jira sprint list --current -a$(jira me) -RUnresolved --order-by priority --reverse --plain  --columns id,summary,status,type,reporter,priority,labels | ji"
+alias my-report="jira issue list -r(jira me) --paginate $JIRA_PAGE -RUnresolved --plain  --columns id,summary,status,type,assignee,priority,labels | ji"
+alias my-history="jira issue list -a$(jira me) --paginate $JIRA_PAGE -RUnresolved   --plain --order-by updated --columns id,summary,status,type,reporter,priority,labels | ji"
+
 # Jira completion
-# jira completion fish | source
+jira completion fish | source
+# }}} Jira Settings
 
 # The next line updates PATH for the Google Cloud SDK.
 if [ -f '/Users/vaibhavgupta/Desktop/google-cloud-sdk/path.fish.inc' ]; . '/Users/vaibhavgupta/Desktop/google-cloud-sdk/path.fish.inc'; end
