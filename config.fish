@@ -25,7 +25,7 @@ fzf_configure_bindings --directory=\cp
 # }}} Default Settings
 
 # {{{ Default settings and aliases
-export EDITOR=vim
+export EDITOR=nvim
 export REPO_PATH="$HOME/repo"
 alias pp='cd $REPO_PATH/notes'
 
@@ -35,7 +35,7 @@ alias lt="ls -l -snew -g"
 alias g="git"
 alias t="todoist"
 alias rm="rm -i"
-alias vim="nvim"
+alias vim="$EDITOR"
 alias b=~/bin/b
 alias ai='tmux display-popup -E -h "80%" -w "80%" "tmux a -t ai "'
 alias tkill="tmux list-sessions | awk '{print \$1}'| sed -e 's/$tmux_sess//g' | fzf --no-preview  | xargs -I{} tmux kill-session -t '{}'"
