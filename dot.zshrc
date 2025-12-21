@@ -105,3 +105,6 @@ export SDKMAN_DIR="/Users/vaibhavgupta/.sdkman"
 [[ -s "/Users/vaibhavgupta/.sdkman/bin/sdkman-init.sh" ]] && source "/Users/vaibhavgupta/.sdkman/bin/sdkman-init.sh"
 
 . "$HOME/.local/bin/env"
+
+# Added by Antigravity
+export PATH="/Users/guptav/.antigravity/antigravity/bin:$PATH"
