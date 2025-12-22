@@ -57,8 +57,8 @@
   update = "!_f() { git diff-index --quiet HEAD -- || return; myremote=$(git symbolic-ref refs/remotes/origin/HEAD | sed 's@^refs/remotes/origin/@@'); echo "Fetching $myremote";git fetch origin && git checkout $myremote; git rebase origin/$myremote; git st;}; _f || echo 'untracked changes. Stash first'"
 
   # Git fuzzy add. Add an option -o if you want to include others files.
-  za = "!git ls-files -m  --exclude-standard | fzf --print0 -m --preview='git diff --color {}' | xargs -0 -t -o git add; git st"
-  zb = "!git ls-files -m -o --exclude-standard | fzf --print0 -m --preview='git diff --color {}' | xargs -0 -t -o git add"
+  za = "!git ls-files -m --exclude-standard | fzf --print0 -m --preview='git diff --color {}' | xargs -0 -t -o git add; git st"
+  zb = "!git ls-files -o --exclude-standard | fzf --print0 -m --preview='bat --color auto {}' | xargs -0 -t -o git add; git status"
 
   # browse the repo in repo. Need github cli.
   browse = "!gh browse"
@@ -70,7 +70,7 @@
   gl = "!git log --oneline --color --pretty=format:\"%C(green)%h%Creset -%C(yellow)%d%Creset %s %Cred<%an>%Creset %Cblue(%ar)%Creset\" | fzf --ansi  --header GitHistory --bind 'ctrl-/:change-preview-window(down,70%|hidden|)' --bind 'ctrl-w:toggle-preview-wrap' -m --preview=\"git show --color=always {1} $1\""
 
   # Open all the files from last commit.
-  open = "!vim $(git show --pretty= --name-only)"
+  open = "!nvim $(git show --pretty= --name-only)"
 
   root = "!git rev-parse --show-toplevel"
   op = "!_f() { cd -- ${GIT_PREFIX:-.};gh browse $1; }; _f"

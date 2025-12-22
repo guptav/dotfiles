@@ -83,6 +83,9 @@ commands:
       cmd:
       - >-
         gh api '/search/code?q="wdio-utils+%2B+filename%3Apackage.json&type=Code&per_page=200"' | jq .  > wdio-res.json
+    - help: "# Agents task from github cli"
+      cmd:
+        - gh agent-task create "_TAKSK"
 
   jenkins:
     - cmd:
