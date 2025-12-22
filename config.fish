@@ -85,6 +85,7 @@ end
 # Install useful tools
 function install_tools
   brew install tty-clock neofetch lolcat
+  brew install jira-cli
 end
 
 # Ripgrep with FZF
