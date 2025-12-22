@@ -116,16 +116,22 @@ end
 
 # Check git status in all repos in current directory
 function git-check
-    for dir in *;
-        if test -d "$dir/.git"
-            cd $dir
-            if test (git status --porcelain -uno | wc -l) -gt 0
-                # In different color
-                echo (set_color red) "==> Uncommitted changes in $dir" (set_color normal)
-                git st
+    if test -d .git
+        echo (set_color red) "==> Uncommitted changes in current directory" (set_color normal)
+        git st
+        echo ""
+    else
+        for dir in *;
+            if test -d "$dir/.git"
+                cd $dir
+                if test (git status --porcelain -uno | wc -l) -gt 0
+                    # In different color
+                    echo (set_color red) "==> Uncommitted changes in $dir" (set_color normal)
+                    git st
+                end
+                echo ""
+                cd ..
             end
-            echo ""
-            cd ..
         end
     end
 end
