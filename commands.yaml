@@ -135,3 +135,7 @@ commands:
     - cmd:
       - tmux list-keys | fzf --no-preview
       help: " # List all the tmux key bindings"
+
+github:
+  - repo: junegunn/everything.fzf
+    desc: "A command palette for your terminal, inspired by VSCode's Ctrl+P"
