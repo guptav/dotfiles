@@ -11,13 +11,14 @@ end
 
 # Load environment variables
 . ~/.envrc
+export HOMEBREW_PREFIX="/opt/homebrew"
 
 # TMUX Settings
 tmux set mouse off
 set tmux_sess (tmux display-message -p '#S');
 
 # FZF Settings
-export FZF_DEFAULT_OPTS='--layout=reverse --border --layout=reverse --info=inline --preview "/opt/homebrew/bin/bat {}" --header "CTRL-O (open in browser) ╱ ALT-E (examine in editor)/ CTRL-/ (Change preview window)"  --bind "ctrl-/:change-preview-window(down,70%|hidden|)" --bind 'ctrl-w:toggle-preview-wrap'  --bind "ctrl-o:execute-silent:git op {}" --bind "alt-e:execute:vim {} > /dev/tty" --bind "ctrl-b:preview-half-page-up,ctrl-f:preview-half-page-down"'
+export FZF_DEFAULT_OPTS='--layout=reverse --border --layout=reverse --info=inline --preview "/opt/homebrew/bin/bat {}" --header "CTRL-O (open in browser) ╱ ALT-E (examine in editor)/ CTRL-/ (Change preview window)"  --bind "ctrl-/:change-preview-window(down,70%|hidden|)" --bind 'ctrl-w:toggle-preview-wrap'  --bind "ctrl-o:execute-silent:git op {}" --bind "alt-e:execute:vim {} > /dev/tty" --bind "ctrl-b:preview-half-page-up,ctrl-f:preview-half-page-down" --bind "alt-m:page-down,alt-n:page-up"'
 export FZF_DEFAULT_COMMAND='fd --type f'
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 fzf_configure_bindings --directory=\cp
@@ -86,6 +87,7 @@ end
 function install_tools
   brew install tty-clock neofetch lolcat
   brew install jira-cli
+  brew install forgit
 end
 
 # Ripgrep with FZF
@@ -161,6 +163,11 @@ alias my-history="jira issue list -a$(jira me) --paginate $JIRA_PAGE -RUnresolve
 jira completion fish | source
 # }}} Jira Settings
 
+# {{{ ENVs for tools
+
 # The next line updates PATH for the Google Cloud SDK.
 if [ -f '/Users/vaibhavgupta/Desktop/google-cloud-sdk/path.fish.inc' ]; . '/Users/vaibhavgupta/Desktop/google-cloud-sdk/path.fish.inc'; end
+# Load forgit if installed
+[ -f $HOMEBREW_PREFIX/share/forgit/forgit.plugin.fish ]; and source $HOMEBREW_PREFIX/share/forgit/forgit.plugin.fish
 
+# }}} ENVs for tools
