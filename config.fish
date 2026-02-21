@@ -87,7 +87,7 @@ end
 function install_tools
   brew install tty-clock neofetch lolcat
   brew install jira-cli
-  brew install forgit
+  brew install forgit      # https://github.com/wfxr/forgit
 end
 
 # Ripgrep with FZF

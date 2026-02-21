@@ -20,6 +20,9 @@ brew install tree-sitter-cli
 brew install gs
 brew install yq
 
+# AI tools
+brew install copilot-cli
+
 # Monitoring tools
 brew install htop
 
