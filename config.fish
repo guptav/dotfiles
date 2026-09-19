@@ -140,7 +140,23 @@ end
 #        ca --raw "PROMPT"       raw stream-json lines
 #        ca --model gpt-5 "..."  any other flag is passed to cursor-agent
 #        echo "PROMPT" | ca      prompt from stdin
+#        ca --log [N|all]        list the last N audit entries (default 20)
+set -q CA_AUDIT_LOG; or set -gx CA_AUDIT_LOG "$HOME/.ca-audit.log"
 function ca
+    if test "$argv[1]" = --log
+        if not test -f "$CA_AUDIT_LOG"
+            echo "ca: no audit log at $CA_AUDIT_LOG" >&2
+            return 1
+        end
+        set -l n 20
+        test -n "$argv[2]"; and set n $argv[2]
+        if test "$n" = all
+            cat "$CA_AUDIT_LOG"
+        else
+            tail -n $n "$CA_AUDIT_LOG"
+        end
+        return 0
+    end
     set -l raw 0
     set -l args
     for arg in $argv
@@ -156,18 +172,25 @@ function ca
         set args (string trim -- $piped)
     end
     if test (count $args) -eq 0
-        echo "usage: ca [--raw] [cursor-agent flags] \"PROMPT\"" >&2
+        echo "usage: ca [--raw] [cursor-agent flags] \"PROMPT\" | ca --log [N|all]" >&2
         return 1
     end
+    set -l started (date +%Y-%m-%dT%H:%M:%S%z)
+    set -l rc 0
     if test $raw -eq 1
         cursor-agent --print --stream-partial-output --output-format stream-json $args
+        set rc $status
     else
         # deltas carry timestamp_ms; the final assistant event repeats the whole text
         cursor-agent --print --stream-partial-output --output-format stream-json $args |
             jq -j --unbuffered 'select(.type == "assistant" and has("timestamp_ms")) | .message.content[]?.text // empty'
+        set rc $pipestatus[1]
         echo
     end
-    cursor-agent --print  --stream-partial-output --output-format stream-json "A"
+    # string escape keeps multi-line prompts on a single log line
+    printf '%s\t%s\texit=%s\tca %s\n' $started $PWD $rc \
+        (string join ' ' -- (string escape -- $args)) >>"$CA_AUDIT_LOG"
+    return $rc
 end
 
 # }}} Functions
