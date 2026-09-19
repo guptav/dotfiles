@@ -65,6 +65,9 @@
   # browse the repo in repo. Need github cli.
   browse = "!gh browse"
 
+  # Active GHE account — green ● when vaibhavgupta, red otherwise
+  ghme = "!_f() { account=$(gh api user --hostname git.dev.box.net -q .login 2>/dev/null); if [ \"$account\" = vaibhavgupta ]; then printf '\\033[32m●\\033[0m %s\\n' \"$account\"; else printf '\\033[31m●\\033[0m %s\\n' \"${account:-not logged in}\"; fi; }; _f"
+
   # Switch to a different branch
   cb = "!git branch --sort=-committerdate --color --format='%(color:yellow)%(refname:short) %(color:red)%(HEAD) %(color:green)(%(committerdate:relative)) - %(color:blue)%(subject)' | fzf --ansi  --header Checkout -m --preview='git show --color=always {1} ' | cut -d' ' -f 1 | xargs git checkout"
 

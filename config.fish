@@ -54,6 +54,7 @@ set PATH $PATH ~/bin
 set -x PATH "/opt/homebrew/opt/ruby/bin:$PATH"
 set -x PATH "$HOME/github/everything.fzf:$PATH"
 set -x PATH "$HOME/github/git-fuzzy/bin:$PATH"
+set -x PATH "$HOME/.cargo/bin:$PATH"
 if test -f $HOME/.env.fish
     source $HOME/.env.fish
 end
@@ -134,6 +135,41 @@ function git-check
     end
 end
 
+# Run a Cursor agent prompt headless
+# Usage: ca "PROMPT"             stream the answer text
+#        ca --raw "PROMPT"       raw stream-json lines
+#        ca --model gpt-5 "..."  any other flag is passed to cursor-agent
+#        echo "PROMPT" | ca      prompt from stdin
+function ca
+    set -l raw 0
+    set -l args
+    for arg in $argv
+        if test "$arg" = --raw
+            set raw 1
+        else
+            set -a args $arg
+        end
+    end
+    if test (count $args) -eq 0; and not isatty stdin
+        # read -z instead of (cat): command substitutions do not inherit the pipe
+        read -z -l piped
+        set args (string trim -- $piped)
+    end
+    if test (count $args) -eq 0
+        echo "usage: ca [--raw] [cursor-agent flags] \"PROMPT\"" >&2
+        return 1
+    end
+    if test $raw -eq 1
+        cursor-agent --print --stream-partial-output --output-format stream-json $args
+    else
+        # deltas carry timestamp_ms; the final assistant event repeats the whole text
+        cursor-agent --print --stream-partial-output --output-format stream-json $args |
+            jq -j --unbuffered 'select(.type == "assistant" and has("timestamp_ms")) | .message.content[]?.text // empty'
+        echo
+    end
+    cursor-agent --print  --stream-partial-output --output-format stream-json "A"
+end
+
 # }}} Functions
 
 # {{{ Jira Settings
@@ -163,3 +199,5 @@ jira completion fish | source
 
 # The next line updates PATH for the Google Cloud SDK.
 if [ -f '/Users/vaibhavgupta/Desktop/google-cloud-sdk/path.fish.inc' ]; . '/Users/vaibhavgupta/Desktop/google-cloud-sdk/path.fish.inc'; end
+
+# Include the path: /Library/Frameworks/Python.framework/Versions/3.12/bin

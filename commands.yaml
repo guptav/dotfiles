@@ -34,6 +34,11 @@ commands:
       - tr -d '\n' < yourfile.txt
       help: " # Delete \\n from a given file."
 
+  jq:
+    - cmd:
+      - jq 'walk(if type == "string" and (length > 80) then .[0:80] + "…" else . end)'
+      help: " # Trim strings longer than 80 chars and display JSON"
+
   task:
     - cmd:
       - task
