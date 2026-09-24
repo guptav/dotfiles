@@ -18,9 +18,19 @@
 # refresh loop natively in bash.
 if [ "$1" = "--preview-loop" ]; then
     pane_id="$2"
+    prev=""
     while tmux has-session -t "$pane_id" 2>/dev/null; do
-        printf '\033[2J\033[H'
-        tmux capture-pane -p -e -t "$pane_id"
+        curr=$(tmux capture-pane -p -e -t "$pane_id")
+        if [ "$curr" != "$prev" ]; then
+            # fzf's preview window only reliably redraws on CSI 2J (full
+            # clear); plain cursor-addressing (CSI H) + erase-to-end (CSI J)
+            # isn't honored the same way a real terminal would, so it just
+            # looked frozen. Only pay the clear-and-redraw cost when the
+            # frame actually changed, to cut down on unnecessary flicker.
+            printf '\033[2J\033[H'
+            printf '%s\n' "$curr"
+            prev="$curr"
+        fi
         sleep 1
     done
     exit 0
