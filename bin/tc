@@ -7,13 +7,31 @@
 # an entry switches the current tmux client straight to that pane.
 #
 # Usage:
-#   tc            interactive picker (fzf), jumps to the chosen pane
-#   tc -l         just list matching panes, don't prompt/jump
+#   tc                    interactive picker (fzf), jumps to the chosen pane
+#   tc -l                 just list matching panes, don't prompt/jump
+#   tc --preview-loop ID  (internal) live-refresh preview for fzf, see below
+
+# fzf's --preview command is executed via $SHELL, which may be fish/zsh/etc,
+# so it can't rely on bash-only syntax (e.g. `while ... done`). To get a
+# live-updating preview (like `tmux choose-tree`) regardless of the user's
+# shell, fzf just re-invokes this script in a hidden mode that does the
+# refresh loop natively in bash.
+if [ "$1" = "--preview-loop" ]; then
+    pane_id="$2"
+    while tmux has-session -t "$pane_id" 2>/dev/null; do
+        printf '\033[2J\033[H'
+        tmux capture-pane -p -e -t "$pane_id"
+        sleep 1
+    done
+    exit 0
+fi
 
 which tmux >/dev/null 2>&1 || { echo "tc: tmux not found" >&2; exit 1; }
 which fzf  >/dev/null 2>&1 || { echo "tc: fzf not found"  >&2; exit 1; }
 
 tmux info >/dev/null 2>&1 || { echo "tc: no tmux server running" >&2; exit 1; }
+
+self="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/$(basename "${BASH_SOURCE[0]}")"
 
 list_only=0
 [ "$1" = "-l" ] && list_only=1
@@ -78,7 +96,7 @@ selected=$(echo "$matches" | fzf \
     --with-nth=2,3 \
     --reverse \
     --header="cursor-agent sessions >" \
-    --preview 'tmux capture-pane -p -e -t {1}' \
+    --preview "\"$self\" --preview-loop {1}" \
     --preview-window=bottom:60%)
 
 [ -z "$selected" ] && exit 1
