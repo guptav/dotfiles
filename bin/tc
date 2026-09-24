@@ -1,0 +1,94 @@
+#!/usr/bin/env bash
+#
+# tc - jump to a tmux pane running a cursor-agent session.
+#
+# Like `tmux choose-tree`, but the list is filtered down to only the panes
+# whose process tree contains a running `cursor-agent` process. Selecting
+# an entry switches the current tmux client straight to that pane.
+#
+# Usage:
+#   tc            interactive picker (fzf), jumps to the chosen pane
+#   tc -l         just list matching panes, don't prompt/jump
+
+which tmux >/dev/null 2>&1 || { echo "tc: tmux not found" >&2; exit 1; }
+which fzf  >/dev/null 2>&1 || { echo "tc: fzf not found"  >&2; exit 1; }
+
+tmux info >/dev/null 2>&1 || { echo "tc: no tmux server running" >&2; exit 1; }
+
+list_only=0
+[ "$1" = "-l" ] && list_only=1
+
+panes=$(tmux list-panes -a -F "#{pane_id}	#{session_name}:#{window_index}.#{pane_index}	#{window_name}	#{pane_pid}	#{pane_title}	#{pane_current_path}")
+[ -z "$panes" ] && { echo "tc: no tmux panes found" >&2; exit 1; }
+
+pane_pids=$(echo "$panes" | cut -f4 | tr '\n' ' ')
+
+# Take a single ps snapshot and, for each pane's root pid, walk its process
+# tree (via ppid) looking for a running `cursor-agent` process. Doing this
+# as one awk pass (rather than N recursive pgrep/ps calls) is both faster
+# and more reliable - pgrep -P has been observed to miss children in some
+# sandboxed shells even though `ps` sees them fine.
+agent_pids=$(ps -axo pid=,ppid=,command= | awk -v ROOTS="$pane_pids" '
+    BEGIN { n = split(ROOTS, roots, " ") }
+    {
+        pid = $1 + 0; ppid = $2 + 0
+        $1 = ""; $2 = ""
+        cmd = $0
+        sub(/^ +/, "", cmd)
+        command[pid] = cmd
+        children[ppid] = children[ppid] " " pid
+    }
+    END {
+        for (i = 1; i <= n; i++) {
+            root = roots[i] + 0
+            delete visited
+            qlen = 1; queue[1] = root
+            found = 0
+            while (qlen > 0) {
+                cur = queue[qlen]; qlen--
+                if (visited[cur]++) continue
+                if (index(command[cur], "cursor-agent") > 0) { found = 1; break }
+                nkids = split(children[cur], kids, " ")
+                for (k = 1; k <= nkids; k++) {
+                    if (kids[k] != "") { qlen++; queue[qlen] = kids[k] }
+                }
+            }
+            if (found) printf "%s ", root
+        }
+    }
+')
+
+[ -z "$agent_pids" ] && { echo "tc: no panes running cursor-agent" >&2; exit 1; }
+
+# pane_id \t "session:window.pane [window-name]" \t pane-title \t pane-path
+matches=$(echo "$panes" | awk -F'\t' -v AGENTS="$agent_pids" '
+    BEGIN { n = split(AGENTS, a, " "); for (i = 1; i <= n; i++) agent[a[i]] = 1 }
+    ($4 in agent) { printf "%s\t%s [%s]\t%s\t%s\n", $1, $2, $3, $5, $6 }
+')
+
+[ -z "$matches" ] && { echo "tc: no panes running cursor-agent" >&2; exit 1; }
+
+if [ "$list_only" = "1" ]; then
+    echo "$matches" | cut -f2-
+    exit 0
+fi
+
+selected=$(echo "$matches" | fzf \
+    --delimiter=$'\t' \
+    --with-nth=2,3 \
+    --reverse \
+    --header="cursor-agent sessions >" \
+    --preview 'tmux capture-pane -p -e -t {1}' \
+    --preview-window=bottom:60%)
+
+[ -z "$selected" ] && exit 1
+
+pane_id=$(echo "$selected" | cut -f1)
+
+if [ -z "$TMUX" ]; then
+    tmux attach-session -t "$pane_id"
+else
+    tmux switch-client -t "$pane_id"
+    tmux select-window -t "$pane_id"
+    tmux select-pane -t "$pane_id"
+fi
