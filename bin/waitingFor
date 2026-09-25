@@ -468,7 +468,10 @@ printf 'waited %s on %s: %s\n' "$ELAPSED" "$KIND" "$URL"
 printf 'waiting is over (%s). Wait for the user'\''s next prompt before doing more work.\n' "$RESULT"
 
 if [ -t 0 ]; then
-  printf 'Further prompt (Enter to exit): '
-  read -r _ || true
+  printf 'Further prompt (o to open link, Enter to exit): '
+  read -r -n 1 response || true
+  if [ "$response" = "o" ]; then
+    open "$URL"
+  fi
 fi
 exit 0
