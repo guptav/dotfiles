@@ -1,0 +1,474 @@
+#!/usr/bin/env bash
+#
+# waitingFor - poll a Jenkins build, GitHub PR, or Slack thread until it is done.
+#
+# Usage:
+#   waitingFor <url>
+#   waitingFor --interval 60 <url>
+#
+# URL kinds:
+#   jenkinsBuild  poll the build every interval until it is no longer running
+#   pullrequest   wait until the PR is merged; while waiting, print pending checks
+#   slackThread   wait until a new human reply from you or someone else in the thread
+#
+# When the wait ends the script writes STATUS=READY to ~/.waitingFor.status
+# and prints READY, the URL it was watching and how long it waited. It does
+# not rename tmux windows or panes. Agents should then stop and wait for the
+# user's next prompt.
+
+set -euo pipefail
+
+INTERVAL=60
+STATUS_FILE="${WAITINGFOR_STATUS_FILE:-$HOME/.waitingFor.status}"
+URL=""
+
+usage() {
+  cat <<'EOF'
+Usage: waitingFor [--interval SECONDS] <url>
+
+Poll until the URL's wait condition is met (default every 60s).
+
+  Jenkins build   wait until the build is finished
+  Pull request    wait until the PR is merged; show pending/failing checks
+  Slack thread    wait until you or another person posts a new reply
+
+When done: status becomes READY. Wait for the user's next prompt.
+EOF
+}
+
+while [ $# -gt 0 ]; do
+  case "$1" in
+    -h|--help)
+      usage
+      exit 0
+      ;;
+    --interval)
+      INTERVAL="${2:?waitingFor: --interval needs a number}"
+      shift 2
+      ;;
+    --interval=*)
+      INTERVAL="${1#*=}"
+      shift
+      ;;
+    --)
+      shift
+      break
+      ;;
+    -*)
+      echo "waitingFor: unknown option $1" >&2
+      usage >&2
+      exit 2
+      ;;
+    *)
+      URL="$1"
+      shift
+      break
+      ;;
+  esac
+done
+
+[ -z "$URL" ] && [ $# -gt 0 ] && URL="$1"
+if [ -z "$URL" ]; then
+  usage >&2
+  exit 2
+fi
+
+need() {
+  command -v "$1" >/dev/null 2>&1 || {
+    echo "waitingFor: required command not found: $1" >&2
+    exit 1
+  }
+}
+
+need curl
+need jq
+need date
+
+KIND=""
+STATUS="WAITING"
+DETAIL=""
+RESULT=""
+
+set_status() {
+  STATUS="$1"
+  DETAIL="${2:-}"
+  {
+    printf 'STATUS=%s\n' "$STATUS"
+    printf 'KIND=%s\n' "$KIND"
+    printf 'URL=%s\n' "$URL"
+    printf 'DETAIL=%s\n' "$DETAIL"
+    printf 'UPDATED=%s\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+  } >"$STATUS_FILE"
+}
+
+die() {
+  echo "waitingFor: $*" >&2
+  set_status ERROR "$*"
+  exit 1
+}
+
+die_auth() {
+  echo "waitingFor: auth error: $*" >&2
+  set_status ERROR "auth: $*"
+  exit 1
+}
+
+require_var() {
+  local name="$1"
+  if [ -z "${!name:-}" ]; then
+    die "$name is not set"
+  fi
+}
+
+http_is_auth_error() {
+  case "$1" in
+    401|403) return 0 ;;
+  esac
+  return 1
+}
+
+log() {
+  printf '[%s] %s\n' "$(date +%H:%M:%S)" "$*"
+}
+
+# Seconds -> "1h 4m 9s", dropping leading units that are zero.
+human_duration() {
+  local total="$1" h m s out=""
+  h=$((total / 3600))
+  m=$(((total % 3600) / 60))
+  s=$((total % 60))
+  [ "$h" -gt 0 ] && out="${h}h "
+  { [ "$h" -gt 0 ] || [ "$m" -gt 0 ]; } && out="${out}${m}m "
+  printf '%s%ss' "$out" "$s"
+}
+
+classify() {
+  local u="$1"
+  if [[ "$u" =~ slack\.com/(archives|client)/ ]] || [[ "$u" =~ slack\.com/.*thread ]]; then
+    KIND="slackThread"
+  elif [[ "$u" =~ /pull/[0-9]+ ]] || [[ "$u" =~ /pulls/[0-9]+ ]]; then
+    KIND="pullrequest"
+  elif [[ "$u" =~ jenkins ]] || [[ "$u" =~ /job/ ]] || [[ "$u" =~ /blue/organizations ]]; then
+    KIND="jenkinsBuild"
+  else
+    echo "waitingFor: cannot classify URL (expected Jenkins build, pull request, or Slack thread): $u" >&2
+    exit 2
+  fi
+}
+
+# --- Jenkins -----------------------------------------------------------------
+
+require_jenkins_auth() {
+  require_var JENKINS_USERNAME
+  require_var JENKINS_API_TOKEN
+}
+
+# Strip console / blue-ocean extras down to a build (or job) URL.
+normalize_jenkins_url() {
+  local u="$1"
+  u="${u%%\?*}"
+  u="${u%/}"
+  u="${u%/consoleText}"
+  u="${u%/consoleFull}"
+  u="${u%/console}"
+  u="${u%/pipeline-console}"
+  u="${u%/display/redirect}"
+  # Blue Ocean: .../blue/organizations/jenkins/job%2Fname/detail/job/123/
+  if [[ "$u" =~ /blue/organizations/.*/detail/ ]]; then
+    local host path job build
+    host="$(printf '%s' "$u" | sed -E 's#^(https?://[^/]+)/.*#\1#')"
+    path="$(printf '%s' "$u" | sed -E 's#https?://[^/]+##')"
+    job="$(printf '%s' "$path" | sed -E 's#.*/blue/organizations/[^/]+/([^/]+)/detail/.*#\1#' | python3 -c 'import sys,urllib.parse; print(urllib.parse.unquote(sys.stdin.read().strip()).replace("/","/job/"))')"
+    build="$(printf '%s' "$path" | sed -E 's#.*/detail/[^/]+/([0-9]+).*#\1#')"
+    u="${host}/job/${job}/${build}"
+  fi
+  printf '%s' "$u"
+}
+
+check_jenkins() {
+  local build_url api tmp code json building result name
+  require_jenkins_auth
+  build_url="$(normalize_jenkins_url "$URL")"
+  if ! [[ "$build_url" =~ /[0-9]+$ ]]; then
+    build_url="${build_url}/lastBuild"
+  fi
+  api="${build_url}/api/json?tree=building,result,displayName,fullDisplayName,url,number"
+  tmp="$(mktemp)"
+  code="$(curl -sS -o "$tmp" -w '%{http_code}' \
+    -u "${JENKINS_USERNAME}:${JENKINS_API_TOKEN}" \
+    -H 'Accept: application/json' \
+    "$api" || true)"
+  json="$(cat "$tmp")"
+  rm -f "$tmp"
+  if http_is_auth_error "$code"; then
+    die_auth "Jenkins HTTP ${code} (check JENKINS_USERNAME and JENKINS_API_TOKEN)"
+  fi
+  if [ -z "$code" ] || [ "$code" = "000" ]; then
+    die "Jenkins request failed (network or TLS) for ${api}"
+  fi
+  if [ "$code" != "200" ]; then
+    die "Jenkins HTTP ${code} for ${api}"
+  fi
+  building="$(printf '%s' "$json" | jq -r '.building')"
+  result="$(printf '%s' "$json" | jq -r '.result // "UNKNOWN"')"
+  name="$(printf '%s' "$json" | jq -r '.fullDisplayName // .displayName')"
+  if [ "$building" = "true" ]; then
+    RESULT="BUILDING ${name}"
+    return 1
+  fi
+  RESULT="${result} ${name}"
+  return 0
+}
+
+# --- Pull request ------------------------------------------------------------
+
+parse_pr() {
+  local u="$1"
+  PR_HOST="$(printf '%s' "$u" | sed -E 's#^https?://([^/]+)/.*#\1#')"
+  PR_REPO="$(printf '%s' "$u" | sed -E 's#^https?://[^/]+/([^/]+/[^/]+)/pulls?/[0-9]+.*#\1#')"
+  PR_NUM="$(printf '%s' "$u" | sed -E 's#.*/pulls?/([0-9]+).*#\1#')"
+}
+
+gh_cmd() {
+  if [ "$PR_HOST" = "github.com" ]; then
+    env -u GH_HOST gh "$@"
+  else
+    GH_HOST="$PR_HOST" gh "$@"
+  fi
+}
+
+check_pr() {
+  need gh
+  parse_pr "$URL"
+  local json state pending failing errfile rc
+  errfile="$(mktemp)"
+  set +e
+  json="$(gh_cmd pr view "$PR_NUM" --repo "$PR_REPO" --json state,mergedAt,mergeStateStatus,title,statusCheckRollup,reviewDecision,url 2>"$errfile")"
+  rc=$?
+  set -e
+  if [ "$rc" -ne 0 ]; then
+    if grep -qiE '401|403|bad credentials|authentication required|unauthorized|http 401|http 403' "$errfile"; then
+      local msg
+      msg="$(tr '\n' ' ' <"$errfile")"
+      rm -f "$errfile"
+      die_auth "GitHub ${msg}"
+    fi
+    local msg
+    msg="$(tr '\n' ' ' <"$errfile")"
+    rm -f "$errfile"
+    die "GitHub request failed: ${msg}"
+  fi
+  rm -f "$errfile"
+  state="$(printf '%s' "$json" | jq -r '.state')"
+  if [ "$state" = "MERGED" ]; then
+    RESULT="MERGED $(printf '%s' "$json" | jq -r '.title')"
+    return 0
+  fi
+  if [ "$state" = "CLOSED" ]; then
+    RESULT="CLOSED (not merged) $(printf '%s' "$json" | jq -r '.title')"
+    return 0
+  fi
+  pending="$(printf '%s' "$json" | jq -r '
+    [.statusCheckRollup[]? | select(.status != "COMPLETED" or .state == "PENDING" or .conclusion == "PENDING" or (.state != null and (.state | test("PENDING|EXPECTED"; "i")))) | (.name // .context // "check")] | unique | join(", ")
+  ')"
+  failing="$(printf '%s' "$json" | jq -r '
+    [.statusCheckRollup[]? | select((.conclusion != null and (.conclusion | test("FAILURE|CANCELLED|TIMED_OUT|ACTION_REQUIRED"; "i"))) or (.state != null and (.state | test("FAILURE|ERROR"; "i")))) | (.name // .context // "check")] | unique | join(", ")
+  ')"
+  local extra
+  extra="$(printf '%s' "$json" | jq -r '"\(.mergeStateStatus) review=\(.reviewDecision // "none")"')"
+  RESULT="OPEN ${extra}"
+  if [ -n "$pending" ] && [ "$pending" != "" ]; then
+    RESULT="${RESULT}; waiting for checks: ${pending}"
+  fi
+  if [ -n "$failing" ] && [ "$failing" != "" ]; then
+    RESULT="${RESULT}; failing checks: ${failing}"
+  fi
+  if [ -z "$pending" ] || [ "$pending" = "" ]; then
+    RESULT="${RESULT}; no pending checks (waiting for merge)"
+  fi
+  return 1
+}
+
+# --- Slack -------------------------------------------------------------------
+
+parse_slack_url() {
+  python3 - "$1" <<'PY'
+import sys, urllib.parse
+url = sys.argv[1]
+p = urllib.parse.urlparse(url)
+q = urllib.parse.parse_qs(p.query)
+path = p.path
+
+def ts_from_p(pstamp):
+    pstamp = pstamp.lstrip("p")
+    return pstamp[:10] + "." + pstamp[10:]
+
+channel = ts = None
+parts = path.strip("/").split("/")
+# /archives/CHANNEL/pTIMESTAMP
+if "archives" in parts:
+    i = parts.index("archives")
+    channel = parts[i + 1]
+    if len(parts) > i + 2 and parts[i + 2].startswith("p"):
+        ts = ts_from_p(parts[i + 2])
+# /client/WORKSPACE/CHANNEL/thread/CHANNEL-TS-TS
+if "thread" in parts:
+    i = parts.index("thread")
+    blob = parts[i + 1]
+    segs = blob.split("-")
+    channel = segs[0]
+    ts = segs[1][:10] + "." + segs[1][10:]
+if "thread_ts" in q:
+    ts = q["thread_ts"][0]
+if not channel or not ts:
+    sys.exit(1)
+print(channel)
+print(ts)
+PY
+}
+
+slack_auth_error() {
+  case "$1" in
+    invalid_auth|not_authed|token_revoked|token_expired|account_inactive|missing_scope|invalid_token)
+      return 0
+      ;;
+  esac
+  return 1
+}
+
+slack_api() {
+  local method="$1"
+  shift
+  local tmp code body err
+  tmp="$(mktemp)"
+  code="$(curl -sS -o "$tmp" -w '%{http_code}' -X POST "https://slack.com/api/${method}" \
+    -H "Authorization: Bearer ${SLACK_USER_OAUTH_TOKEN}" \
+    -H "Content-Type: application/x-www-form-urlencoded" \
+    --data "$@" || true)"
+  body="$(cat "$tmp")"
+  rm -f "$tmp"
+  if http_is_auth_error "$code"; then
+    die_auth "Slack HTTP ${code} on ${method}"
+  fi
+  if [ -z "$code" ] || [ "$code" = "000" ]; then
+    die "Slack request failed (network or TLS) on ${method}"
+  fi
+  if [ "$code" != "200" ]; then
+    die "Slack HTTP ${code} on ${method}"
+  fi
+  err="$(printf '%s' "$body" | jq -r '.error // empty')"
+  if slack_auth_error "$err"; then
+    die_auth "Slack ${method}: ${err}"
+  fi
+  printf '%s' "$body"
+}
+
+SLACK_CHANNEL=""
+SLACK_TS=""
+SLACK_ME=""
+SLACK_BASELINE=""
+
+init_slack() {
+  local parsed me json
+  require_var SLACK_USER_OAUTH_TOKEN
+  parsed="$(parse_slack_url "$URL")" || {
+    echo "waitingFor: invalid Slack thread URL" >&2
+    exit 2
+  }
+  SLACK_CHANNEL="$(printf '%s\n' "$parsed" | sed -n '1p')"
+  SLACK_TS="$(printf '%s\n' "$parsed" | sed -n '2p')"
+  me="$(slack_api auth.test)"
+  if [ "$(printf '%s' "$me" | jq -r '.ok')" != "true" ]; then
+    die "Slack auth.test failed: $(printf '%s' "$me" | jq -r '.error')"
+  fi
+  SLACK_ME="$(printf '%s' "$me" | jq -r '.user_id')"
+  json="$(slack_api conversations.replies "channel=${SLACK_CHANNEL}&ts=${SLACK_TS}&limit=200")"
+  if [ "$(printf '%s' "$json" | jq -r '.ok')" != "true" ]; then
+    die "Slack conversations.replies failed: $(printf '%s' "$json" | jq -r '.error')"
+  fi
+  SLACK_BASELINE="$(printf '%s' "$json" | jq -r '[.messages[].ts] | max')"
+}
+
+check_slack() {
+  local json newest from_me from_other preview
+  json="$(slack_api conversations.replies "channel=${SLACK_CHANNEL}&ts=${SLACK_TS}&limit=200")"
+  if [ "$(printf '%s' "$json" | jq -r '.ok')" != "true" ]; then
+    die "Slack conversations.replies failed: $(printf '%s' "$json" | jq -r '.error')"
+  fi
+  newest="$(printf '%s' "$json" | jq -r --arg base "$SLACK_BASELINE" --arg me "$SLACK_ME" '
+    def human:
+      (has("bot_id") | not) and ((.subtype // "") | IN("bot_message","channel_join","channel_leave") | not);
+    [.messages[] | select(.ts > $base) | select(human)]
+    | (map(select(.user == $me)) | last) as $mine
+    | (map(select(.user != $me)) | last) as $other
+    | {
+        any: (length > 0),
+        mine: ($mine != null),
+        other: ($other != null),
+        preview: (([$other, $mine] | map(select(. != null)) | last // {}) | .text // "")
+      }
+  ')"
+  if [ "$(printf '%s' "$newest" | jq -r '.any')" = "true" ]; then
+    from_me="$(printf '%s' "$newest" | jq -r '.mine')"
+    from_other="$(printf '%s' "$newest" | jq -r '.other')"
+    preview="$(printf '%s' "$newest" | jq -r '.preview' | tr '\n' ' ' | cut -c1-120)"
+    RESULT="new reply me=${from_me} other=${from_other}: ${preview}"
+    return 0
+  fi
+  RESULT="no new human reply yet (waiting for you or the other person)"
+  return 1
+}
+
+# --- main loop ---------------------------------------------------------------
+
+classify "$URL"
+case "$KIND" in
+  jenkinsBuild) require_jenkins_auth ;;
+  slackThread) require_var SLACK_USER_OAUTH_TOKEN ;;
+esac
+STARTED_AT="$(date +%s)"
+log "waiting on ${KIND}: ${URL}"
+log "poll every ${INTERVAL}s"
+
+if [ "$KIND" = "slackThread" ]; then
+  init_slack
+  log "slack channel=${SLACK_CHANNEL} thread_ts=${SLACK_TS} me=${SLACK_ME} baseline=${SLACK_BASELINE}"
+fi
+
+trap 'set_status READY "interrupted"; exit 130' INT TERM
+
+done=0
+while [ "$done" = 0 ]; do
+  set +e
+  case "$KIND" in
+    jenkinsBuild) check_jenkins; rc=$? ;;
+    pullrequest)  check_pr; rc=$? ;;
+    slackThread)  check_slack; rc=$? ;;
+  esac
+  set -e
+  if [ "$rc" -eq 2 ]; then
+    set_status READY "error"
+    exit 2
+  fi
+  if [ "$rc" -eq 0 ]; then
+    done=1
+    log "${RESULT}"
+    break
+  fi
+  log "${RESULT}"
+  set_status WAITING "$RESULT"
+  sleep "$INTERVAL"
+done
+
+ELAPSED="$(human_duration "$(($(date +%s) - STARTED_AT))")"
+
+set_status READY "$RESULT"
+printf '\nREADY\n'
+printf 'waited %s on %s: %s\n' "$ELAPSED" "$KIND" "$URL"
+printf 'waiting is over (%s). Wait for the user'\''s next prompt before doing more work.\n' "$RESULT"
+
+if [ -t 0 ]; then
+  printf 'Further prompt (Enter to exit): '
+  read -r _ || true
+fi
+exit 0

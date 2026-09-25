@@ -1,10 +1,17 @@
 #!/usr/bin/env bash
 #
-# tc - jump to a tmux pane running a cursor-agent session.
+# tc - jump to a tmux pane running a cursor-agent or waitingFor session.
 #
 # Like `tmux choose-tree`, but the list is filtered down to only the panes
-# whose process tree contains a running `cursor-agent` process. Selecting
-# an entry switches the current tmux client straight to that pane.
+# whose process tree contains a running `cursor-agent` or `waitingFor`
+# process. Selecting an entry switches the current tmux client straight
+# to that pane.
+#
+# Every row starts with an icon and a state, followed by the pane's location
+# and details. cursor-agent panes reuse the state cursor-agent already renders
+# in its pane title (working/ready); waitingFor panes stay `waiting` while the
+# script is still polling and only flip to `ready` once it has finished and is
+# sitting at its "Further prompt" prompt.
 #
 # Usage:
 #   tc                    interactive picker (fzf), jumps to the chosen pane
@@ -52,10 +59,12 @@ panes=$(tmux list-panes -a -F "#{pane_id}	#{session_name}:#{window_index}.#{pane
 pane_pids=$(echo "$panes" | cut -f4 | tr '\n' ' ')
 
 # Take a single ps snapshot and, for each pane's root pid, walk its process
-# tree (via ppid) looking for a running `cursor-agent` process. Doing this
-# as one awk pass (rather than N recursive pgrep/ps calls) is both faster
-# and more reliable - pgrep -P has been observed to miss children in some
-# sandboxed shells even though `ps` sees them fine.
+# tree (via ppid) looking for a running `cursor-agent` or `waitingFor`
+# process. Doing this as one awk pass (rather than N recursive pgrep/ps
+# calls) is both faster and more reliable - pgrep -P has been observed to
+# miss children in some sandboxed shells even though `ps` sees them fine.
+# Emits "rootpid=kind" pairs; a pane running both counts as waitingFor, since
+# that's the process whose state the caller wants to see.
 agent_pids=$(ps -axo pid=,ppid=,command= | awk -v ROOTS="$pane_pids" '
     BEGIN { n = split(ROOTS, roots, " ") }
     {
@@ -71,30 +80,72 @@ agent_pids=$(ps -axo pid=,ppid=,command= | awk -v ROOTS="$pane_pids" '
             root = roots[i] + 0
             delete visited
             qlen = 1; queue[1] = root
-            found = 0
+            agent = 0; waiting = 0
             while (qlen > 0) {
                 cur = queue[qlen]; qlen--
                 if (visited[cur]++) continue
-                if (index(command[cur], "cursor-agent") > 0) { found = 1; break }
+                if (index(command[cur], "waitingFor") > 0) waiting = 1
+                else if (index(command[cur], "cursor-agent") > 0) agent = 1
                 nkids = split(children[cur], kids, " ")
                 for (k = 1; k <= nkids; k++) {
                     if (kids[k] != "") { qlen++; queue[qlen] = kids[k] }
                 }
             }
-            if (found) printf "%s ", root
+            if (waiting) printf "%s=waitingFor ", root
+            else if (agent) printf "%s=cursor-agent ", root
         }
     }
 ')
 
-[ -z "$agent_pids" ] && { echo "tc: no panes running cursor-agent" >&2; exit 1; }
+[ -z "$agent_pids" ] && { echo "tc: no panes running cursor-agent or waitingFor" >&2; exit 1; }
 
-# pane_id \t "session:window.pane [window-name]" \t pane-title \t pane-path
+# pane_id \t kind \t "session:window.pane [window-name]" \t pane-title \t pane-path
 matches=$(echo "$panes" | awk -F'\t' -v AGENTS="$agent_pids" '
-    BEGIN { n = split(AGENTS, a, " "); for (i = 1; i <= n; i++) agent[a[i]] = 1 }
-    ($4 in agent) { printf "%s\t%s [%s]\t%s\t%s\n", $1, $2, $3, $5, $6 }
+    BEGIN {
+        n = split(AGENTS, a, " ")
+        for (i = 1; i <= n; i++) {
+            split(a[i], kv, "=")
+            kind[kv[1]] = kv[2]
+        }
+    }
+    ($4 in kind) { printf "%s\t%s\t%s [%s]\t%s\t%s\n", $1, kind[$4], $2, $3, $5, $6 }
 ')
 
-[ -z "$matches" ] && { echo "tc: no panes running cursor-agent" >&2; exit 1; }
+[ -z "$matches" ] && { echo "tc: no panes running cursor-agent or waitingFor" >&2; exit 1; }
+
+# Lead every row with "<icon> <state>". cursor-agent maintains its own state in
+# the pane title as "<chat title> - <icon> <state>", so that just gets hoisted
+# to the front. waitingFor polls silently, so the only reliable signal that it
+# is done is the interactive prompt it prints after READY - the status file it
+# also writes is a single global path, shared by every pane.
+matches=$(
+    while IFS=$'\t' read -r pane_id kind label title path; do
+        icon="🤖" state="running"
+        if [ "$kind" = "waitingFor" ]; then
+            if tmux capture-pane -p -t "$pane_id" 2>/dev/null |
+                tail -n 5 |
+                grep -q 'Further prompt (Enter to exit)'; then
+                icon="✅" state="ready"
+            else
+                icon="⏳" state="waiting"
+            fi
+        elif [ "$title" != "${title% - *}" ]; then
+            suffix="${title##* - }"
+            title="${title% - *}"
+            icon="${suffix%% *}"
+            # The title's state is animated ("Working ···"), so trim the
+            # trailing dots to stop rows jittering between refreshes.
+            state=$(printf '%s' "${suffix#* }" |
+                sed -E 's/[[:space:]]*[.·•…]+[[:space:]]*$//' |
+                tr '[:upper:]' '[:lower:]')
+            if [ -z "$state" ] || [ "$state" = "$icon" ]; then
+                state="running"
+            fi
+        fi
+        printf '%s\t%s %-8s %s\t%s\t%s\n' \
+            "$pane_id" "$icon" "$state" "$label" "$title" "$path"
+    done <<<"$matches"
+)
 
 if [ "$list_only" = "1" ]; then
     echo "$matches" | cut -f2-
@@ -105,7 +156,7 @@ selected=$(echo "$matches" | fzf \
     --delimiter=$'\t' \
     --with-nth=2,3 \
     --reverse \
-    --header="cursor-agent sessions >" \
+    --header="cursor-agent / waitingFor sessions >" \
     --preview "\"$self\" --preview-loop {1}" \
     --preview-window=bottom:60%)
 
