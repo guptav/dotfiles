@@ -1,15 +1,16 @@
 #!/usr/bin/env bash
 #
-# waitingFor - poll a Jenkins build, GitHub PR, or Slack thread until it is done.
+# waitingFor - poll a Jenkins build, GitHub PR, Slack thread, or JIRA issue until it is done.
 #
 # Usage:
-#   waitingFor <url>
-#   waitingFor --interval 60 <url>
+#   waitingFor <url> [<url>]
+#   waitingFor --interval 60 <url> [<url>]
 #
 # URL kinds:
 #   jenkinsBuild  poll the build every interval until it is no longer running
 #   pullrequest   wait until the PR is merged; while waiting, print pending checks
 #   slackThread   wait until a new human reply from you or someone else in the thread
+#   jiraIssue     wait until the issue is resolved, closed, or done
 #
 # When the wait ends the script writes STATUS=READY to ~/.waitingFor.status
 # and prints READY, the URL it was watching and how long it waited. It does
@@ -20,17 +21,18 @@ set -euo pipefail
 
 INTERVAL=60
 STATUS_FILE="${WAITINGFOR_STATUS_FILE:-$HOME/.waitingFor.status}"
-URL=""
+URLS=()
 
 usage() {
   cat <<'EOF'
-Usage: waitingFor [--interval SECONDS] <url>
+Usage: waitingFor [--interval SECONDS] <url> [<url>]
 
-Poll until the URL's wait condition is met (default every 60s).
+Poll until all URLs' wait conditions are met (default every 60s).
 
   Jenkins build   wait until the build is finished
   Pull request    wait until the PR is merged; show pending/failing checks
   Slack thread    wait until you or another person posts a new reply
+  JIRA issue      wait until the issue is resolved, closed, or done
 
 When done: status becomes READY. Wait for the user's next prompt.
 EOF
@@ -59,16 +61,15 @@ while [ $# -gt 0 ]; do
       usage >&2
       exit 2
       ;;
-    *)
-      URL="$1"
-      shift
-      break
-      ;;
+    *) URLS+=("$1"); shift ;;
   esac
 done
 
-[ -z "$URL" ] && [ $# -gt 0 ] && URL="$1"
-if [ -z "$URL" ]; then
+while [ $# -gt 0 ]; do
+  URLS+=("$1")
+  shift
+done
+if [ "${#URLS[@]}" -eq 0 ]; then
   usage >&2
   exit 2
 fi
@@ -95,7 +96,7 @@ set_status() {
   {
     printf 'STATUS=%s\n' "$STATUS"
     printf 'KIND=%s\n' "$KIND"
-    printf 'URL=%s\n' "$URL"
+    printf 'URL=%s\n' "${URLS[*]}"
     printf 'DETAIL=%s\n' "$DETAIL"
     printf 'UPDATED=%s\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
   } >"$STATUS_FILE"
@@ -146,6 +147,8 @@ classify() {
   local u="$1"
   if [[ "$u" =~ slack\.com/(archives|client)/ ]] || [[ "$u" =~ slack\.com/.*thread ]]; then
     KIND="slackThread"
+  elif [[ "$u" =~ /browse/[A-Z][A-Z0-9]+-[0-9]+([/?#].*)?$ ]]; then
+    KIND="jiraIssue"
   elif [[ "$u" =~ /pull/[0-9]+ ]] || [[ "$u" =~ /pulls/[0-9]+ ]]; then
     KIND="pullrequest"
   elif [[ "$u" =~ jenkins ]] || [[ "$u" =~ /job/ ]] || [[ "$u" =~ /blue/organizations ]]; then
@@ -154,6 +157,53 @@ classify() {
     echo "waitingFor: cannot classify URL (expected Jenkins build, pull request, or Slack thread): $u" >&2
     exit 2
   fi
+}
+
+# --- JIRA --------------------------------------------------------------------
+
+require_jira_auth() {
+  require_var JIRA_API_TOKEN
+}
+
+parse_jira_url() {
+  local u="$1"
+  JIRA_BASE_URL="$(printf '%s' "$u" | sed -E 's#^(https?://[^/]+).*#\1#')"
+  JIRA_KEY="$(printf '%s' "$u" | sed -nE 's#.*/browse/([A-Z][A-Z0-9]+-[0-9]+).*#\1#p')"
+  [ -n "$JIRA_KEY" ] || return 1
+}
+
+check_jira() {
+  local api tmp code json status category summary
+  parse_jira_url "$URL" || {
+    echo "waitingFor: invalid JIRA issue URL" >&2
+    return 2
+  }
+  api="${JIRA_BASE_URL}/rest/api/latest/issue/${JIRA_KEY}?fields=status,summary"
+  tmp="$(mktemp)"
+  code="$(curl -sS -o "$tmp" -w '%{http_code}' \
+    -H "Authorization: Bearer ${JIRA_API_TOKEN}" \
+    -H 'Accept: application/json' \
+    "$api" || true)"
+  json="$(cat "$tmp")"
+  rm -f "$tmp"
+  if http_is_auth_error "$code"; then
+    die_auth "JIRA HTTP ${code} (check JIRA_API_TOKEN)"
+  fi
+  if [ -z "$code" ] || [ "$code" = "000" ]; then
+    die "JIRA request failed (network or TLS) for ${api}"
+  fi
+  if [ "$code" != "200" ]; then
+    die "JIRA HTTP ${code} for ${api}"
+  fi
+  status="$(printf '%s' "$json" | jq -r '.fields.status.name // "UNKNOWN"')"
+  category="$(printf '%s' "$json" | jq -r '.fields.status.statusCategory.key // empty')"
+  summary="$(printf '%s' "$json" | jq -r '.fields.summary // ""')"
+  if [ "$category" = "done" ] || printf '%s' "$status" | grep -qiE '^(done|closed|resolved)$'; then
+    RESULT="${JIRA_KEY} ${status}: ${summary}"
+    return 0
+  fi
+  RESULT="${JIRA_KEY} ${status}: ${summary}"
+  return 1
 }
 
 # --- Jenkins -----------------------------------------------------------------
@@ -367,6 +417,7 @@ SLACK_CHANNEL=""
 SLACK_TS=""
 SLACK_ME=""
 SLACK_BASELINE=""
+declare -a SLACK_CHANNELS SLACK_TSS SLACK_MES SLACK_BASELINES
 
 init_slack() {
   local parsed me json
@@ -387,10 +438,18 @@ init_slack() {
     die "Slack conversations.replies failed: $(printf '%s' "$json" | jq -r '.error')"
   fi
   SLACK_BASELINE="$(printf '%s' "$json" | jq -r '[.messages[].ts] | max')"
+  SLACK_CHANNELS[$CURRENT_INDEX]="$SLACK_CHANNEL"
+  SLACK_TSS[$CURRENT_INDEX]="$SLACK_TS"
+  SLACK_MES[$CURRENT_INDEX]="$SLACK_ME"
+  SLACK_BASELINES[$CURRENT_INDEX]="$SLACK_BASELINE"
 }
 
 check_slack() {
   local json newest from_me from_other preview
+  SLACK_CHANNEL="${SLACK_CHANNELS[$CURRENT_INDEX]}"
+  SLACK_TS="${SLACK_TSS[$CURRENT_INDEX]}"
+  SLACK_ME="${SLACK_MES[$CURRENT_INDEX]}"
+  SLACK_BASELINE="${SLACK_BASELINES[$CURRENT_INDEX]}"
   json="$(slack_api conversations.replies "channel=${SLACK_CHANNEL}&ts=${SLACK_TS}&limit=200")"
   if [ "$(printf '%s' "$json" | jq -r '.ok')" != "true" ]; then
     die "Slack conversations.replies failed: $(printf '%s' "$json" | jq -r '.error')"
@@ -421,57 +480,80 @@ check_slack() {
 
 # --- main loop ---------------------------------------------------------------
 
-classify "$URL"
-case "$KIND" in
-  jenkinsBuild) require_jenkins_auth ;;
-  slackThread) require_var SLACK_USER_OAUTH_TOKEN ;;
-esac
+declare -a KINDS DONE RESULTS
+for i in "${!URLS[@]}"; do
+  URL="${URLS[$i]}"
+  classify "$URL"
+  KINDS[$i]="$KIND"
+  DONE[$i]=0
+  RESULTS[$i]=""
+  case "$KIND" in
+    jenkinsBuild) require_jenkins_auth ;;
+    slackThread) require_var SLACK_USER_OAUTH_TOKEN ;;
+    jiraIssue) require_jira_auth ;;
+  esac
+done
+
 STARTED_AT="$(date +%s)"
-log "waiting on ${KIND}: ${URL}"
+log "waiting on ${#URLS[@]} URL(s): ${URLS[*]}"
 log "poll every ${INTERVAL}s"
 
-if [ "$KIND" = "slackThread" ]; then
-  init_slack
-  log "slack channel=${SLACK_CHANNEL} thread_ts=${SLACK_TS} me=${SLACK_ME} baseline=${SLACK_BASELINE}"
-fi
+for i in "${!URLS[@]}"; do
+  if [ "${KINDS[$i]}" = "slackThread" ]; then
+    CURRENT_INDEX="$i"
+    URL="${URLS[$i]}"
+    KIND="${KINDS[$i]}"
+    init_slack
+    log "slack channel=${SLACK_CHANNEL} thread_ts=${SLACK_TS} me=${SLACK_ME} baseline=${SLACK_BASELINE}"
+  fi
+done
 
 trap 'set_status READY "interrupted"; exit 130' INT TERM
 
-done=0
-while [ "$done" = 0 ]; do
-  set +e
-  case "$KIND" in
-    jenkinsBuild) check_jenkins; rc=$? ;;
-    pullrequest)  check_pr; rc=$? ;;
-    slackThread)  check_slack; rc=$? ;;
-  esac
-  set -e
-  if [ "$rc" -eq 2 ]; then
-    set_status READY "error"
-    exit 2
+done_count=0
+while [ "$done_count" -lt "${#URLS[@]}" ]; do
+  for i in "${!URLS[@]}"; do
+    [ "${DONE[$i]}" -eq 1 ] && continue
+    CURRENT_INDEX="$i"
+    URL="${URLS[$i]}"
+    KIND="${KINDS[$i]}"
+    set +e
+    case "$KIND" in
+      jenkinsBuild) check_jenkins; rc=$? ;;
+      pullrequest)  check_pr; rc=$? ;;
+      slackThread)  check_slack; rc=$? ;;
+      jiraIssue)    check_jira; rc=$? ;;
+    esac
+    set -e
+    if [ "$rc" -eq 2 ]; then
+      set_status ERROR "error monitoring ${URL}"
+      exit 2
+    fi
+    RESULTS[$i]="$RESULT"
+    if [ "$rc" -eq 0 ]; then
+      DONE[$i]=1
+      done_count=$((done_count + 1))
+    fi
+    log "${KIND} ${URL}: ${RESULT}"
+  done
+  if [ "$done_count" -lt "${#URLS[@]}" ]; then
+    set_status WAITING "$(printf '%s; ' "${RESULTS[@]}")"
+    sleep "$INTERVAL"
   fi
-  if [ "$rc" -eq 0 ]; then
-    done=1
-    log "${RESULT}"
-    break
-  fi
-  log "${RESULT}"
-  set_status WAITING "$RESULT"
-  sleep "$INTERVAL"
 done
 
 ELAPSED="$(human_duration "$(($(date +%s) - STARTED_AT))")"
 
-set_status READY "$RESULT"
+set_status READY "$(printf '%s; ' "${RESULTS[@]}")"
 printf '\nREADY\n'
-printf 'waited %s on %s: %s\n' "$ELAPSED" "$KIND" "$URL"
-printf 'waiting is over (%s). Wait for the user'\''s next prompt before doing more work.\n' "$RESULT"
+printf 'waited %s on %s URL(s)\n' "$ELAPSED" "${#URLS[@]}"
+printf 'waiting is over: %s\n' "$(printf '%s; ' "${RESULTS[@]}")"
 
 if [ -t 0 ]; then
   printf 'Further prompt (o to open link, Enter to exit): '
   read -r -n 1 response || true
   if [ "$response" = "o" ]; then
-    open "$URL"
+    open "${URLS[0]}"
   fi
 fi
 exit 0
