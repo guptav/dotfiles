@@ -55,6 +55,14 @@ if [ "$1" = "--task-preview" ]; then
     exit 0
 fi
 
+if [ "$1" = "--add-task-office" ]; then
+    printf 'Task description: '
+    IFS= read -r task_description || exit 1
+    [ -n "$task_description" ] || exit 1
+    task add project:office "$task_description"
+    exit $?
+fi
+
 if [ "$1" = "--open-waiting" ]; then
     urls="${2:-}"
     for url in $urls; do
@@ -122,6 +130,10 @@ fi
 
 if [ "$1" = "--preview" ]; then
     case "$2" in
+        __task_add_office__)
+            printf '$ task add project:office "<TASK_DESC>"\n'
+            exit 0
+            ;;
         __task_office_*__)
             task_id="${2#__task_office_}"
             task_id="${task_id%__}"
@@ -204,13 +216,15 @@ matches=$(echo "$panes" | awk -F'\t' -v AGENTS="$agent_pids" '
     ($4 in kind) { printf "%s\t%s\t%s [%s]\t%s\t%s\t%s\n", $1, kind[$4], $2, $3, $5, $6, details[$4] }
 ')
 
-while IFS= read -r task_id; do
-    [ -n "$task_id" ] || continue
+for task_id in $(task project:office status:pending export | jq -r '.[].id'); do
     task_location="$(tmux list-panes -a -F '#{session_name}	#{window_name}	#{window_index}.#{pane_index}' |
         awk -F '\t' -v name="task-$task_id" '$2 == name { print $1 ":" $3; exit }')"
     [ -n "$task_location" ] || task_location="task-$task_id"
-    matches="${matches}"$'\n'"__task_office_${task_id}__"$'\t'"task-project-office"$'\t'"$task_location"$'\t'"Taskwarrior"$'\t'"$PWD"
-done < <(task project:office ids)
+    task_description="$(task "$task_id" export | jq -r '.[0].description // ""' | tr '\t\n' '  ')"
+    [ -n "$task_description" ] || task_description="task $task_id"
+    matches="${matches}"$'\n'"__task_office_${task_id}__"$'\t'"task-project-office"$'\t'"$task_location"$'\t'"$task_description"$'\t'"$PWD"
+done
+matches="${matches}"$'\n'"__task_add_office__"$'\t'"task-add-office"$'\t'"task add project:office"$'\t'"Add new task"$'\t'"$PWD"
 
 # Lead every row with "<icon> <state>". cursor-agent maintains its own state in
 # the pane title as "<chat title> - <icon> <state>", so that just gets hoisted
@@ -231,6 +245,8 @@ matches=$(
             fi
         elif [ "$kind" = "task-project-office" ]; then
             icon="📋" state="office"
+        elif [ "$kind" = "task-add-office" ]; then
+            icon="➕" state="add"
         elif [ "$title" != "${title% - *}" ]; then
             suffix="${title##* - }"
             title="${title% - *}"
@@ -268,6 +284,9 @@ selected=$(echo "$matches" | fzf \
 pane_id=$(echo "$selected" | cut -f1)
 
 case "$pane_id" in
+    __task_add_office__)
+        exec "$self" --add-task-office
+        ;;
     __task_office_*__)
         task_id="${pane_id#__task_office_}"
         task_id="${task_id%__}"
