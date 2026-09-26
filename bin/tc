@@ -43,6 +43,94 @@ if [ "$1" = "--preview-loop" ]; then
     exit 0
 fi
 
+if [ "$1" = "--task-office" ]; then
+    task project:office
+    exit $?
+fi
+
+if [ "$1" = "--task-preview" ]; then
+    task_id="$2"
+    printf '$ task %s\n\n' "$task_id"
+    task "$task_id"
+    exit 0
+fi
+
+if [ "$1" = "--open-waiting" ]; then
+    urls="${2:-}"
+    for url in $urls; do
+        url="${url#\"}"
+        url="${url%\"}"
+        case "$url" in
+            http://*|https://*) open "$url" ;;
+        esac
+    done
+    exit 0
+fi
+
+if [ "$1" = "--open-task" ]; then
+    task "$2" |
+        grep -Eo 'https?://[^[:space:]]+' |
+        sed -E 's/[),.;]+$//' |
+        while IFS= read -r url; do
+            open "$url"
+        done
+    exit 0
+fi
+
+if [ "$1" = "--open-entry" ]; then
+    case "$2" in
+        __task_office_*__)
+            task_id="${2#__task_office_}"
+            task_id="${task_id%__}"
+            exec "$0" --open-task "$task_id"
+            ;;
+    esac
+    exec "$0" --open-waiting "${3:-}"
+fi
+
+if [ "$1" = "--open-task-pane" ]; then
+    task_id="$2"
+    window_name="task-$task_id"
+    if [ -n "${TMUX:-}" ]; then
+        session="$(tmux display-message -p '#{client_last_session}')"
+        target="$session:$window_name"
+        if tmux has-session -t "$target" 2>/dev/null; then
+            tmux switch-client -t "$target"
+        else
+            new_target="$(tmux new-window -t "$session:" -n "$window_name" \
+                -c "$PWD" -P -F '#{session_name}:#{window_id}')"
+            tmux send-keys -t "$new_target" "task $task_id" C-m
+            tmux switch-client -t "$new_target"
+        fi
+    else
+        session="$(tmux display-message -p '#{client_last_session}')"
+        target="$session:$window_name"
+        if tmux has-session -t "$target" 2>/dev/null; then
+            tmux attach-session -t "$target"
+        elif tmux has-session -t "$session" 2>/dev/null; then
+            new_target="$(tmux new-window -t "$session:" -n "$window_name" \
+                -c "$PWD" -P -F '#{session_name}:#{window_id}')"
+            tmux send-keys -t "$new_target" "task $task_id" C-m
+            tmux attach-session -t "$new_target"
+        else
+            tmux new-session -A -s "$session" -n "$window_name" -c "$PWD"
+            tmux send-keys -t "$session:$window_name" "task $task_id" C-m
+        fi
+    fi
+    exit 0
+fi
+
+if [ "$1" = "--preview" ]; then
+    case "$2" in
+        __task_office_*__)
+            task_id="${2#__task_office_}"
+            task_id="${task_id%__}"
+            exec "$0" --task-preview "$task_id"
+            ;;
+    esac
+    exec "$0" --preview-loop "$2"
+fi
+
 which tmux >/dev/null 2>&1 || { echo "tc: tmux not found" >&2; exit 1; }
 which fzf  >/dev/null 2>&1 || { echo "tc: fzf not found"  >&2; exit 1; }
 
@@ -63,8 +151,9 @@ pane_pids=$(echo "$panes" | cut -f4 | tr '\n' ' ')
 # process. Doing this as one awk pass (rather than N recursive pgrep/ps
 # calls) is both faster and more reliable - pgrep -P has been observed to
 # miss children in some sandboxed shells even though `ps` sees them fine.
-# Emits "rootpid=kind" pairs; a pane running both counts as waitingFor, since
-# that's the process whose state the caller wants to see.
+# Emits semicolon-separated records with pipe-separated fields.
+# A pane running both counts as waitingFor, since that is the process whose
+# state and URLs the caller wants to see.
 agent_pids=$(ps -axo pid=,ppid=,command= | awk -v ROOTS="$pane_pids" '
     BEGIN { n = split(ROOTS, roots, " ") }
     {
@@ -80,38 +169,48 @@ agent_pids=$(ps -axo pid=,ppid=,command= | awk -v ROOTS="$pane_pids" '
             root = roots[i] + 0
             delete visited
             qlen = 1; queue[1] = root
-            agent = 0; waiting = 0
+            agent = 0; waiting = 0; waiting_details = ""
             while (qlen > 0) {
                 cur = queue[qlen]; qlen--
                 if (visited[cur]++) continue
-                if (index(command[cur], "waitingFor") > 0) waiting = 1
+                if (index(command[cur], "waitingFor") > 0) {
+                    waiting = 1
+                    waiting_details = command[cur]
+                    sub(/^.*waitingFor[[:space:]]+/, "", waiting_details)
+                    sub(/^--interval(=|[[:space:]]+)[0-9]+[[:space:]]*/, "", waiting_details)
+                }
                 else if (index(command[cur], "cursor-agent") > 0) agent = 1
                 nkids = split(children[cur], kids, " ")
                 for (k = 1; k <= nkids; k++) {
                     if (kids[k] != "") { qlen++; queue[qlen] = kids[k] }
                 }
             }
-            if (waiting) printf "%s=waitingFor ", root
-            else if (agent) printf "%s=cursor-agent ", root
+            if (waiting) printf "%s|waitingFor|%s;", root, waiting_details
+            else if (agent) printf "%s|cursor-agent||;", root
         }
     }
 ')
-
-[ -z "$agent_pids" ] && { echo "tc: no panes running cursor-agent or waitingFor" >&2; exit 1; }
 
 # pane_id \t kind \t "session:window.pane [window-name]" \t pane-title \t pane-path
 matches=$(echo "$panes" | awk -F'\t' -v AGENTS="$agent_pids" '
     BEGIN {
-        n = split(AGENTS, a, " ")
+        n = split(AGENTS, a, ";")
         for (i = 1; i <= n; i++) {
-            split(a[i], kv, "=")
-            kind[kv[1]] = kv[2]
+            split(a[i], fields, "[|]")
+            kind[fields[1]] = fields[2]
+            details[fields[1]] = fields[3]
         }
     }
-    ($4 in kind) { printf "%s\t%s\t%s [%s]\t%s\t%s\n", $1, kind[$4], $2, $3, $5, $6 }
+    ($4 in kind) { printf "%s\t%s\t%s [%s]\t%s\t%s\t%s\n", $1, kind[$4], $2, $3, $5, $6, details[$4] }
 ')
 
-[ -z "$matches" ] && { echo "tc: no panes running cursor-agent or waitingFor" >&2; exit 1; }
+while IFS= read -r task_id; do
+    [ -n "$task_id" ] || continue
+    task_location="$(tmux list-panes -a -F '#{session_name}	#{window_name}	#{window_index}.#{pane_index}' |
+        awk -F '\t' -v name="task-$task_id" '$2 == name { print $1 ":" $3; exit }')"
+    [ -n "$task_location" ] || task_location="task-$task_id"
+    matches="${matches}"$'\n'"__task_office_${task_id}__"$'\t'"task-project-office"$'\t'"$task_location"$'\t'"Taskwarrior"$'\t'"$PWD"
+done < <(task project:office ids)
 
 # Lead every row with "<icon> <state>". cursor-agent maintains its own state in
 # the pane title as "<chat title> - <icon> <state>", so that just gets hoisted
@@ -119,9 +218,10 @@ matches=$(echo "$panes" | awk -F'\t' -v AGENTS="$agent_pids" '
 # is done is the interactive prompt it prints after READY - the status file it
 # also writes is a single global path, shared by every pane.
 matches=$(
-    while IFS=$'\t' read -r pane_id kind label title path; do
+    while IFS=$'\t' read -r pane_id kind label title path waiting_details; do
         icon="🤖" state="running"
         if [ "$kind" = "waitingFor" ]; then
+            [ -n "$waiting_details" ] && title="$waiting_details"
             if tmux capture-pane -p -t "$pane_id" 2>/dev/null |
                 tail -n 5 |
                 grep -q 'Further prompt (Enter to exit)'; then
@@ -129,6 +229,8 @@ matches=$(
             else
                 icon="⏳" state="waiting"
             fi
+        elif [ "$kind" = "task-project-office" ]; then
+            icon="📋" state="office"
         elif [ "$title" != "${title% - *}" ]; then
             suffix="${title##* - }"
             title="${title% - *}"
@@ -156,13 +258,22 @@ selected=$(echo "$matches" | fzf \
     --delimiter=$'\t' \
     --with-nth=2,3 \
     --reverse \
-    --header="cursor-agent / waitingFor sessions >" \
-    --preview "\"$self\" --preview-loop {1}" \
+    --header="cursor-agent / waitingFor / task project:office tasks >" \
+    --preview "\"$self\" --preview {1}" \
+    --bind "alt-o:execute-silent(\"$self\" --open-entry {1} {3})" \
     --preview-window=bottom:60%)
 
 [ -z "$selected" ] && exit 1
 
 pane_id=$(echo "$selected" | cut -f1)
+
+case "$pane_id" in
+    __task_office_*__)
+        task_id="${pane_id#__task_office_}"
+        task_id="${task_id%__}"
+        exec "$self" --open-task-pane "$task_id"
+        ;;
+esac
 
 if [ -z "$TMUX" ]; then
     tmux attach-session -t "$pane_id"
