@@ -5,10 +5,12 @@
 # Usage:
 #   waitingFor <url> [<url>]
 #   waitingFor --interval 60 <url> [<url>]
+#   waitingFor --pr-interval 1800 <pr-url>
 #
 # URL kinds:
 #   jenkinsBuild  poll the build every interval until it is no longer running
-#   pullrequest   wait until the PR is merged; while waiting, print pending checks
+#   pullrequest   wait until the PR is approved or merged; polled every
+#                 --pr-interval (default 3600s); prints pending checks
 #   slackThread   wait until a new human reply from you or someone else in the thread
 #   jiraIssue     wait until the issue is resolved, closed, or done
 #
@@ -20,17 +22,19 @@
 set -euo pipefail
 
 INTERVAL=60
+PR_INTERVAL=3600
 STATUS_FILE="${WAITINGFOR_STATUS_FILE:-$HOME/.waitingFor.status}"
 URLS=()
 
 usage() {
   cat <<'EOF'
-Usage: waitingFor [--interval SECONDS] <url> [<url>]
+Usage: waitingFor [--interval SECONDS] [--pr-interval SECONDS] <url> [<url>]
 
-Poll until all URLs' wait conditions are met (default every 60s).
+Poll until all URLs' wait conditions are met (default every 60s;
+pull requests every 3600s unless --pr-interval is given).
 
   Jenkins build   wait until the build is finished
-  Pull request    wait until the PR is merged; show pending/failing checks
+  Pull request    wait until the PR is approved or merged; show pending/failing checks
   Slack thread    wait until you or another person posts a new reply
   JIRA issue      wait until the issue is resolved, closed, or done
 
@@ -50,6 +54,14 @@ while [ $# -gt 0 ]; do
       ;;
     --interval=*)
       INTERVAL="${1#*=}"
+      shift
+      ;;
+    --pr-interval)
+      PR_INTERVAL="${2:?waitingFor: --pr-interval needs a number}"
+      shift 2
+      ;;
+    --pr-interval=*)
+      PR_INTERVAL="${1#*=}"
       shift
       ;;
     --)
@@ -318,8 +330,12 @@ check_pr() {
     RESULT="CLOSED (not merged) $(printf '%s' "$json" | jq -r '.title')"
     return 0
   fi
+  if [ "$(printf '%s' "$json" | jq -r '.reviewDecision // ""')" = "APPROVED" ]; then
+    RESULT="APPROVED $(printf '%s' "$json" | jq -r '"\(.mergeStateStatus) \(.title)"')"
+    return 0
+  fi
   pending="$(printf '%s' "$json" | jq -r '
-    [.statusCheckRollup[]? | select(.status != "COMPLETED" or .state == "PENDING" or .conclusion == "PENDING" or (.state != null and (.state | test("PENDING|EXPECTED"; "i")))) | (.name // .context // "check")] | unique | join(", ")
+    [.statusCheckRollup[]? | select((.status != null and .status != "COMPLETED") or .state == "PENDING" or .conclusion == "PENDING" or (.state != null and (.state | test("PENDING|EXPECTED"; "i")))) | (.name // .context // "check")] | unique | join(", ")
   ')"
   failing="$(printf '%s' "$json" | jq -r '
     [.statusCheckRollup[]? | select((.conclusion != null and (.conclusion | test("FAILURE|CANCELLED|TIMED_OUT|ACTION_REQUIRED"; "i"))) or (.state != null and (.state | test("FAILURE|ERROR"; "i")))) | (.name // .context // "check")] | unique | join(", ")
@@ -334,7 +350,7 @@ check_pr() {
     RESULT="${RESULT}; failing checks: ${failing}"
   fi
   if [ -z "$pending" ] || [ "$pending" = "" ]; then
-    RESULT="${RESULT}; no pending checks (waiting for merge)"
+    RESULT="${RESULT}; no pending checks (waiting for approval)"
   fi
   return 1
 }
@@ -480,13 +496,22 @@ check_slack() {
 
 # --- main loop ---------------------------------------------------------------
 
-declare -a KINDS DONE RESULTS
+interval_for() {
+  if [ "$1" = "pullrequest" ]; then
+    printf '%s' "$PR_INTERVAL"
+  else
+    printf '%s' "$INTERVAL"
+  fi
+}
+
+declare -a KINDS DONE RESULTS NEXT_AT
 for i in "${!URLS[@]}"; do
   URL="${URLS[$i]}"
   classify "$URL"
   KINDS[$i]="$KIND"
   DONE[$i]=0
   RESULTS[$i]=""
+  NEXT_AT[$i]=0
   case "$KIND" in
     jenkinsBuild) require_jenkins_auth ;;
     slackThread) require_var SLACK_USER_OAUTH_TOKEN ;;
@@ -496,7 +521,7 @@ done
 
 STARTED_AT="$(date +%s)"
 log "waiting on ${#URLS[@]} URL(s): ${URLS[*]}"
-log "poll every ${INTERVAL}s"
+log "poll every ${INTERVAL}s (pull requests every ${PR_INTERVAL}s)"
 
 for i in "${!URLS[@]}"; do
   if [ "${KINDS[$i]}" = "slackThread" ]; then
@@ -508,28 +533,31 @@ for i in "${!URLS[@]}"; do
   fi
 done
 
-trap 'set_status READY "interrupted"; exit 130' INT TERM
+trap 'jobs -p | xargs kill 2>/dev/null; set_status READY "interrupted"; exit 130' INT TERM
 
 done_count=0
 while [ "$done_count" -lt "${#URLS[@]}" ]; do
   for i in "${!URLS[@]}"; do
     [ "${DONE[$i]}" -eq 1 ] && continue
+    [ "$(date +%s)" -lt "${NEXT_AT[$i]}" ] && continue
     CURRENT_INDEX="$i"
     URL="${URLS[$i]}"
     KIND="${KINDS[$i]}"
-    set +e
+    # `|| rc=$?` keeps a nonzero return from tripping set -e, even when the
+    # check function re-enables it internally.
+    rc=0
     case "$KIND" in
-      jenkinsBuild) check_jenkins; rc=$? ;;
-      pullrequest)  check_pr; rc=$? ;;
-      slackThread)  check_slack; rc=$? ;;
-      jiraIssue)    check_jira; rc=$? ;;
+      jenkinsBuild) check_jenkins || rc=$? ;;
+      pullrequest)  check_pr || rc=$? ;;
+      slackThread)  check_slack || rc=$? ;;
+      jiraIssue)    check_jira || rc=$? ;;
     esac
-    set -e
     if [ "$rc" -eq 2 ]; then
       set_status ERROR "error monitoring ${URL}"
       exit 2
     fi
     RESULTS[$i]="$RESULT"
+    NEXT_AT[$i]=$(($(date +%s) + $(interval_for "$KIND")))
     if [ "$rc" -eq 0 ]; then
       DONE[$i]=1
       done_count=$((done_count + 1))
@@ -538,7 +566,18 @@ while [ "$done_count" -lt "${#URLS[@]}" ]; do
   done
   if [ "$done_count" -lt "${#URLS[@]}" ]; then
     set_status WAITING "$(printf '%s; ' "${RESULTS[@]}")"
-    sleep "$INTERVAL"
+    next=""
+    for i in "${!URLS[@]}"; do
+      [ "${DONE[$i]}" -eq 1 ] && continue
+      if [ -z "$next" ] || [ "${NEXT_AT[$i]}" -lt "$next" ]; then
+        next="${NEXT_AT[$i]}"
+      fi
+    done
+    delay=$((next - $(date +%s)))
+    [ "$delay" -lt 1 ] && delay=1
+    # Background + wait so INT/TERM run the trap now, not after a long sleep.
+    sleep "$delay" &
+    wait $! || true
   fi
 done
 
