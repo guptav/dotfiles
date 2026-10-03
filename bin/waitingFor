@@ -9,8 +9,9 @@
 #
 # URL kinds:
 #   jenkinsBuild  poll the build every interval until it is no longer running
-#   pullrequest   wait until the PR is approved or merged; polled every
-#                 --pr-interval (default 3600s); prints pending checks
+#   pullrequest   wait until the PR is merged; once approved, keep waiting
+#                 for the merge; polled every --pr-interval (default 3600s);
+#                 prints pending checks
 #   slackThread   wait until a new human reply from you or someone else in the thread
 #   jiraIssue     wait until the issue is resolved, closed, or done
 #
@@ -34,7 +35,7 @@ Poll until all URLs' wait conditions are met (default every 60s;
 pull requests every 3600s unless --pr-interval is given).
 
   Jenkins build   wait until the build is finished
-  Pull request    wait until the PR is approved or merged; show pending/failing checks
+  Pull request    wait until the PR is merged (keeps waiting after approval); show pending/failing checks
   Slack thread    wait until you or another person posts a new reply
   JIRA issue      wait until the issue is resolved, closed, or done
 
@@ -330,17 +331,14 @@ check_pr() {
     RESULT="CLOSED (not merged) $(printf '%s' "$json" | jq -r '.title')"
     return 0
   fi
-  if [ "$(printf '%s' "$json" | jq -r '.reviewDecision // ""')" = "APPROVED" ]; then
-    RESULT="APPROVED $(printf '%s' "$json" | jq -r '"\(.mergeStateStatus) \(.title)"')"
-    return 0
-  fi
   pending="$(printf '%s' "$json" | jq -r '
     [.statusCheckRollup[]? | select((.status != null and .status != "COMPLETED") or .state == "PENDING" or .conclusion == "PENDING" or (.state != null and (.state | test("PENDING|EXPECTED"; "i")))) | (.name // .context // "check")] | unique | join(", ")
   ')"
   failing="$(printf '%s' "$json" | jq -r '
     [.statusCheckRollup[]? | select((.conclusion != null and (.conclusion | test("FAILURE|CANCELLED|TIMED_OUT|ACTION_REQUIRED"; "i"))) or (.state != null and (.state | test("FAILURE|ERROR"; "i")))) | (.name // .context // "check")] | unique | join(", ")
   ')"
-  local extra
+  local extra review_decision
+  review_decision="$(printf '%s' "$json" | jq -r '.reviewDecision // "none"')"
   extra="$(printf '%s' "$json" | jq -r '"\(.mergeStateStatus) review=\(.reviewDecision // "none")"')"
   RESULT="OPEN ${extra}"
   if [ -n "$pending" ] && [ "$pending" != "" ]; then
@@ -349,7 +347,9 @@ check_pr() {
   if [ -n "$failing" ] && [ "$failing" != "" ]; then
     RESULT="${RESULT}; failing checks: ${failing}"
   fi
-  if [ -z "$pending" ] || [ "$pending" = "" ]; then
+  if [ "$review_decision" = "APPROVED" ]; then
+    RESULT="${RESULT}; approved, waiting for merge"
+  elif [ -z "$pending" ] || [ "$pending" = "" ]; then
     RESULT="${RESULT}; no pending checks (waiting for approval)"
   fi
   return 1
